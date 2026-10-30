@@ -39,7 +39,12 @@ Images go in `public/images/`. Hero posters go in `public/images/hero/`.
 
 ## Deploying
 
-Upload the `dist/` folder to any static host, for example:
+**GitHub Pages (set up):** `.github/workflows/deploy.yml` builds and publishes the site on every push to `main`.
+1. One-time step: on GitHub, open the repo's **Settings → Pages → Build and deployment → Source** and choose **GitHub Actions**. Don't choose "Deploy from a branch", because that runs Jekyll, which can't build Astro.
+2. Push to `main`. The site appears at `https://<user>.github.io/<repo>/`. The workflow passes the sub-folder in as `BASE_PATH`, so every link still works.
+3. Later, add `mfmedinburgh.org` as a custom domain under Settings → Pages. The workflow detects it and builds for the root of the domain.
+
+Or upload the `dist/` folder to any other static host:
 
 - **Cloudflare Pages:** build command `npm run build`, output directory `dist`
 - **GitHub Pages**

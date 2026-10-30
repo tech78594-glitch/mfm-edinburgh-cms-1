@@ -4,7 +4,8 @@
 import site from '../data/site.json';
 import { tel } from '../lib/format.js';
 
-const path = Astro.url.pathname.replace(/\/+$/, '') || '/';
+const basePath = import.meta.env.BASE_URL.replace(/\/+$/, '');
+const path = Astro.url.pathname.slice(basePath && Astro.url.pathname.startsWith(basePath) ? basePath.length : 0).replace(/\/+$/, '') || '/';
 const isCurrent = (href) => (href === '/' ? path === '/' : path === href.replace(/\/$/, '') || path.startsWith(href.replace(/\/$/, '') + '/'));
 
 // Links shown in the bar (desktop)

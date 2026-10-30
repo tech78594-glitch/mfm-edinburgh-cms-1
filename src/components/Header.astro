@@ -70,8 +70,8 @@ const phone = site.phones[0];
     </div>
     <nav aria-label="All pages">
       <ul role="list">
-        {all.map((l) => (
-          <li><a href={l.href} aria-current={isCurrent(l.href) ? 'page' : undefined}>{l.label}</a></li>
+        {all.map((l, i) => (
+          <li style={`--i:${i}`}><a href={l.href} aria-current={isCurrent(l.href) ? 'page' : undefined}>{l.label}</a></li>
         ))}
       </ul>
     </nav>
@@ -136,18 +136,40 @@ const phone = site.phones[0];
   }
   .menu-btn:hover { background: rgba(255, 255, 255, .14); }
 
-  /* Menu panel */
-  .site-menu { position: fixed; inset: 0; z-index: 60; }
+  /* Menu panel
+     The page stays visible beside the menu, so visitors keep their place, but it is blurred, dimmed and
+     frozen so it doesn't compete with the menu. Tapping the visible strip closes the menu. */
+  .site-menu { position: fixed; inset: 0; z-index: 60; --menu-ease: cubic-bezier(.22, 1, .36, 1); }
   .site-menu[hidden] { display: none; }
-  .site-menu__scrim { position: absolute; inset: 0; background: rgba(29, 27, 32, .55); }
-  .site-menu__panel {
-    position: absolute; top: 0; right: 0; bottom: 0; width: min(380px, 100%);
-    background: var(--plum); color: var(--white); padding: 0 28px 28px;
-    display: flex; flex-direction: column; overflow-y: auto;
-    animation: menu-in .25s ease-out;
+  .site-menu__scrim {
+    position: absolute; inset: 0; cursor: pointer;
+    background: rgba(14, 12, 18, .72);
+    animation: scrim-in .35s ease both;
   }
-  @keyframes menu-in { from { transform: translateX(24px); opacity: 0; } to { transform: none; opacity: 1; } }
-  @media (prefers-reduced-motion: reduce) { .site-menu__panel { animation: none; } }
+  @supports ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+    .site-menu__scrim { background: rgba(14, 12, 18, .48); -webkit-backdrop-filter: blur(4px) saturate(.55); backdrop-filter: blur(4px) saturate(.55); }
+  }
+  .site-menu__panel {
+    position: absolute; top: 0; right: 0; bottom: 0; width: min(400px, 82%);
+    background: var(--plum); color: var(--white); padding: 0 28px 28px;
+    display: flex; flex-direction: column; overflow-y: auto; overscroll-behavior: contain;
+    box-shadow: -18px 0 48px rgba(0, 0, 0, .45), inset 1px 0 0 rgba(255, 255, 255, .14);
+    animation: menu-in .42s var(--menu-ease) both;
+  }
+  .site-menu.is-closing .site-menu__scrim { animation: scrim-out .28s ease both; }
+  .site-menu.is-closing .site-menu__panel { animation: menu-out .28s cubic-bezier(.55, 0, .75, .3) both; }
+  @keyframes scrim-in { from { opacity: 0; } }
+  @keyframes scrim-out { to { opacity: 0; } }
+  @keyframes menu-in { from { transform: translateX(100%); } }
+  @keyframes menu-out { to { transform: translateX(100%); } }
+  /* Menu items arrive one after another */
+  .site-menu nav li { animation: item-in .45s var(--menu-ease) both; animation-delay: calc(.08s + var(--i, 0) * .03s); }
+  @keyframes item-in { from { opacity: 0; transform: translateX(18px); } }
+  @media (prefers-reduced-motion: reduce) {
+    .site-menu__panel, .site-menu__scrim, .site-menu nav li, .site-menu.is-closing * { animation: none !important; }
+  }
+  /* Everything behind the menu holds still (slideshow, drifting backgrounds, panels) */
+  :global(body.menu-open main *), :global(body.menu-open main *::before), :global(body.menu-open main *::after) { animation-play-state: paused !important; }
   .site-menu__top { height: var(--header-h); display: flex; align-items: center; justify-content: space-between; flex: none; }
   .site-menu__title { font-family: var(--font-serif); font-weight: 700; font-size: 1.375rem; }
   .site-menu__close {
@@ -202,16 +224,31 @@ const phone = site.phones[0];
 
   if (menu && openBtn) {
     const focusables = () => [...menu.querySelectorAll('a[href], button:not([disabled])')];
+    // The rest of the page is hidden from screen readers and keyboard while the menu is open.
+    const behind = () => [...document.body.children].filter((el) => el !== menu && !el.contains(menu) && el.tagName !== 'SCRIPT');
+    let closeTimer = 0;
     const open = () => {
+      clearTimeout(closeTimer);
+      menu.classList.remove('is-closing');
       menu.hidden = false;
       openBtn.setAttribute('aria-expanded', 'true');
       document.body.classList.add('menu-open');
+      behind().forEach((el) => { el.inert = true; });
+      document.dispatchEvent(new CustomEvent('menu:toggle', { detail: { open: true } }));
       menu.querySelector('nav a')?.focus();
     };
     const close = (returnFocus = true) => {
-      menu.hidden = true;
+      if (menu.hidden || menu.classList.contains('is-closing')) return;
       openBtn.setAttribute('aria-expanded', 'false');
-      document.body.classList.remove('menu-open');
+      behind().forEach((el) => { el.inert = false; });
+      const done = () => {
+        menu.hidden = true;
+        menu.classList.remove('is-closing');
+        document.body.classList.remove('menu-open');
+        document.dispatchEvent(new CustomEvent('menu:toggle', { detail: { open: false } }));
+      };
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) done();
+      else { menu.classList.add('is-closing'); closeTimer = setTimeout(done, 280); }
       if (returnFocus) openBtn.focus();
     };
     openBtn.addEventListener('click', open);

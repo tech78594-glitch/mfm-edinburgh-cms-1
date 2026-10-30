@@ -6,7 +6,8 @@
 *, *::before, *::after { box-sizing: border-box; }
 html { -webkit-text-size-adjust: 100%; scroll-padding-top: calc(var(--header-h) + 16px); }
 @media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
-body { margin: 0; font-family: var(--font-sans); font-size: 1.125rem; line-height: 1.6; color: var(--ink); background: var(--white); -webkit-font-smoothing: antialiased; }
+html { font-size: clamp(100%, 93.75% + 0.12vw, 106.25%); } /* fluid root: 16px on phones → 17px on large screens */
+body { margin: 0; font-family: var(--font-sans); font-size: clamp(1.0625rem, 1rem + 0.25vw, 1.1875rem); line-height: 1.6; color: var(--ink); background: var(--white); -webkit-font-smoothing: antialiased; }
 body.menu-open, body.lightbox-open { overflow: hidden; }
 img { max-width: 100%; height: auto; display: block; }
 h1, h2, h3, h4, p, ul, ol, figure, blockquote, dl, dd { margin: 0; }
@@ -28,12 +29,12 @@ button { font: inherit; }
 .on-dark .eyebrow, .eyebrow--fire { color: var(--fire-yellow); }
 .eyebrow--gold { color: var(--gold); }
 .display, .h1, .h2, .h3s { font-family: var(--font-serif); font-weight: 700; color: var(--plum); line-height: 1.1; }
-.display { font-size: clamp(2.5rem, 6.4vw, 5.5rem); line-height: 1.02; }
-.h1 { font-size: clamp(2.25rem, 4.6vw, 3.875rem); line-height: 1.06; }
-.h2 { font-size: clamp(1.875rem, 3.4vw, 2.75rem); line-height: 1.12; }
-.h3s { font-size: clamp(1.5rem, 2.4vw, 2.125rem); line-height: 1.15; }
+.display { font-size: clamp(2.5rem, 1.6rem + 4.4vw, 6rem); line-height: 1.02; }
+.h1 { font-size: clamp(2.125rem, 1.4rem + 3vw, 4.25rem); line-height: 1.06; }
+.h2 { font-size: clamp(1.75rem, 1.25rem + 2vw, 3rem); line-height: 1.12; }
+.h3s { font-size: clamp(1.375rem, 1.05rem + 1.3vw, 2.25rem); line-height: 1.15; }
 .on-dark .display, .on-dark .h1, .on-dark .h2, .on-dark .h3s { color: var(--white); }
-.lead { font-size: clamp(1.0625rem, 1.6vw, 1.3125rem); line-height: 1.55; }
+.lead { font-size: clamp(1.0625rem, 0.95rem + 0.55vw, 1.375rem); line-height: 1.55; }
 .on-dark .lead { color: var(--lilac); }
 .muted { color: var(--slate); }
 .crumb { font-size: .9375rem; font-weight: 600; color: var(--purple); }
@@ -45,14 +46,14 @@ button { font: inherit; }
 /* ==========================================================================
    Sections
    ========================================================================== */
-.section { padding-block: var(--section-pad, clamp(3.5rem, 8vw, 6.5rem)); }
+.section { padding-block: var(--section-pad, var(--space-xl)); }
 .section--mist { background: var(--mist); }
 .section--lilac { background: var(--lilac); }
 .section--plum { background: var(--plum); color: var(--white); }
 .section--ink { background: var(--ink); color: var(--white); }
 .section--black { background: var(--black); color: var(--white); }
 .section--orange { background: var(--orange); color: var(--ink); }
-.section-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 16px 32px; margin-bottom: clamp(24px, 4vw, 40px); }
+.section-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 16px 32px; margin-bottom: var(--space-m); }
 .section-head > div { display: flex; flex-direction: column; gap: 10px; max-width: 720px; }
 .link-arrow { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; font-weight: 700; text-decoration: none; color: var(--purple); }
 .link-arrow:hover { text-decoration: underline; }
@@ -90,7 +91,7 @@ button { font: inherit; }
    ========================================================================== */
 .card { background: var(--white); border: 1px solid var(--line); border-radius: var(--r-card); }
 .tag { display: inline-flex; align-items: center; gap: 8px; padding: 5px 12px; border-radius: var(--r-pill); font-size: .8125rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; background: var(--magenta-ink); color: var(--white); }
-.empty { padding: 28px 32px; border-radius: var(--r-card); background: var(--mist); color: var(--slate); }
+.empty { padding: clamp(20px, 0.9rem + 0.7vw, 28px) 32px; border-radius: var(--r-card); background: var(--mist); color: var(--slate); }
 .on-dark .empty { background: rgba(255,255,255,.06); color: var(--line); }
 .placeholder-note { display: inline-block; padding: 4px 10px; border-radius: var(--r-pill); background: var(--fire-yellow); color: var(--ink); font-size: .75rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
 

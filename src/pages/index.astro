@@ -1,4 +1,5 @@
 ---
+import ExplorePanels from '../components/ExplorePanels.astro';
 // Home — Figma: "Home – Desktop (1440)" / "Home – Mobile (390)"
 import Base from '../layouts/Base.astro';
 import HeroSlider from '../components/HeroSlider.astro';
@@ -55,19 +56,14 @@ const ld = {
     </div>
   </section>
 
-  <!-- Quick links -->
-  <nav class="quick container" aria-label="Quick links">
-    <ul role="list" class="grid" style="--min:230px;--gap:20px">
-      {[
-        ['clock', 'Service times', 'Weekly services and monthly programmes', '/services/'],
-        ['calendar', 'Events', 'What’s coming up at MFM Edinburgh', '/events/'],
-        ['chat', 'Testimonies', 'Read and share what God has done', '/testimonies/'],
-        ['heart', 'Give Online', 'Support the work of the ministry', '/give/'],
-      ].map(([ic, t, s, href]) => (
-        <li><a class="quick__card card" href={href}><span class="quick__icon"><Icon name={ic} /></span><strong>{t}</strong><span>{s}</span></a></li>
-      ))}
-    </ul>
-  </nav>
+  <!-- Explore: expanding photo panels -->
+  <ExplorePanels panels={[
+    { label: 'Who we are', title: 'About us', text: 'A full gospel church in Leith where every believer learns to pray, and to stand on God’s Word.', href: '/about/', image: '/images/pastor-and-wife.jpg', tint: 'var(--plum)' },
+    { label: 'Join us', title: 'Service times', text: 'Sunday worship from 10:30, Tuesday Bible study and Friday prayer. Come as you are.', href: '/services/', image: 'https://i.ytimg.com/vi/Lk3ZYQvp_YQ/hqdefault.jpg', tint: 'var(--magenta-ink)' },
+    { label: 'What’s on', title: 'Events', text: 'Power Must Change Hands, all-night vigils and special programmes.', href: '/events/', image: '/images/hero/70-days-fasting-prayer-2026.jpg', tint: '#9C6A1E' },
+    { label: 'Praise reports', title: 'Testimonies', text: 'Read what God has done, and share your own testimony with the church.', href: '/testimonies/', image: 'https://i.ytimg.com/vi/tJua5-bE3Kw/hqdefault.jpg', tint: 'var(--purple)' },
+    { label: 'Give', title: 'Give Online', text: 'Sow your seed, tithes and offerings to support the work of the ministry.', href: '/give/', image: 'https://i.ytimg.com/vi/rjstHj2nZ3w/hqdefault.jpg', tint: '#B5321F' },
+  ]} />
 
   <!-- Who we are -->
   <section class="section who" aria-labelledby="who-title">
@@ -170,7 +166,7 @@ const ld = {
 <style>
   /* Visit strip */
   .visit-strip { position: relative; z-index: 4; margin-top: -72px; }
-  .visit-strip__card { background: var(--white); border-radius: var(--r-panel); box-shadow: var(--shadow-lift); padding: 28px 32px; display: grid; grid-template-columns: auto minmax(0, 1.3fr) minmax(0, 1fr); gap: 40px; align-items: center; }
+  .visit-strip__card { background: var(--white); border-radius: var(--r-panel); box-shadow: var(--shadow-lift); padding: clamp(20px, 0.9rem + 0.7vw, 28px) 32px; display: grid; grid-template-columns: auto minmax(0, 1.3fr) minmax(0, 1fr); gap: clamp(22px, 0.8rem + 1.6vw, 40px); align-items: center; }
   .visit-strip__when { display: flex; flex-direction: column; gap: 12px; }
   .visit-strip__times div { display: flex; justify-content: space-between; gap: 16px; padding-block: 8px; border-bottom: 1px solid var(--line); }
   .visit-strip__times div:last-child { border-bottom: 0; }
@@ -179,16 +175,9 @@ const ld = {
   .visit-strip__where { display: flex; flex-direction: column; gap: 12px; font-size: 1rem; line-height: 1.45; }
   .visit-strip__where address { font-style: normal; }
 
-  /* Quick links */
-  .quick { margin-top: 48px; }
-  .quick__card { height: 100%; display: flex; flex-direction: column; gap: 8px; padding: 24px; text-decoration: none; color: var(--ink); box-shadow: var(--shadow-card); transition: border-color .15s, transform .15s; }
-  .quick__card:hover { color: var(--ink); border-color: var(--purple); transform: translateY(-2px); }
-  .quick__card strong { font-size: 1.1875rem; }
-  .quick__card > span:last-child { color: var(--slate); font-size: 1rem; }
-  .quick__icon { width: 44px; height: 44px; border-radius: 12px; background: var(--lilac); color: var(--purple); display: flex; align-items: center; justify-content: center; }
 
   /* Who */
-  .who__grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 72px; align-items: center; }
+  .who__grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--space-l); align-items: center; }
   .who__photo { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: var(--r-panel); }
 
   /* Week cards */
@@ -203,7 +192,7 @@ const ld = {
   .monthly-band a { color: var(--white); font-weight: 700; margin-left: auto; min-height: 44px; display: inline-flex; align-items: center; }
 
   /* Two columns */
-  .two-col { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 40px; align-items: start; }
+  .two-col { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(22px, 0.8rem + 1.6vw, 40px); align-items: start; }
   .news-mini { padding: 24px 26px; display: flex; flex-direction: column; gap: 10px; position: relative; }
   .news-mini time { font-size: .9375rem; font-weight: 700; color: var(--purple); }
   .news-mini h3 { font-family: var(--font-serif); font-size: 1.5rem; line-height: 1.2; }
@@ -229,10 +218,6 @@ const ld = {
     .visit-strip { margin-top: -60px; }
     .visit-strip__card { grid-template-columns: minmax(0, 1fr); padding: 22px; gap: 16px; }
     .visit-strip__where .cluster { display: grid; grid-template-columns: 1fr 1fr; }
-    .quick { margin-top: 28px; }
-    .quick .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
-    .quick__card { padding: 16px; box-shadow: none; }
-    .quick__card > span:last-child { display: none; }
     .monthly-band a { margin-left: 0; }
     .who__photo { aspect-ratio: 4 / 3; object-position: top; }
   }

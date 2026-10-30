@@ -65,7 +65,7 @@ const isPlaceholder = /placeholder/i.test(JSON.stringify(b)) || b.account_number
 </Base>
 
 <style>
-  .give-hero { background: radial-gradient(120% 100% at 50% 0%, #6B1590 0%, var(--plum) 55%, #3A0750 100%); color: var(--white); text-align: center; padding-block: 80px 200px; }
+  .give-hero { background: radial-gradient(120% 100% at 50% 0%, #6B1590 0%, var(--plum) 55%, #3A0750 100%); color: var(--white); text-align: center; padding-block: clamp(56px, 1.5rem + 3.5vw, 112px) 200px; }
   .give-hero__inner { display: flex; flex-direction: column; align-items: center; gap: 18px; }
   .give-hero h1 { max-width: 15em; }
   .give-hero blockquote { max-width: 40em; display: flex; flex-direction: column; gap: 10px; align-items: center; }
@@ -87,7 +87,7 @@ const isPlaceholder = /placeholder/i.test(JSON.stringify(b)) || b.account_number
   .ref { min-height: 44px; display: inline-flex; align-items: baseline; gap: 8px; padding: 8px 16px; border-radius: 10px; border: 2px solid var(--gold); background: var(--white); font-weight: 700; letter-spacing: .06em; cursor: pointer; }
   .ref span { font-weight: 600; letter-spacing: 0; color: var(--slate); font-size: .9375rem; }
   .ref:hover, .ref.is-done { background: #FFF4DE; }
-  .way { background: var(--white); border-radius: 22px; padding: 32px; border-top: 6px solid var(--purple); display: flex; flex-direction: column; gap: 10px; height: 100%; }
+  .way { background: var(--white); border-radius: 22px; padding: clamp(22px, 0.9rem + 1vw, 32px); border-top: 6px solid var(--purple); display: flex; flex-direction: column; gap: 10px; height: 100%; }
   .way--gold { border-top-color: var(--gold); }
   .way--magenta { border-top-color: var(--magenta); }
   .way h3 { font-family: var(--font-serif); font-size: 1.625rem; }

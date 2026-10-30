@@ -85,7 +85,7 @@ const stub = (when) => {
 </Base>
 
 <style>
-  .sv-hero__grid { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 64px; align-items: center; }
+  .sv-hero__grid { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: clamp(28px, 1rem + 2.6vw, 64px); align-items: center; }
   .sv-hero .display { color: var(--plum); }
   .sv-white { background: var(--white); }
   .sv-live { background: var(--plum); border-radius: 28px; padding: clamp(28px, 4vw, 40px); box-shadow: 0 24px 50px rgba(87, 11, 117, .3); }
@@ -114,7 +114,7 @@ const stub = (when) => {
   .steps span { width: 52px; height: 52px; border-radius: 50%; background: var(--magenta-ink); color: var(--white); display: flex; align-items: center; justify-content: center; font-family: var(--font-serif); font-weight: 700; font-size: 1.5rem; }
   .steps h3 { font-size: 1.25rem; }
   .steps p { color: var(--slate); }
-  .venue { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 48px; align-items: center; }
+  .venue { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: clamp(24px, 0.9rem + 2vw, 48px); align-items: center; }
   .venue__map { width: 100%; aspect-ratio: 16 / 9; border: 0; border-radius: 20px; background: var(--lilac); }
   @media (max-width: 1060px) { .week { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
   @media (max-width: 900px) { .sv-hero__grid, .venue { grid-template-columns: minmax(0, 1fr); gap: 32px; } }

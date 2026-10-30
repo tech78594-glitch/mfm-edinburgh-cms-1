@@ -57,7 +57,7 @@ const photos = albums.flatMap((a) => a.items.map((p) => ({ ...p, album: a.slug, 
 
 <style>
   .gal { background: var(--ink); color: var(--white); }
-  .gal-hero { padding-block: 72px 32px; display: flex; flex-direction: column; gap: 24px; }
+  .gal-hero { padding-block: clamp(48px, 1.5rem + 3vw, 96px) 32px; display: flex; flex-direction: column; gap: 24px; }
   .gal-hero__row { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 16px; }
   .gal-hero .lead { color: var(--line); max-width: 34em; }
   .gal-hero__count { font-weight: 600; color: var(--fire-yellow); }
@@ -75,7 +75,7 @@ const photos = albums.flatMap((a) => a.items.map((p) => ({ ...p, album: a.slug, 
   .tile:focus-visible { outline-offset: 4px; }
   .tile__cap { margin-top: 10px; font-size: .9375rem; font-weight: 600; color: var(--line); }
   .gal-share { background: var(--plum); }
-  .gal-share__inner { display: flex; flex-wrap: wrap; gap: 24px; align-items: center; justify-content: space-between; padding-block: 64px; }
+  .gal-share__inner { display: flex; flex-wrap: wrap; gap: 24px; align-items: center; justify-content: space-between; padding-block: var(--space-l); }
   .gal-share h2 { max-width: 24em; }
   .lightbox { width: 100vw; height: 100vh; max-width: none; max-height: none; margin: 0; padding: 0; border: 0; background: rgba(0,0,0,.94); color: var(--white); }
   .lightbox::backdrop { background: rgba(0,0,0,.85); }

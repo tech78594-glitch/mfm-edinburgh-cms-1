@@ -29,15 +29,19 @@
   --font-sans: "Source Sans 3", "Segoe UI", system-ui, -apple-system, sans-serif;
   --font-serif: "Source Serif 4", Georgia, "Times New Roman", serif;
 
-  /* Layout */
-  --container: 1200px;
-  --gutter: 1.5rem;
-  --header-h: 74px;
+  /* Layout: fluid. Values scale smoothly with the screen width between a phone and a large monitor. */
+  --container: clamp(1200px, 84vw, 1440px);   /* content width grows on big screens */
+  --gutter: clamp(1rem, 0.6rem + 2vw, 2.5rem); /* side margins: 16px on phones → 40px on desktops */
+  --header-h: clamp(64px, 60px + 1vw, 76px);
+  --space-xs: clamp(8px, 0.4rem + 0.4vw, 12px);
+  --space-s: clamp(12px, 0.6rem + 0.6vw, 20px);
+  --space-m: clamp(20px, 0.9rem + 1.4vw, 36px);
+  --space-l: clamp(28px, 1rem + 3vw, 72px);
+  --space-xl: clamp(48px, 2rem + 5vw, 120px);
   --r-pill: 999px;
-  --r-card: 20px;
-  --r-panel: 24px;
+  --r-card: clamp(16px, 0.8rem + 0.5vw, 22px);
+  --r-panel: clamp(18px, 0.9rem + 0.8vw, 28px);
   --shadow-card: 0 8px 24px rgba(87, 11, 117, .08);
   --shadow-lift: 0 24px 60px rgba(33, 33, 33, .22);
   --shadow-header: 0 6px 24px rgba(33, 10, 45, .25);
 }
-@media (max-width: 600px) { :root { --gutter: 1rem; --header-h: 64px; } }

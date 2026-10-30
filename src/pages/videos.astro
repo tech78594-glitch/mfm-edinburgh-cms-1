@@ -47,7 +47,7 @@ const SHOW = 6;
 
 <style>
   .cinema { background: var(--ink); color: var(--white); }
-  .stage { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); gap: 48px; align-items: center; padding-block: 56px 72px; }
+  .stage { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); gap: clamp(24px, 0.9rem + 2vw, 48px); align-items: center; padding-block: clamp(28px, 1rem + 3vw, 72px) var(--space-l); }
   .stage::before { content: ""; position: absolute; }
   .stage__info .tag { align-self: flex-start; }
   .stage__info .lead { color: var(--line); }

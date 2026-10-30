@@ -65,7 +65,7 @@ const seconds = Math.max(4, Number(hero.seconds_per_slide) || 7);
   .hero-slide::before { content: ""; position: absolute; inset: 0; z-index: -1;
     background: linear-gradient(90deg, rgba(87,11,117,.95) 0%, rgba(87,11,117,.86) 45%, rgba(87,11,117,.5) 100%), linear-gradient(0deg, rgba(29,27,32,.4), rgba(29,27,32,0) 45%); }
 
-  .hero-slide__inner { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: 56px; align-items: center; padding-block: 64px 176px; min-height: 680px; }
+  .hero-slide__inner { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: clamp(28px, 1rem + 2.2vw, 56px); align-items: center; padding-block: clamp(40px, 1.5rem + 3vw, 88px) 176px; min-height: clamp(600px, 420px + 22vw, 800px); }
   .hero-slide__copy { display: flex; flex-direction: column; gap: 20px; }
   .hero-slide__copy .tag { align-self: flex-start; }
   .hero-slide__copy .lead { max-width: 34em; }
@@ -86,7 +86,7 @@ const seconds = Math.max(4, Number(hero.seconds_per_slide) || 7);
   .hero-slider__track.is-jumping .hero-slide__media { transition: none; }
 
   .hero-slide__media { display: flex; justify-content: center; }
-  .hero-slide__media img { max-height: 440px; width: auto; border-radius: 18px; box-shadow: 0 30px 70px rgba(0,0,0,.45), 0 0 0 1px rgba(255,255,255,.12); }
+  .hero-slide__media img { max-height: clamp(360px, 180px + 18vw, 560px); width: auto; border-radius: 18px; box-shadow: 0 30px 70px rgba(0,0,0,.45), 0 0 0 1px rgba(255,255,255,.12); }
   .hero-slide.is-active .hero-slide__media img { animation: poster-float calc(var(--slide-ms) * 1.4) ease-in-out infinite alternate; }
   @keyframes poster-float { from { transform: translateY(0) scale(1); } to { transform: translateY(-8px) scale(1.03); } }
 
@@ -164,7 +164,8 @@ const seconds = Math.max(4, Number(hero.seconds_per_slide) || 7);
     let stopped = reduce, hover = false, focus = false, rounds = 0;
     let timer = 0, startedAt = 0, remaining = full, running = false;
     const index = () => pos % n;
-    const paused = () => stopped || hover || focus || document.hidden;
+    let menuOpen = false; // the site menu covers the page
+    const paused = () => stopped || hover || focus || menuOpen || document.hidden;
 
     const label = () => {
       dots.forEach((d, i) => {
@@ -246,6 +247,7 @@ const seconds = Math.max(4, Number(hero.seconds_per_slide) || 7);
     root.addEventListener('focusin', (e) => { if (e.target.matches(':focus-visible')) { focus = true; update(); } });
     root.addEventListener('focusout', (e) => { if (!root.contains(e.relatedTarget)) { focus = false; update(); } });
     document.addEventListener('visibilitychange', update);
+    document.addEventListener('menu:toggle', (e) => { menuOpen = e.detail.open; update(); });
     root.addEventListener('keydown', (e) => {
       if (e.key === 'ArrowLeft') { e.preventDefault(); prev(); }
       if (e.key === 'ArrowRight') { e.preventDefault(); next(); }

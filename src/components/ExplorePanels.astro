@@ -1,0 +1,151 @@
+---
+// "Explore" expanding panels, inspired by an accordion-style church landing page.
+// Desktop: a row of tall photo panels. The open one is wide and shows its words; the others are
+// narrow, tinted in MFM colours, with a vertical title and a large outlined number.
+// Hover or keyboard focus opens a panel. On touch screens the first tap opens it and the second follows the link.
+// Phones: the open panel sits on top and the rest become short tinted bars.
+import Icon from './Icon.astro';
+import { safeUrl } from '../lib/format.js';
+
+interface Panel { label: string; title: string; text: string; href: string; image: string; tint: string; alt?: string }
+const { panels = [] as Panel[], heading = 'Find your place', eyebrow = 'Explore MFM Edinburgh' } = Astro.props;
+---
+<section class="explore on-dark" aria-labelledby="explore-title" data-explore>
+  <div class="container explore__head">
+    <span class="eyebrow eyebrow--fire">{eyebrow}</span>
+    <h2 class="h2" id="explore-title">{heading}</h2>
+  </div>
+  <div class="container"><ul role="list" class="explore__row">
+    {panels.map((p, i) => (
+      <li class:list={['xp', { 'is-open': i === 0 }]} style={`--tint:${p.tint}`}>
+        <a class="xp__link" href={safeUrl(p.href)}>
+          <img class="xp__img" src={p.image} alt="" loading="lazy" decoding="async" />
+          <span class="xp__shade" aria-hidden="true"></span>
+          <span class="xp__vtitle" aria-hidden="true">{p.title}</span>
+          <span class="xp__num" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+          <span class="xp__body">
+            <span class="xp__label">{p.label}</span>
+            <span class="xp__title">{p.title}</span>
+            <span class="xp__text">{p.text}</span>
+            <span class="xp__go" aria-hidden="true"><Icon name="arrow" size={26} /></span>
+          </span>
+        </a>
+      </li>
+    ))}
+  </ul></div>
+</section>
+
+<style>
+  .explore { background: var(--ink); color: var(--white); padding-block: clamp(3.5rem, 7vw, 6rem); margin-top: var(--space-l); }
+  .explore__head { display: flex; flex-direction: column; gap: 10px; margin-bottom: clamp(24px, 3.5vw, 40px); }
+  .explore__row { display: flex; gap: clamp(10px, 1.1vw, 16px); height: clamp(460px, 44vw, 640px); }
+
+  /* Smooth motion: an ease-out curve starts moving at once, and CSS picks up from mid-motion when the pointer
+     moves on, so sweeping across the row never stalls or restarts. */
+  .xp { --ease: cubic-bezier(.22, 1, .36, 1); flex: 1 1 0; min-width: 0; transition: flex-grow .6s var(--ease); }
+  .xp.is-open { flex-grow: 4.6; }
+  .xp__link { position: relative; display: block; height: 100%; border-radius: clamp(18px, 1.8vw, 26px); overflow: hidden; color: var(--white); text-decoration: none; isolation: isolate; background: var(--plum); contain: layout paint; transform: translateZ(0); }
+  .xp__link:focus-visible { outline: 3px solid var(--fire-yellow); outline-offset: 4px; }
+  /* The photo is always as wide as an open panel and stays centred in its panel, so it is only revealed or
+     clipped as the panel changes width. It is never resized frame by frame, which stops it from stuttering. */
+  .xp__img { position: absolute; top: 0; left: 50%; width: var(--open-w, 100%); min-width: 100%; max-width: none; height: 100%; object-fit: cover; object-position: 50% 30%; z-index: -2; transform: translate3d(-50%, 0, 0) scale(1.05); transition: transform .9s var(--ease); will-change: transform; }
+  .xp.is-open .xp__img { transform: translate3d(-50%, 0, 0) scale(1); }
+
+  /* Collapsed: strong colour tint. Open: tint fades, a dark gradient keeps the words readable. */
+  /* Two layers that only fade, so there's no colour flash: the tint (collapsed) and a dark gradient (open). */
+  .xp__shade { position: absolute; inset: 0; z-index: -1; }
+  .xp__shade::before, .xp__shade::after { content: ""; position: absolute; inset: 0; transition: opacity .5s var(--ease); }
+  .xp__shade::before { background: var(--tint); opacity: .84; }
+  .xp__shade::after { background: linear-gradient(180deg, rgba(20,6,28,0) 25%, rgba(20,6,28,.6) 55%, rgba(20,6,28,.92) 100%); opacity: 0; }
+  .xp.is-open .xp__shade::before { opacity: 0; }
+  .xp.is-open .xp__shade::after { opacity: 1; }
+
+  .xp__vtitle { position: absolute; top: clamp(28px, 3.4vw, 48px); left: 50%; transform: translateX(-50%); writing-mode: vertical-rl; font-weight: 700; font-size: clamp(1.125rem, 1.4vw, 1.4rem); letter-spacing: .01em; white-space: nowrap; text-shadow: 0 1px 8px rgba(0,0,0,.25); transition: opacity .25s ease; }
+  .xp__num { position: absolute; bottom: -.18em; left: 50%; transform: translateX(-50%); font-size: clamp(4rem, 7.4vw, 7rem); font-weight: 400; line-height: 1; color: transparent; -webkit-text-stroke: 1.5px rgba(255,255,255,.95); letter-spacing: -.02em; transition: opacity .25s ease; }
+  .xp.is-open .xp__vtitle, .xp.is-open .xp__num { opacity: 0; transition-duration: .15s; }
+
+  .xp__body { position: absolute; left: 0; right: 0; bottom: 0; padding: clamp(24px, 4vw, 56px); display: flex; flex-direction: column; align-items: flex-start; gap: 12px; width: var(--open-w, 100%); max-width: none; opacity: 0; transform: translate3d(0, 14px, 0); transition: opacity .15s ease, transform .15s ease; pointer-events: none; }
+  .xp.is-open .xp__body { opacity: 1; transform: none; transition: opacity .45s ease .18s, transform .55s var(--ease) .18s; }
+  .xp__label { display: flex; align-items: center; gap: 16px; font-size: .875rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--fire-yellow); }
+  .xp__label::before { content: ""; width: clamp(48px, 6vw, 96px); height: 2px; background: currentColor; }
+  .xp__title { font-family: var(--font-serif); font-weight: 700; font-size: clamp(1.75rem, 2.8vw, 2.5rem); line-height: 1.1; }
+  .xp__text { max-width: 30em; color: rgba(255,255,255,.88); font-size: clamp(1rem, 1.1vw, 1.125rem); }
+  .xp__go { margin-top: 10px; width: clamp(56px, 5vw, 68px); height: clamp(56px, 5vw, 68px); border-radius: 50%; border: 2px solid var(--white); display: inline-flex; align-items: center; justify-content: center; transform: rotate(-45deg); transition: background .2s, color .2s; }
+  .xp__link:hover .xp__go { background: var(--orange); border-color: var(--orange); color: var(--ink); }
+
+  /* Phones and narrow tablets: stacked. Open panel on top, others as short tinted bars. */
+  @media (max-width: 760px) {
+    .explore__row { flex-direction: column; height: auto; }
+    .xp, .xp.is-open { flex: none; }
+    .xp .xp__link { height: clamp(92px, 24vw, 120px); }
+    .xp.is-open .xp__link { height: clamp(380px, 110vw, 480px); }
+    .xp__vtitle { writing-mode: horizontal-tb; top: 50%; left: auto; right: 24px; transform: translateY(-50%); font-family: var(--font-serif); font-size: clamp(1.375rem, 5.6vw, 1.75rem); }
+    .xp__num { left: 20px; bottom: auto; top: 50%; transform: translateY(-50%); font-size: clamp(3.25rem, 15vw, 4.5rem); }
+    .xp__body { align-items: center; text-align: center; width: 100%; }
+    .xp__img { width: 100%; }
+    .xp__label::before { display: none; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .xp, .xp__img, .xp__shade::before, .xp__shade::after, .xp__body, .xp__vtitle, .xp__num { transition: none !important; }
+  }
+</style>
+
+<script>
+  document.querySelectorAll('[data-explore]').forEach((root) => {
+    const row = root.querySelector('.explore__row');
+    const items = [...root.querySelectorAll('.xp')];
+    const GROW = 4.6; // must match .xp.is-open { flex-grow }
+    let current = items.findIndex((x) => x.classList.contains('is-open'));
+    const open = (i) => {
+      if (i === current || i < 0) return;
+      current = i;
+      items.forEach((x, j) => x.classList.toggle('is-open', j === i));
+    };
+
+    // Sizes the photos and the text use, so neither has to reflow while panels change width.
+    const measure = () => {
+      const w = row.clientWidth;
+      const gap = parseFloat(getComputedStyle(row).columnGap) || 0;
+      const unit = (w - gap * (items.length - 1)) / (items.length - 1 + GROW);
+      row.style.setProperty('--row-w', `${Math.round(w)}px`);
+      row.style.setProperty('--open-w', `${Math.round(unit * GROW)}px`);
+    };
+    measure();
+    new ResizeObserver(measure).observe(row);
+
+    // Mouse: follow where the pointer really is along the row, read once per frame.
+    // The gaps belong to the nearest panel, so there is no dead zone, and a panel only changes when the
+    // mouse actually moves, not when a panel slides under a still cursor.
+    let x = null, ticking = false;
+    const pick = () => {
+      ticking = false;
+      if (x == null) return;
+      let best = current, bestD = Infinity;
+      items.forEach((li, i) => {
+        const r = li.getBoundingClientRect();
+        const d = x < r.left ? r.left - x : x > r.right ? x - r.right : 0;
+        if (d < bestD) { bestD = d; best = i; }
+      });
+      open(best);
+    };
+    row.addEventListener('pointermove', (e) => {
+      if (e.pointerType !== 'mouse') return;
+      x = e.clientX;
+      if (!ticking) { ticking = true; requestAnimationFrame(pick); }
+    });
+    row.addEventListener('pointerleave', () => { x = null; });
+
+    // Keyboard and touch
+    let lastPointer = 'mouse';
+    items.forEach((li, i) => {
+      const a = li.querySelector('a');
+      a.addEventListener('pointerdown', (e) => { lastPointer = e.pointerType; });
+      a.addEventListener('focus', () => { if (lastPointer !== 'touch') open(i); });
+      // Touch: first tap opens a closed panel, the second follows its link.
+      a.addEventListener('click', (e) => {
+        if (lastPointer === 'touch' && current !== i) { e.preventDefault(); open(i); }
+        lastPointer = 'mouse';
+      });
+    });
+  });
+</script>

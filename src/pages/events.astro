@@ -93,7 +93,7 @@ const countdownData = all.map((e) => ({ title: e.title, start: e.start, startISO
 
 <style>
   .ev-hero { background: linear-gradient(120deg, var(--plum), #3A0750); color: var(--white); padding-block: clamp(3.5rem, 7vw, 5.5rem); }
-  .ev-hero__grid { display: grid; grid-template-columns: minmax(0, 1.2fr) auto; gap: 56px; align-items: center; }
+  .ev-hero__grid { display: grid; grid-template-columns: minmax(0, 1.2fr) auto; gap: clamp(28px, 1rem + 2.2vw, 56px); align-items: center; }
   .ev-hero__meta { --gap: 12px 28px; }
   .ev-hero .meta-line { color: var(--lilac); font-weight: 600; font-size: 1.0625rem; }
   .ev-hero .meta-line :global(svg) { color: var(--fire-yellow); }

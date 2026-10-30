@@ -52,8 +52,8 @@ const year = new Date().getFullYear();
 
 <style>
   .site-footer { background: var(--ink); color: var(--line); font-size: 1rem; }
-  .site-footer__inner { padding-block: 72px 32px; display: flex; flex-direction: column; gap: 48px; }
-  .site-footer__grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr)); gap: 40px; }
+  .site-footer__inner { padding-block: var(--space-l) 32px; display: flex; flex-direction: column; gap: clamp(24px, 0.9rem + 2vw, 48px); }
+  .site-footer__grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr)); gap: clamp(22px, 0.8rem + 1.6vw, 40px); }
   .site-footer h2 { font-size: .875rem; letter-spacing: .08em; text-transform: uppercase; color: var(--white); margin-bottom: 10px; }
   .site-footer ul { display: flex; flex-direction: column; gap: 6px; margin: 0; padding: 0; }
   .site-footer a { color: var(--line); }

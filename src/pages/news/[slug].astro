@@ -29,7 +29,7 @@ const others = getNews().filter((x) => x.slug !== n.slug).slice(0, 3);
   )}
 </Base>
 <style>
-  .article { max-width: 780px; padding-block: 64px 96px; display: flex; flex-direction: column; gap: 22px; }
+  .article { max-width: 780px; padding-block: clamp(40px, 1rem + 3vw, 88px) var(--space-xl); display: flex; flex-direction: column; gap: 22px; }
   .article .h1 { color: var(--ink); }
   .article__date { font-weight: 600; color: var(--slate); }
   .article__img { border-radius: var(--r-panel); }

@@ -1,0 +1,184 @@
+---
+// Home page slideshow (Figma: Home › Hero slideshow).
+// Two layers of motion: slides cross-fade on a timer, and behind each poster a blurred copy of it
+// keeps drifting and zooming slowly. Posters are always shown whole.
+// Accessible carousel: Pause/Play (WCAG 2.2.2), pauses on hover/focus, ← → keys, swipe,
+// one labelled dot per slide, and no autoplay for visitors who prefer reduced motion.
+import hero from '../data/hero.json';
+import Icon from './Icon.astro';
+import { safeUrl } from '../lib/format.js';
+const slides = (hero.slides || []).filter((s) => s.title && safeUrl(s.image));
+const seconds = Math.max(4, Number(hero.seconds_per_slide) || 7);
+---
+<section class="hero-slider on-dark" data-hero-slider data-interval={seconds} aria-roledescription="carousel" aria-label="Highlights" style={`--slide-ms:${seconds * 1000}ms`}>
+  <h1 class="visually-hidden">MFM Edinburgh: a house of prayer in the heart of Leith</h1>
+  <div class="hero-slider__track" aria-live="off">
+    {slides.map((s, i) => (
+      <div class:list={['hero-slide', { 'is-active': i === 0 }]} role="group" aria-roledescription="slide" aria-label={`${i + 1} of ${slides.length}`}>
+        <img class="hero-slide__bg" src={s.image} alt="" aria-hidden="true" loading={i ? 'lazy' : 'eager'} />
+        <div class="container hero-slide__inner">
+          <div class="hero-slide__copy">
+            {i === 0 && <span class="tag">2026 · Year of Great Deliverance &amp; Fresh Glory</span>}
+            {s.eyebrow && <span class="eyebrow">{s.eyebrow}</span>}
+            <h2 class="h1 hero-slide__title">{s.title}</h2>
+            {s.text && <p class="lead">{s.text}</p>}
+            <div class="cluster">
+              {s.button_text && safeUrl(s.button_link) && <a class="btn btn--accent" href={safeUrl(s.button_link)}>{s.button_text} <Icon name="arrow" size={20} /></a>}
+              {s.button2_text && safeUrl(s.button2_link) && <a class="btn btn--ghost" href={safeUrl(s.button2_link)}>{s.button2_text}</a>}
+            </div>
+          </div>
+          <figure class="hero-slide__media"><img src={s.image} alt={s.alt || s.title} loading={i ? 'lazy' : 'eager'} /></figure>
+        </div>
+      </div>
+    ))}
+  </div>
+  <div class="container hero-slider__controls-wrap">
+    <div class="hero-slider__controls" data-controls>
+      <button class="hero-ctrl" type="button" data-prev aria-label="Previous slide"><Icon name="prev" size={22} /></button>
+      <div class="hero-dots">
+        {slides.map((s, i) => (
+          <button class="hero-dot" type="button" data-dot={i} aria-label={`Slide ${i + 1} of ${slides.length}: ${s.title}`} aria-current={i === 0 ? 'true' : undefined}><span></span></button>
+        ))}
+      </div>
+      <button class="hero-ctrl" type="button" data-next aria-label="Next slide"><Icon name="next" size={22} /></button>
+      <button class="hero-ctrl hero-ctrl--pause" type="button" data-pause aria-label="Pause slideshow">
+        <span class="i-pause"><Icon name="pause" size={20} /></span><span class="i-play"><Icon name="play" size={20} /></span>
+      </button>
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero-slider { position: relative; background: var(--plum); color: var(--white); overflow: hidden; isolation: isolate; }
+  .hero-slider__track { display: grid; }
+  .hero-slide { grid-area: 1 / 1; position: relative; display: flex; align-items: center; opacity: 0; visibility: hidden; transition: opacity .9s ease, visibility 0s linear .9s; }
+  .hero-slide.is-active { opacity: 1; visibility: visible; transition: opacity .9s ease, visibility 0s; z-index: 1; }
+
+  /* Background layer: blurred copy of the poster, always drifting */
+  .hero-slide__bg { position: absolute; inset: -60px; width: calc(100% + 120px); height: calc(100% + 120px); max-width: none; object-fit: cover; filter: blur(30px) saturate(1.3); z-index: -2; transform: scale(1.12); }
+  .hero-slide.is-active .hero-slide__bg { animation: bg-drift calc(var(--slide-ms) * 2.4) ease-in-out infinite alternate; }
+  @keyframes bg-drift {
+    0% { transform: scale(1.12) translate3d(0, 0, 0) rotate(0deg); }
+    50% { transform: scale(1.28) translate3d(-3%, -2%, 0) rotate(1.5deg); }
+    100% { transform: scale(1.2) translate3d(2.5%, 1.5%, 0) rotate(-1deg); }
+  }
+  .hero-slide::before { content: ""; position: absolute; inset: 0; z-index: -1;
+    background: linear-gradient(90deg, rgba(87,11,117,.95) 0%, rgba(87,11,117,.86) 45%, rgba(87,11,117,.5) 100%), linear-gradient(0deg, rgba(29,27,32,.4), rgba(29,27,32,0) 45%); }
+
+  .hero-slide__inner { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: 56px; align-items: center; padding-block: 64px 176px; min-height: 680px; }
+  .hero-slide__copy { display: flex; flex-direction: column; gap: 20px; }
+  .hero-slide__copy .tag { align-self: flex-start; }
+  .hero-slide__copy .lead { max-width: 34em; }
+
+  /* Caption and poster ease in */
+  .hero-slide__copy > *, .hero-slide__media { transition: opacity .7s ease, transform .7s cubic-bezier(.2,.7,.2,1); }
+  .hero-slide:not(.is-active) .hero-slide__copy > * { opacity: 0; transform: translateY(18px); }
+  .hero-slide:not(.is-active) .hero-slide__media { opacity: 0; transform: translateX(28px) scale(.97); }
+  .hero-slide.is-active .hero-slide__copy > :nth-child(2) { transition-delay: .08s; }
+  .hero-slide.is-active .hero-slide__copy > :nth-child(3) { transition-delay: .16s; }
+  .hero-slide.is-active .hero-slide__copy > :nth-child(4) { transition-delay: .24s; }
+  .hero-slide.is-active .hero-slide__copy > :nth-child(5) { transition-delay: .32s; }
+
+  .hero-slide__media { display: flex; justify-content: center; }
+  .hero-slide__media img { max-height: 440px; width: auto; border-radius: 18px; box-shadow: 0 30px 70px rgba(0,0,0,.45), 0 0 0 1px rgba(255,255,255,.12); }
+  .hero-slide.is-active .hero-slide__media img { animation: poster-float calc(var(--slide-ms) * 1.4) ease-in-out infinite alternate; }
+  @keyframes poster-float { from { transform: translateY(0) scale(1); } to { transform: translateY(-8px) scale(1.03); } }
+
+  .hero-slider__controls-wrap { position: absolute; left: 0; right: 0; bottom: 96px; z-index: 3; margin-inline: auto; }
+  .hero-slider__controls { display: flex; align-items: center; gap: 10px; }
+  .hero-ctrl { width: 46px; height: 46px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; border: 2px solid rgba(255,255,255,.7); background: rgba(29,27,32,.25); color: var(--white); cursor: pointer; }
+  .hero-ctrl:hover { background: var(--white); color: var(--plum); border-color: var(--white); }
+  .hero-ctrl :global(svg) { pointer-events: none; }
+  .hero-ctrl--pause { margin-left: 6px; }
+  .hero-ctrl--pause .i-play, .is-paused-by-user .hero-ctrl--pause .i-pause { display: none; }
+  .is-paused-by-user .hero-ctrl--pause .i-play { display: inline-flex; }
+  .hero-ctrl--pause span { display: inline-flex; pointer-events: none; }
+  .hero-dots { display: flex; gap: 4px; padding-inline: 6px; }
+  .hero-dot { width: 44px; height: 44px; padding: 0; border: 0; background: none; cursor: pointer; display: flex; align-items: center; }
+  .hero-dot span { position: relative; display: block; width: 100%; height: 5px; border-radius: 5px; background: rgba(255,255,255,.38); overflow: hidden; pointer-events: none; }
+  .hero-dot span::after { content: ""; position: absolute; inset: 0; background: var(--orange); transform: scaleX(0); transform-origin: left; }
+  .hero-dot[aria-current="true"] span::after { transform: scaleX(1); }
+  .hero-dot.is-running span::after { animation: dot-fill var(--slide-ms) linear both; }
+  @keyframes dot-fill { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+
+  @media (max-width: 960px) {
+    .hero-slide__inner { grid-template-columns: minmax(0, 1fr); gap: 24px; padding-block: 28px 168px; min-height: 0; align-content: start; }
+    .hero-slide__media { order: -1; }
+    .hero-slide__media img { max-height: 260px; }
+    .hero-slide::before { background: linear-gradient(180deg, rgba(87,11,117,.55) 0%, rgba(87,11,117,.9) 40%, rgba(87,11,117,.97) 100%); }
+  }
+  @media (max-width: 600px) {
+    .hero-slide__inner { padding-block: 20px 156px; gap: 18px; }
+    .hero-slide__media img { max-height: 200px; border-radius: 14px; }
+    .hero-slide__title { font-size: 2.125rem; }
+    .hero-slide__copy { gap: 14px; }
+    .hero-slide__copy .cluster { flex-direction: column; align-items: stretch; }
+    .hero-slider__controls-wrap { bottom: 84px; }
+    .hero-slider__controls { gap: 4px; }
+    .hero-dot { width: 32px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .hero-slide, .hero-slide.is-active { transition: none; }
+    .hero-slide__bg, .hero-slide__media img { animation: none !important; }
+  }
+</style>
+
+<script>
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  document.querySelectorAll('[data-hero-slider]').forEach((root) => {
+    const slides = [...root.querySelectorAll('.hero-slide')];
+    const dots = [...root.querySelectorAll('[data-dot]')];
+    const track = root.querySelector('.hero-slider__track');
+    const pauseBtn = root.querySelector('[data-pause]');
+    if (slides.length < 2) { root.querySelector('[data-controls]')?.remove(); return; }
+    const seconds = Math.max(4, parseFloat(root.dataset.interval) || 7);
+    let index = 0, timer = 0, userPaused = reduce, hover = false, focus = false;
+
+    const paused = () => userPaused || hover || focus || document.hidden;
+    const render = () => {
+      slides.forEach((s, i) => {
+        const on = i === index;
+        s.classList.toggle('is-active', on);
+        s.setAttribute('aria-hidden', String(!on));
+        s.querySelectorAll('a, button').forEach((el) => { el.tabIndex = on ? 0 : -1; });
+      });
+      dots.forEach((d, i) => (i === index ? d.setAttribute('aria-current', 'true') : d.removeAttribute('aria-current')));
+    };
+    const schedule = () => {
+      clearTimeout(timer);
+      root.classList.toggle('is-paused-by-user', userPaused);
+      pauseBtn.setAttribute('aria-label', userPaused ? 'Play slideshow' : 'Pause slideshow');
+      track.setAttribute('aria-live', userPaused || focus ? 'polite' : 'off');
+      dots.forEach((d) => d.classList.remove('is-running'));
+      if (paused()) return;
+      void dots[index].offsetWidth; // restart the progress bar
+      dots[index].classList.add('is-running');
+      timer = setTimeout(() => go(index + 1), seconds * 1000);
+    };
+    const go = (i) => { index = (i + slides.length) % slides.length; render(); schedule(); };
+
+    root.querySelector('[data-prev]').addEventListener('click', () => go(index - 1));
+    root.querySelector('[data-next]').addEventListener('click', () => go(index + 1));
+    dots.forEach((d, i) => d.addEventListener('click', () => go(i)));
+    pauseBtn.addEventListener('click', () => { userPaused = !userPaused; schedule(); });
+    root.addEventListener('mouseenter', () => { hover = true; schedule(); });
+    root.addEventListener('mouseleave', () => { hover = false; schedule(); });
+    root.addEventListener('focusin', () => { focus = true; schedule(); });
+    root.addEventListener('focusout', (e) => { if (!root.contains(e.relatedTarget)) { focus = false; schedule(); } });
+    document.addEventListener('visibilitychange', schedule);
+    root.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowLeft') { e.preventDefault(); go(index - 1); }
+      if (e.key === 'ArrowRight') { e.preventDefault(); go(index + 1); }
+    });
+    let sx = null, sy = null;
+    track.addEventListener('pointerdown', (e) => { if (e.pointerType !== 'mouse') { sx = e.clientX; sy = e.clientY; } });
+    track.addEventListener('pointerup', (e) => {
+      if (sx == null) return;
+      const dx = e.clientX - sx, dy = e.clientY - sy; sx = null;
+      if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy) * 1.5) go(index + (dx < 0 ? 1 : -1));
+    });
+    track.addEventListener('pointercancel', () => { sx = null; });
+    root._hero = { go };
+    render(); schedule();
+  });
+</script>

@@ -1,0 +1,229 @@
+---
+// Site header: purple bar, logo + name, centred main links, gold "Contact Us" button and a menu
+// button that opens a panel with every page. Matches the approved header design.
+import site from '../data/site.json';
+import { tel } from '../lib/format.js';
+
+const path = Astro.url.pathname.replace(/\/+$/, '') || '/';
+const isCurrent = (href) => (href === '/' ? path === '/' : path === href.replace(/\/$/, '') || path.startsWith(href.replace(/\/$/, '') + '/'));
+
+// Links shown in the bar (desktop)
+const main = [
+  { href: '/', label: 'Home' },
+  { href: '/gallery/', label: 'Gallery' },
+  { href: '/news/', label: 'News Update' },
+  { href: '/videos/', label: 'Videos' },
+  { href: '/give/', label: 'Give Online' },
+];
+// Everything, in the menu panel
+const all = [
+  { href: '/', label: 'Home' },
+  { href: '/about/', label: 'About us' },
+  { href: '/services/', label: 'Service times' },
+  { href: '/events/', label: 'Events' },
+  { href: '/testimonies/', label: 'Testimonies' },
+  { href: '/gallery/', label: 'Gallery' },
+  { href: '/news/', label: 'News Update' },
+  { href: '/videos/', label: 'Videos' },
+  { href: '/give/', label: 'Give Online' },
+  { href: '/contact/', label: 'Contact us' },
+];
+const phone = site.phones[0];
+---
+<header class="site-header" data-site-header>
+  <div class="site-header__bar container">
+    <a class="brand" href="/">
+      <span class="brand__badge"><img src="/images/mfm-logo.png" alt="" width="44" height="44" /></span>
+      <span class="brand__name">MFM Edinburgh</span>
+    </a>
+
+    <nav class="main-nav" aria-label="Main">
+      <ul role="list">
+        {main.map((l) => (
+          <li><a href={l.href} aria-current={isCurrent(l.href) ? 'page' : undefined}>{l.label}</a></li>
+        ))}
+      </ul>
+    </nav>
+
+    <div class="site-header__actions">
+      <a class="btn-contact" href="/contact/" aria-current={isCurrent('/contact/') ? 'page' : undefined}>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"/></svg>
+        <span class="btn-contact__label">Contact Us</span>
+      </a>
+      <button class="menu-btn" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="site-menu" data-menu-open>
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- Menu panel (all pages) -->
+<div class="site-menu" id="site-menu" role="dialog" aria-modal="true" aria-label="Menu" hidden data-menu>
+  <div class="site-menu__scrim" data-menu-close></div>
+  <div class="site-menu__panel">
+    <div class="site-menu__top">
+      <span class="site-menu__title">Menu</span>
+      <button class="site-menu__close" type="button" aria-label="Close menu" data-menu-close>
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+    </div>
+    <nav aria-label="All pages">
+      <ul role="list">
+        {all.map((l) => (
+          <li><a href={l.href} aria-current={isCurrent(l.href) ? 'page' : undefined}>{l.label}</a></li>
+        ))}
+      </ul>
+    </nav>
+    <div class="site-menu__foot">
+      <a class="btn-contact btn-contact--block" href={tel(phone)}>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"/></svg>
+        Call {phone}
+      </a>
+      <p>{site.address.line1}<br />{site.address.line2} {site.address.postcode}</p>
+    </div>
+  </div>
+</div>
+
+<style>
+  .site-header {
+    position: sticky; top: 0; z-index: 50;
+    background: var(--purple); color: var(--white);
+    transition: box-shadow .2s ease;
+  }
+  .site-header.is-scrolled { box-shadow: var(--shadow-header); }
+  .site-header__bar {
+    max-width: none; padding-inline: clamp(16px, 2.6vw, 40px);   /* runs nearly edge to edge, like the approved design */
+    height: var(--header-h);
+    display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 24px;
+  }
+
+  /* Logo + name */
+  .brand { display: inline-flex; align-items: center; gap: 14px; color: var(--white); text-decoration: none; justify-self: start; }
+  .brand__badge {
+    width: 48px; height: 48px; border-radius: 50%; background: var(--white); overflow: hidden;
+    display: inline-flex; align-items: center; justify-content: center; flex: none;
+    box-shadow: 0 0 0 2px var(--white), 0 2px 8px rgba(0, 0, 0, .25);
+  }
+  .brand__badge img { width: 100%; height: 100%; object-fit: cover; transform: scale(1.04); }
+  .brand__name { font-family: var(--font-serif); font-weight: 700; font-size: 1.5rem; line-height: 1; letter-spacing: -.005em; white-space: nowrap; }
+
+  /* Centred main links */
+  .main-nav ul { display: flex; align-items: center; gap: 4px; margin: 0; padding: 0; list-style: none; }
+  .main-nav a {
+    display: inline-flex; align-items: center; min-height: 44px; padding: 0 10px;
+    color: var(--white); text-decoration: none; font-weight: 600; font-size: 1rem; white-space: nowrap;
+    border-radius: 8px; position: relative;
+  }
+  .main-nav a:hover { background: rgba(255, 255, 255, .12); }
+  .main-nav a[aria-current="page"]::after {
+    content: ""; position: absolute; left: 10px; right: 10px; bottom: 6px; height: 2px; border-radius: 2px; background: var(--fire-yellow);
+  }
+
+  /* Right-hand actions */
+  .site-header__actions { justify-self: end; display: flex; align-items: center; gap: 14px; }
+  .btn-contact {
+    display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+    min-height: 46px; padding: 0 24px; border-radius: var(--r-pill);
+    background: var(--gold); color: var(--ink); text-decoration: none; font-weight: 700; font-size: 1rem; white-space: nowrap;
+    transition: background-color .15s ease, transform .15s ease;
+  }
+  .btn-contact:hover { background: #CFA24E; }
+  .btn-contact:active { transform: translateY(1px); }
+  .menu-btn {
+    width: 46px; height: 46px; display: inline-flex; align-items: center; justify-content: center;
+    border: 0; border-radius: 12px; background: transparent; color: var(--white); cursor: pointer;
+  }
+  .menu-btn:hover { background: rgba(255, 255, 255, .14); }
+
+  /* Menu panel */
+  .site-menu { position: fixed; inset: 0; z-index: 60; }
+  .site-menu[hidden] { display: none; }
+  .site-menu__scrim { position: absolute; inset: 0; background: rgba(29, 27, 32, .55); }
+  .site-menu__panel {
+    position: absolute; top: 0; right: 0; bottom: 0; width: min(380px, 100%);
+    background: var(--plum); color: var(--white); padding: 0 28px 28px;
+    display: flex; flex-direction: column; overflow-y: auto;
+    animation: menu-in .25s ease-out;
+  }
+  @keyframes menu-in { from { transform: translateX(24px); opacity: 0; } to { transform: none; opacity: 1; } }
+  @media (prefers-reduced-motion: reduce) { .site-menu__panel { animation: none; } }
+  .site-menu__top { height: var(--header-h); display: flex; align-items: center; justify-content: space-between; flex: none; }
+  .site-menu__title { font-family: var(--font-serif); font-weight: 700; font-size: 1.375rem; }
+  .site-menu__close {
+    width: 46px; height: 46px; display: inline-flex; align-items: center; justify-content: center;
+    border: 1px solid rgba(255, 255, 255, .35); border-radius: 12px; background: transparent; color: var(--white); cursor: pointer;
+  }
+  .site-menu nav ul { list-style: none; margin: 0; padding: 0; }
+  .site-menu nav a {
+    display: block; padding: 12px 0; color: var(--white); text-decoration: none;
+    font-family: var(--font-serif); font-size: 1.5rem; line-height: 1.25; border-bottom: 1px solid rgba(255, 255, 255, .16);
+  }
+  .site-menu nav a:hover { color: var(--fire-yellow); }
+  .site-menu nav a[aria-current="page"] { color: var(--fire-yellow); }
+  .site-menu__foot { margin-top: auto; padding-top: 28px; display: flex; flex-direction: column; gap: 14px; }
+  .site-menu__foot p { margin: 0; font-size: .9375rem; color: #E8D6F1; }
+  .btn-contact--block { width: 100%; }
+
+  /* Narrower screens: the main links move into the menu */
+  @media (max-width: 1080px) {
+    .site-header__bar { grid-template-columns: 1fr auto; }
+    .main-nav { display: none; }
+  }
+  @media (max-width: 600px) {
+    .site-header__bar { gap: 10px; }
+    .brand { gap: 10px; }
+    .brand__badge { width: 40px; height: 40px; }
+    .brand__name { font-size: 1.25rem; }
+    .site-header__actions { gap: 6px; }
+    .btn-contact { padding: 0; width: 46px; }
+    .btn-contact__label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+    .btn-contact--block { width: 100%; padding: 0 24px; }
+  }
+  @media (max-width: 360px) {
+    .brand { gap: 8px; }
+    .brand__badge { width: 36px; height: 36px; }
+    .brand__name { font-size: 1.125rem; }
+    .site-header__actions { gap: 2px; }
+    .btn-contact, .menu-btn { width: 44px; min-height: 44px; height: 44px; }
+    .btn-contact--block { width: 100%; }
+  }
+</style>
+
+<script>
+  const header = document.querySelector('[data-site-header]');
+  const menu = document.querySelector('[data-menu]');
+  const openBtn = document.querySelector('[data-menu-open]');
+
+  // Shadow once the page scrolls
+  const onScroll = () => header?.classList.toggle('is-scrolled', window.scrollY > 4);
+  onScroll();
+  window.addEventListener('scroll', onScroll, { passive: true });
+
+  if (menu && openBtn) {
+    const focusables = () => [...menu.querySelectorAll('a[href], button:not([disabled])')];
+    const open = () => {
+      menu.hidden = false;
+      openBtn.setAttribute('aria-expanded', 'true');
+      document.body.classList.add('menu-open');
+      menu.querySelector('nav a')?.focus();
+    };
+    const close = (returnFocus = true) => {
+      menu.hidden = true;
+      openBtn.setAttribute('aria-expanded', 'false');
+      document.body.classList.remove('menu-open');
+      if (returnFocus) openBtn.focus();
+    };
+    openBtn.addEventListener('click', open);
+    menu.querySelectorAll('[data-menu-close]').forEach((el) => el.addEventListener('click', () => close()));
+    menu.addEventListener('click', (e) => { if (e.target.closest('nav a')) close(false); });
+    document.addEventListener('keydown', (e) => {
+      if (menu.hidden) return;
+      if (e.key === 'Escape') { close(); return; }
+      if (e.key !== 'Tab') return;
+      const items = focusables();
+      const first = items[0], last = items[items.length - 1];
+      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+    });
+  }
+</script>

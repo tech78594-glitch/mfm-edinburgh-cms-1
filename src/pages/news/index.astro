@@ -1,0 +1,81 @@
+---
+// News Update — look: newsroom (masthead with rule, lead story, list + sidebar).
+import Base from '../../layouts/Base.astro';
+import Icon from '../../components/Icon.astro';
+import EventCard from '../../components/EventCard.astro';
+import EventFilter from '../../components/EventFilter.astro';
+import VideoCard from '../../components/VideoCard.astro';
+import videos from '../../data/videos.json';
+import { getNews, parts, fmt } from '../../lib/format.js';
+import { splitEvents } from '../../lib/events.js';
+import { londonNow } from '../../lib/time.js';
+const news = getNews();
+const [lead, ...rest] = news;
+const { upcoming } = splitEvents();
+const latest = videos.channels.edinburgh.items[0];
+const d = (s) => { const p = parts(s); return p ? fmt(p, { day: 'numeric', month: 'long', year: 'numeric' }) : ''; };
+const today = (() => { const n = parts(londonNow().key); return fmt(n, { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }); })();
+---
+<Base title="News Update" description="News and announcements from MFM Edinburgh.">
+  <section class="container masthead" aria-labelledby="page-title">
+    <nav class="crumb" aria-label="Breadcrumb"><a href="/">Home</a> / <span aria-current="page">News Update</span></nav>
+    <div class="masthead__row"><h1 class="display" id="page-title">News Update</h1><p class="muted" data-today>{today}</p></div>
+  </section>
+
+  {lead && (
+    <section class="container lead-story" aria-label="Latest story">
+      <img src={lead.image || '/images/hero/2026-theme-banner.jpg'} alt="" width="640" height="360" />
+      <div class="stack" style="--gap:16px">
+        <span class="tag">Latest</span>
+        <h2 class="h1"><a href={`/news/${lead.slug}/`}>{lead.title}</a></h2>
+        <time datetime={lead.date}>{d(lead.date)}</time>
+        <p class="lead muted">{lead.summary}</p>
+        <a class="btn btn--primary" href={`/news/${lead.slug}/`} aria-hidden="true" tabindex="-1">Read the story</a>
+      </div>
+    </section>
+  )}
+
+  <section class="section section--mist" aria-label="More news">
+    <div class="container news-cols">
+      <div class="stack" style="--gap:16px">
+        <span class="eyebrow">More news</span>
+        {rest.length ? (
+          <ul role="list" class="news-list">
+            {rest.map((n) => <li><time datetime={n.date}>{d(n.date)}</time><a href={`/news/${n.slug}/`}>{n.title}</a><p class="muted">{n.summary}</p></li>)}
+          </ul>
+        ) : (
+          <div class="card news-empty"><h2 class="h3s">More stories are on their way</h2><p class="muted">New announcements will appear here, newest first.</p></div>
+        )}
+      </div>
+      <aside class="stack news-side" style="--gap:20px" aria-label="Also on the site">
+        <span class="eyebrow">Coming up</span>
+        <ul role="list" class="stack" data-upcoming>{upcoming.slice(0, 2).map((e) => <EventCard event={e} showPlace={false} />)}</ul>
+        <p class="empty" data-empty hidden={upcoming.length > 0}>No events listed right now.</p>
+        <span class="eyebrow">Latest service</span>
+        {latest && <VideoCard id={latest.id} title={latest.title} meta="MFM Edinburgh" />}
+      </aside>
+    </div>
+  </section>
+  <EventFilter />
+</Base>
+
+<style>
+  .masthead { padding-block: 64px 0; display: flex; flex-direction: column; gap: 12px; }
+  .masthead__row { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 12px; padding-bottom: 20px; border-bottom: 4px solid var(--plum); }
+  .masthead .display { color: var(--plum); }
+  .masthead p { font-weight: 600; }
+  .lead-story { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: 48px; align-items: center; padding-block: 40px 72px; }
+  .lead-story img { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; border-radius: var(--r-card); }
+  .lead-story .tag, .lead-story .btn { align-self: flex-start; }
+  .lead-story h2 a { color: var(--ink); text-decoration: none; }
+  .lead-story h2 a:hover { text-decoration: underline; }
+  .lead-story time { font-weight: 700; color: var(--purple); }
+  .news-cols { display: grid; grid-template-columns: minmax(0, 1fr) 380px; gap: 48px; align-items: start; }
+  .news-list li { display: grid; grid-template-columns: 160px minmax(0, 1fr); gap: 4px 24px; padding-block: 20px; border-bottom: 1px solid var(--line); }
+  .news-list time { font-weight: 700; color: var(--purple); }
+  .news-list a { font-family: var(--font-serif); font-weight: 700; font-size: 1.375rem; color: var(--ink); }
+  .news-list p { grid-column: 2; }
+  .news-empty { padding: 32px; display: flex; flex-direction: column; gap: 8px; }
+  @media (max-width: 960px) { .lead-story, .news-cols { grid-template-columns: minmax(0, 1fr); gap: 28px; } }
+  @media (max-width: 600px) { .news-list li { grid-template-columns: minmax(0, 1fr); } .news-list p { grid-column: 1; } }
+</style>

@@ -1,0 +1,38 @@
+{
+  "_help": "PLACEHOLDER bank details — replace every value marked [PLACEHOLDER] with the church's real account before going live.",
+  "intro": "Your tithes, offerings and seeds support worship, prayer, outreach and the care of the church family in Edinburgh.",
+  "scripture": {
+    "text": "Bring ye all the tithes into the storehouse, that there may be meat in mine house, and prove me now herewith, saith the Lord of hosts, if I will not open you the windows of heaven, and pour you out a blessing.",
+    "ref": "Malachi 3:10"
+  },
+  "bank": {
+    "account_name": "MFM Edinburgh [PLACEHOLDER]",
+    "bank": "[PLACEHOLDER BANK]",
+    "sort_code": "12-34-56",
+    "account_number": "12345678",
+    "iban": "GB00 BANK 1234 5612 3456 78",
+    "bic": "BANKGB00"
+  },
+  "references": [
+    {
+      "label": "Tithe",
+      "ref": "TITHE"
+    },
+    {
+      "label": "Offering",
+      "ref": "OFFERING"
+    },
+    {
+      "label": "Building fund",
+      "ref": "BUILDING"
+    },
+    {
+      "label": "Seed / thanksgiving",
+      "ref": "SEED"
+    }
+  ],
+  "other_ways": [
+    "In person during any service, using the offering envelopes at the welcome desk.",
+    "Speak to a minister if you would like to give in another way."
+  ]
+}

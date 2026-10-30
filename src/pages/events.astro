@@ -1,0 +1,151 @@
+---
+// Events — look: agenda (deep plum hero with live countdown, month-grouped agenda, muted past list).
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+import EventFilter from '../components/EventFilter.astro';
+import { allEvents, splitEvents, describe, endKey, icsHref } from '../lib/events.js';
+import { londonToDate } from '../lib/time.js';
+
+const all = allEvents();
+const { upcoming } = splitEvents();
+const next = upcoming[0];
+const nd = next ? describe(next) : null;
+// Group by month for the agenda
+const groups = [];
+for (const e of all) {
+  const g = describe(e).monthGroup;
+  if (!groups.length || groups[groups.length - 1].label !== g) groups.push({ label: g, items: [] });
+  groups[groups.length - 1].items.push(e);
+}
+const countdownData = all.map((e) => ({ title: e.title, start: e.start, startISO: londonToDate(e.start)?.toISOString(), end: endKey(e), when: (() => { const d = describe(e); return `${d.dateLong}${d.time ? ' · ' + d.time : ''}`; })(), ics: icsHref(e) }));
+---
+<Base title="Events" description="Upcoming services, prayer programmes and special events at MFM Edinburgh, 13 Bangor Road, Leith.">
+  <section class="ev-hero on-dark" aria-labelledby="page-title">
+    <div class="container ev-hero__grid">
+      <div class="stack" style="--gap:18px">
+        <nav class="crumb" aria-label="Breadcrumb"><a href="/">Home</a> / <span aria-current="page">Events</span></nav>
+        <h1 class="visually-hidden" id="page-title">Events</h1>
+        <span class="eyebrow">Next event</span>
+        {next ? (
+          <>
+            <p class="h1" data-next-title>{next.title}</p>
+            <div class="cluster ev-hero__meta">
+              <span class="meta-line"><Icon name="clock" size={20} /><span data-next-when>{nd.dateLong}{nd.time && ` · ${nd.time}`}</span></span>
+              <span class="meta-line"><Icon name="pin" size={20} /><span>{next.location || '13 Bangor Road, Leith'}</span></span>
+            </div>
+            <div class="cluster"><a class="btn btn--accent" href={icsHref(next)} download="mfm-edinburgh-event.ics" data-next-ics><Icon name="calendar-plus" size={20} /> Add to calendar</a><a class="btn btn--ghost" href="/services/">Weekly service times</a></div>
+          </>
+        ) : <p class="h1">No events listed right now</p>}
+      </div>
+      {next && (
+        <div class="countdown" data-countdown data-start={londonToDate(next.start)?.toISOString()} role="timer" aria-label="Time until the next event">
+          {[['days', 'Days'], ['hours', 'Hours'], ['mins', 'Minutes'], ['secs', 'Seconds']].map(([k, l]) => <div><strong data-u={k}>--</strong><span>{l}</span></div>)}
+        </div>
+      )}
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="agenda-title">
+    <div class="container">
+      <div class="section-head"><div><span class="eyebrow">Coming up</span><h2 class="h1" id="agenda-title">Agenda</h2></div></div>
+      <div data-upcoming>
+        {groups.map((g) => (
+          <div class="month" data-month>
+            <h3 class="month__label">{g.label}</h3>
+            <ul role="list" class="stack" style="--gap:14px">
+              {g.items.map((e) => {
+                const d = describe(e);
+                return (
+                  <li class="card agenda" data-end={endKey(e)}>
+                    <div class="date-block agenda__date" aria-hidden="true"><strong>{d.day}</strong><span>{d.weekday}</span></div>
+                    <div class="agenda__body"><h4>{e.title}</h4>{e.summary && <p class="muted">{e.summary}</p>}</div>
+                    <div class="agenda__meta">
+                      <span class="meta-line"><Icon name="clock" size={18} /><span><span class="visually-hidden">{d.dateFull}, </span>{d.time || 'All day'}{d.ends && ` (ends ${d.ends})`}</span></span>
+                      <span class="meta-line"><Icon name="pin" size={18} /><span>{e.location || '13 Bangor Road, Leith'}</span></span>
+                    </div>
+                    <a class="btn btn--soft btn--sm" href={icsHref(e)} download={`${e.title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}.ics`}><Icon name="calendar-plus" size={18} /> Add to calendar<span class="visually-hidden">: {e.title}</span></a>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+        ))}
+      </div>
+      <p class="empty" data-empty hidden={upcoming.length > 0}>No events are listed right now. Our weekly services run as normal — <a href="/services/">see the service times</a>.</p>
+    </div>
+  </section>
+
+  <section class="section section--mist" aria-labelledby="past-title" style="--section-pad:64px">
+    <div class="container">
+      <details class="past">
+        <summary><h2 class="h3s" id="past-title">Past events</h2><span>Show</span></summary>
+        <ul role="list" data-past>
+          {[...all].reverse().map((e) => { const d = describe(e); return <li data-end={endKey(e)}><strong>{d.day} {d.month}</strong><span>{e.title}</span></li>; })}
+        </ul>
+        <p class="muted" data-empty>No past events to show yet.</p>
+      </details>
+    </div>
+  </section>
+
+  <script type="application/json" id="events-data" set:html={JSON.stringify(countdownData)} />
+  <EventFilter />
+</Base>
+
+<style>
+  .ev-hero { background: linear-gradient(120deg, var(--plum), #3A0750); color: var(--white); padding-block: clamp(3.5rem, 7vw, 5.5rem); }
+  .ev-hero__grid { display: grid; grid-template-columns: minmax(0, 1.2fr) auto; gap: 56px; align-items: center; }
+  .ev-hero__meta { --gap: 12px 28px; }
+  .ev-hero .meta-line { color: var(--lilac); font-weight: 600; font-size: 1.0625rem; }
+  .ev-hero .meta-line :global(svg) { color: var(--fire-yellow); }
+  .countdown { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
+  .countdown div { min-width: 110px; padding: 22px 10px; border-radius: 20px; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.16); display: flex; flex-direction: column; align-items: center; gap: 4px; }
+  .countdown strong { font-family: var(--font-serif); font-size: clamp(2.25rem, 4vw, 3.5rem); line-height: 1; color: var(--fire-yellow); font-variant-numeric: tabular-nums; }
+  .countdown span { font-size: .8125rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--lilac); }
+  .month { margin-bottom: 36px; }
+  .month__label { display: flex; align-items: center; gap: 16px; font-family: var(--font-serif); font-size: 1.625rem; color: var(--magenta-ink); margin-bottom: 16px; }
+  .month__label::after { content: ""; height: 2px; flex: 1; background: var(--line); }
+  .month:has(li:not([hidden])) { display: block; }
+  .agenda { display: grid; grid-template-columns: 84px minmax(0, 1fr) auto auto; gap: 28px; align-items: center; padding: 22px 24px; }
+  .agenda__date { min-height: 84px; }
+  .agenda__body { display: flex; flex-direction: column; gap: 6px; }
+  .agenda__body h4 { font-family: var(--font-serif); font-size: 1.625rem; line-height: 1.15; }
+  .agenda__meta { display: flex; flex-direction: column; gap: 8px; }
+  .agenda__meta .meta-line { color: var(--ink); font-weight: 600; }
+  .past summary { display: flex; align-items: center; justify-content: space-between; cursor: pointer; list-style: none; min-height: 44px; }
+  .past summary::-webkit-details-marker { display: none; }
+  .past summary h2 { color: var(--slate); }
+  .past summary span { font-weight: 700; color: var(--purple); }
+  .past[open] summary span { font-size: 0; }
+  .past[open] summary span::before { content: "Hide"; font-size: 1rem; }
+  .past ul { margin-top: 16px; }
+  .past li { display: flex; gap: 24px; padding-block: 14px; border-bottom: 1px solid var(--line); }
+  .past li strong { color: var(--slate); min-width: 72px; }
+  @media (max-width: 1060px) { .ev-hero__grid { grid-template-columns: minmax(0, 1fr); } .agenda { grid-template-columns: 84px minmax(0, 1fr); } .agenda__meta, .agenda .btn { grid-column: 2; justify-self: start; } }
+  @media (max-width: 600px) { .countdown { gap: 8px; } .countdown div { min-width: 0; padding: 14px 4px; } .agenda { grid-template-columns: 64px minmax(0, 1fr); gap: 16px; padding: 16px; } .agenda__date { min-height: 70px; } }
+</style>
+
+<script>
+  // Live countdown to the next event that hasn't started yet (UK time), refreshed every second
+  import { londonNow } from '../lib/time.js';
+  const box = document.querySelector('[data-countdown]');
+  const data = JSON.parse(document.getElementById('events-data')?.textContent || '[]');
+  const nowKey = londonNow().key;
+  const next = data.find((e) => e.end >= nowKey);
+  if (box && next) {
+    if (next.startISO !== box.getAttribute('data-start')) {
+      // A newer "next event" than the one built into the page
+      const t = document.querySelector('[data-next-title]'); if (t) t.textContent = next.title;
+      const w = document.querySelector('[data-next-when]'); if (w) w.textContent = next.when;
+      const a = document.querySelector('[data-next-ics]'); if (a) a.setAttribute('href', next.ics);
+    }
+    const target = new Date(next.startISO).getTime();
+    const set = (k, v) => { const el = box.querySelector(`[data-u="${k}"]`); if (el) el.textContent = String(v).padStart(2, '0'); };
+    const tick = () => {
+      let s = Math.max(0, Math.floor((target - Date.now()) / 1000));
+      set('days', Math.floor(s / 86400)); s %= 86400; set('hours', Math.floor(s / 3600)); s %= 3600; set('mins', Math.floor(s / 60)); set('secs', s % 60);
+    };
+    tick(); setInterval(tick, 1000);
+  } else if (box) box.hidden = true;
+  // Hide month headings whose events have all finished
+  document.querySelectorAll('[data-month]').forEach((m) => { m.hidden = ![...m.querySelectorAll('[data-end]')].some((li) => !li.hidden); });
+</script>

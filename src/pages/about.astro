@@ -1,0 +1,131 @@
+---
+// About — Figma: "About – Desktop (1440)". Look: heritage (portrait ring, logo-colour name cards, fire timeline).
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+const beliefs = [
+  'The Scriptures are the inspired Word of God, the only basis for our faith and fellowship',
+  'The fall of mankind, requiring redemption through the Blood of Jesus Christ',
+  'Salvation through the redeeming work of Jesus Christ and the regenerating work of the Holy Spirit',
+  'The Baptism of the Holy Spirit (Acts 2:4; 10:44; 19:1–6)',
+  'Restitution for past wrongs where possible',
+  'The ordinances of the Lord’s Supper and Water Baptism',
+  'The Church Universal, visible and invisible',
+  'A ministry divinely called and scripturally ordained',
+  'Divine healing, as provided by the Lord Jesus Christ',
+  'The Rapture, the Marriage Supper of the Lamb and the second coming of Christ',
+  'The Millennial Reign of Christ and the Final Judgment',
+  'The New Heaven and the New Earth',
+];
+const vision = [
+  'Revive apostolic signs, wonders and miracles',
+  'Gather children of God who have been lost in dead churches',
+  'Train believers in the art and science of spiritual warfare',
+  'Help believers receive the Holy Ghost baptism and fire, and walk daily with the Holy Spirit',
+  'Build an aggressive, victorious end-time army for the Lord',
+  'Build heaven-bound Christians — our priority is that people make heaven',
+  'Build up prayer eagles',
+];
+---
+<Base title="About us" description="MFM Edinburgh is a non-denominational, Spirit-filled fellowship in Leith and part of Mountain of Fire and Miracles Ministries worldwide. Our story, mission, vision and beliefs." image="/images/pastor-and-wife.jpg">
+  <section class="section section--plum on-dark about-hero" aria-labelledby="page-title">
+    <div class="container about-hero__grid">
+      <div class="stack" style="--gap:22px">
+        <nav class="crumb" aria-label="Breadcrumb"><a href="/">Home</a> / <span aria-current="page">About us</span></nav>
+        <span class="eyebrow">About MFM Edinburgh</span>
+        <h1 class="h1" id="page-title">Preaching salvation, practising holiness, ministering deliverance</h1>
+        <p class="lead">A non-denominational, Spirit-filled fellowship in Leith and part of Mountain of Fire and Miracles Ministries worldwide.</p>
+      </div>
+      <figure class="portrait">
+        <span class="portrait__ring"><img src="/images/pastor-and-wife.jpg" alt="The Senior Pastor of MFM Edinburgh and his wife" width="640" height="640" /></span>
+        <figcaption>Our Senior Pastor and his wife</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="who-title">
+    <div class="container split">
+      <div class="stack"><span class="eyebrow">Who we are</span><h2 class="h2" id="who-title">Raising an army of prayer warriors</h2></div>
+      <div class="stack prose" style="--gap:18px">
+        <p class="lead">We are committed to raising believers who pray with power and expose the works of darkness, ready for the end-time revival.</p>
+        <p>MFM is a full gospel ministry devoted to the revival of apostolic signs, Holy Ghost fire and the unlimited power of God to deliver to the uttermost. Absolute holiness, within and without, is taught openly as the greatest safeguard and a condition for heaven.</p>
+        <p>We see aggressive prayer as an aid to spiritual focus. At MFM Prayer City, prayer continues 24 hours a day, 7 days a week. We believe sound Bible knowledge is essential for good Christian living, and that Spirit-filled praise brings the presence of God among us.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top:0" aria-labelledby="name-title">
+    <div class="container">
+      <div class="section-head"><div><span class="eyebrow">Our name</span><h2 class="h2" id="name-title">Mountain. Fire. Miracles.</h2></div></div>
+      <ul role="list" class="names">
+        <li class="name name--mountain"><div class="name__top"><Icon name="mountain" size={40} /><span>01</span></div><h3>Mountain</h3><p>The mountain top is a place of victory, above the powers of darkness, where God’s servants do exploits.</p></li>
+        <li class="name name--fire"><div class="name__top"><Icon name="fire" size={40} /><span>02</span></div><h3>Fire</h3><p>“He shall baptize you with the Holy Ghost, and with fire” (Matthew 3:11). The baptism of fire is the best thing that can happen to anyone.</p></li>
+        <li class="name name--miracles"><div class="name__top"><Icon name="star" size={40} /><span>03</span></div><h3>Miracles</h3><p>When you reach the mountain top and receive the fire, miracles follow.</p></li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="section section--mist" aria-labelledby="story-title">
+    <div class="container">
+      <div class="section-head"><div><span class="eyebrow">Our story</span><h2 class="h2" id="story-title">From a living room to every continent</h2></div></div>
+      <ol role="list" class="timeline">
+        <li style="--c:var(--fire-yellow)"><strong>1989</strong><p>Dr Daniel Kolawole Olukoya calls a Wednesday prayer meeting in his living room. 24 people attend, and verifiable miracles follow.</p></li>
+        <li style="--c:var(--fire-orange)"><strong>Growth</strong><p>The meetings move to 60 Old Yaba Road, then to 13 Olasimbo Street, Onike, Yaba — a former slum that becomes the International Headquarters.</p></li>
+        <li style="--c:var(--fire-red)"><strong>1994</strong><p>The name Mountain of Fire and Miracles Ministries is revealed in prayer, and the church holds its first service on 24 April.</p></li>
+        <li style="--c:var(--magenta)"><strong>Today</strong><p>Branches on every continent — including our congregation here at 13 Bangor Road, Leith.</p></li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="section section--plum on-dark" aria-label="Mission and vision">
+    <div class="container split">
+      <div class="stack"><span class="eyebrow">Our mission</span><p class="mission">“To spread the gospel of our Lord Jesus Christ all over the world.”</p></div>
+      <div class="stack"><span class="eyebrow">Our vision</span>
+        <ul role="list" class="vision">{vision.map((v) => <li>{v}</li>)}</ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="beliefs" aria-labelledby="beliefs-title">
+    <div class="container">
+      <div class="section-head"><div><span class="eyebrow">What we believe</span><h2 class="h2" id="beliefs-title">Our statement of faith</h2></div></div>
+      <ol role="list" class="beliefs">{beliefs.map((b, i) => <li><span>{String(i + 1).padStart(2, '0')}</span><p>{b}</p></li>)}</ol>
+    </div>
+  </section>
+
+  <section class="section--orange cta" aria-labelledby="cta-title">
+    <div class="container cta__inner">
+      <h2 class="h3s" id="cta-title">Hold your peace and let the Lord fight your battle as you worship with us.</h2>
+      <a class="btn btn--dark" href="/services/#plan">Plan your visit</a>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .about-hero__grid { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: 64px; align-items: center; }
+  .portrait { display: flex; flex-direction: column; align-items: center; gap: 14px; color: var(--lilac); font-weight: 600; font-size: 1rem; }
+  .portrait__ring { display: block; width: min(420px, 100%); aspect-ratio: 1; border-radius: 50%; padding: 12px; background: conic-gradient(from 200deg, var(--magenta), var(--fire-orange), var(--fire-yellow), var(--magenta)); }
+  .portrait__ring img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
+  .split { display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); gap: 72px; align-items: start; }
+  .names { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr)); gap: 24px; list-style: none; padding: 0; margin: 0; }
+  .name { border-radius: var(--r-panel); padding: 36px; display: flex; flex-direction: column; gap: 14px; }
+  .name__top { display: flex; justify-content: space-between; align-items: center; font-family: var(--font-serif); font-weight: 700; font-size: 1.375rem; }
+  .name h3 { font-family: var(--font-serif); font-size: 2.5rem; line-height: 1.05; }
+  .name--mountain { background: var(--black); color: var(--white); }
+  .name--mountain .name__top :global(svg) { color: var(--fire-yellow); }
+  .name--fire { background: var(--fire-orange); color: var(--ink); }
+  .name--miracles { background: var(--plum); color: var(--white); }
+  .name--miracles .name__top :global(svg) { color: var(--magenta); }
+  .timeline { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr)); gap: 24px; }
+  .timeline li { display: flex; flex-direction: column; gap: 12px; padding-top: 18px; border-top: 6px solid var(--c); }
+  .timeline strong { font-family: var(--font-serif); font-size: 2.125rem; color: var(--plum); line-height: 1.1; }
+  .mission { font-family: var(--font-serif); font-style: italic; font-size: clamp(1.75rem, 3.2vw, 2.5rem); line-height: 1.2; }
+  .vision { display: flex; flex-direction: column; gap: 12px; color: var(--lilac); }
+  .vision li { display: flex; gap: 12px; align-items: baseline; }
+  .vision li::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--fire-yellow); flex: none; transform: translateY(-2px); }
+  .beliefs { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(320px, 100%), 1fr)); column-gap: 32px; }
+  .beliefs li { display: flex; gap: 16px; padding-block: 18px; border-top: 1px solid var(--line); }
+  .beliefs span { font-family: var(--font-serif); font-weight: 700; font-size: 1.5rem; color: var(--magenta-ink); line-height: 1.2; min-width: 34px; }
+  .cta__inner { display: flex; flex-wrap: wrap; gap: 24px; align-items: center; justify-content: space-between; padding-block: 64px; }
+  .cta h2 { color: var(--ink); max-width: 22em; }
+  @media (max-width: 900px) { .about-hero__grid, .split { grid-template-columns: minmax(0, 1fr); gap: 36px; } .portrait { order: -1; } .portrait__ring { width: min(300px, 80%); } }
+</style>

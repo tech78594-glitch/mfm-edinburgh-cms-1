@@ -1,0 +1,70 @@
+---
+// Contact — look: split plum panel + live map, coloured contact cards, ministers & times.
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+import site from '../data/site.json';
+import services from '../data/services.json';
+import videos from '../data/videos.json';
+import { tel, mapsLink, mapsEmbed } from '../lib/format.js';
+const a = site.address;
+---
+<Base title="Contact us" description="Call, email or visit MFM Edinburgh at 13 Bangor Road, Leith, Edinburgh EH6 5JY.">
+  <section class="ct-hero" aria-labelledby="page-title">
+    <div class="ct-hero__panel on-dark">
+      <div class="ct-hero__copy stack" style="--gap:22px">
+        <nav class="crumb" aria-label="Breadcrumb"><a href="/">Home</a> / <span aria-current="page">Contact us</span></nav>
+        <h1 class="h1" id="page-title">We’d love to hear from you</h1>
+        <p class="lead">Call, email or visit us at {a.line1.split(',')[0]}. For urgent prayer, call the church line.</p>
+        <div class="cluster"><a class="btn btn--accent" href={tel(site.phones[0])}><Icon name="phone" size={20} /> Call {site.phones[0]}</a><a class="btn btn--ghost" href={`mailto:${site.emails[0]}`}>Email us</a></div>
+      </div>
+    </div>
+    <iframe class="ct-hero__map" title={`Map showing ${a.line1}, ${a.postcode}`} src={mapsEmbed(site.map_query)} loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+  </section>
+
+  <section class="section" aria-label="Ways to reach us">
+    <div class="container"><ul role="list" class="grid" style="--min:250px;--gap:20px">
+      <li class="card ct-card"><span class="ct-icon" style="--c:var(--purple)"><Icon name="phone" /></span><h2>Call</h2>{site.phones.map((p) => <a href={tel(p)}>{p}</a>)}</li>
+      <li class="card ct-card"><span class="ct-icon" style="--c:var(--magenta-ink)"><Icon name="mail" /></span><h2>Email</h2>{site.emails.map((e) => <a href={`mailto:${e}`}>{e}</a>)}</li>
+      <li class="card ct-card"><span class="ct-icon" style="--c:var(--gold);--fg:var(--ink)"><Icon name="pin" /></span><h2>Visit</h2><address>{a.line1}<br />{a.line2} {a.postcode}</address><a class="link-arrow" href={mapsLink(site.map_query)} rel="noopener">Get directions <Icon name="arrow" size={18} /></a></li>
+      <li class="card ct-card"><span class="ct-icon" style="--c:var(--ink)"><Icon name="youtube" /></span><h2>Watch</h2><a href={videos.channels.edinburgh.url} rel="noopener">YouTube {videos.channels.edinburgh.handle}</a><span class="muted">Sundays from 10:30</span></li>
+    </ul></div>
+  </section>
+
+  <section class="section section--mist" aria-label="Ministers and service times">
+    <div class="container ct-split">
+      <div class="stack" style="--gap:16px">
+        <span class="eyebrow">Pastor &amp; ministers</span>
+        <h2 class="h2">Speak to a minister</h2>
+        <ul role="list" class="ministers">{site.minister_phones.map((p) => <li><a href={tel(p)}><Icon name="phone" size={18} /> {p}</a></li>)}</ul>
+      </div>
+      <div class="ct-times on-dark">
+        <span class="eyebrow">When we meet</span>
+        <dl>{services.weekly.map((s) => <div><dt>{s.name.replace(/^Spiritual Clinic, /, '')}</dt><dd>{s.day.slice(0, 3)} {s.start}</dd></div>)}</dl>
+        <a class="link-arrow" href="/services/">All service times <Icon name="arrow" size={18} /></a>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .ct-hero { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); min-height: 520px; }
+  .ct-hero__panel { background: var(--plum); color: var(--white); display: flex; justify-content: flex-end; }
+  .ct-hero__copy { width: 100%; max-width: 600px; padding: 88px 64px 88px var(--gutter); }
+  .ct-hero__map { width: 100%; height: 100%; min-height: 360px; border: 0; background: var(--lilac); }
+  .ct-card { height: 100%; padding: 28px; display: flex; flex-direction: column; gap: 10px; }
+  .ct-card h2 { font-family: var(--font-serif); font-size: 1.625rem; }
+  .ct-card a { overflow-wrap: anywhere; }
+  .ct-card address { font-style: normal; color: var(--slate); }
+  .ct-icon { width: 52px; height: 52px; border-radius: 16px; background: var(--c); color: var(--fg, var(--white)); display: flex; align-items: center; justify-content: center; }
+  .ct-split { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 440px); gap: 48px; align-items: start; }
+  .ministers { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+  .ministers a { display: flex; align-items: center; gap: 10px; min-height: 52px; padding: 12px 18px; border-radius: 14px; background: var(--white); color: var(--ink); font-weight: 700; font-size: 1.125rem; text-decoration: none; }
+  .ministers a:hover { color: var(--purple); }
+  .ministers :global(svg) { color: var(--purple); }
+  .ct-times { background: var(--plum); color: var(--white); border-radius: 22px; padding: 32px; display: flex; flex-direction: column; gap: 12px; }
+  .ct-times dl div { display: flex; justify-content: space-between; gap: 16px; padding-block: 12px; border-bottom: 1px solid rgba(255,255,255,.16); font-size: 1.125rem; }
+  .ct-times dt { font-weight: 600; }
+  .ct-times dd { color: var(--lilac); white-space: nowrap; }
+  @media (max-width: 960px) { .ct-hero, .ct-split { grid-template-columns: minmax(0, 1fr); } .ct-hero__panel { justify-content: flex-start; } .ct-hero__copy { max-width: none; padding: 56px var(--gutter); } }
+  @media (max-width: 600px) { .ministers { grid-template-columns: minmax(0, 1fr); } }
+</style>

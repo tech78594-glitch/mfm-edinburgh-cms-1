@@ -1,0 +1,77 @@
+{
+  "_help": "Gallery albums. Put photos in public/images/gallery/ (or use any image path) and list them here. Always write 'alt' describing the photo.",
+  "albums": [
+    {
+      "title": "Our pastors",
+      "slug": "pastors",
+      "items": [
+        {
+          "src": "/images/pastor-and-wife.jpg",
+          "alt": "The Senior Pastor of MFM Edinburgh and his wife, portrait",
+          "w": 640,
+          "h": 640
+        }
+      ]
+    },
+    {
+      "title": "2026 programmes",
+      "slug": "programmes-2026",
+      "items": [
+        {
+          "src": "https://i.ytimg.com/vi/tJua5-bE3Kw/maxresdefault.jpg",
+          "alt": "Choir Concert 2026 poster: Unrelenting Hallelujah, 24 October, 13 Bangor Road",
+          "w": 1280,
+          "h": 720
+        },
+        {
+          "src": "https://i.ytimg.com/vi/rjstHj2nZ3w/maxresdefault.jpg",
+          "alt": "Cultural Day for Christ poster: African praise and love feast, Sunday 11 October 2026",
+          "w": 1280,
+          "h": 720
+        },
+        {
+          "src": "https://i.ytimg.com/vi/Lk3ZYQvp_YQ/maxresdefault.jpg",
+          "alt": "Join us for Sunday service poster, 25 October 2026, 10:30am",
+          "w": 1280,
+          "h": 720
+        },
+        {
+          "src": "https://i.ytimg.com/vi/XwAJdSkxX_M/maxresdefault.jpg",
+          "alt": "Sunday Worship Service poster, 10:30am, 13 Bangor Road Leith",
+          "w": 1280,
+          "h": 720
+        },
+        {
+          "src": "/images/hero/70-days-fasting-prayer-2026.jpg",
+          "alt": "70 Days Fasting and Prayer 2026: Dry Bones Shall Live Again, Ezekiel 37:4",
+          "w": 573,
+          "h": 303
+        }
+      ]
+    },
+    {
+      "title": "2026 theme",
+      "slug": "theme-2026",
+      "items": [
+        {
+          "src": "/images/hero/2026-theme-banner.jpg",
+          "alt": "2026 theme banner: My Year of Great Deliverance and Fresh Glory",
+          "w": 738,
+          "h": 246
+        },
+        {
+          "src": "/images/hero/2026-theme-youth-throne.jpg",
+          "alt": "2026 theme poster: a golden throne in the clouds, Our Year of Great Deliverance and Fresh Glory",
+          "w": 554,
+          "h": 554
+        },
+        {
+          "src": "/images/hero/2026-theme-youth-crown.jpg",
+          "alt": "Youth church 2026 theme poster with a golden crown",
+          "w": 407,
+          "h": 491
+        }
+      ]
+    }
+  ]
+}

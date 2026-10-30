@@ -1,0 +1,16 @@
+---
+// Keeps event lists honest between rebuilds: anything marked data-end that has finished
+// (UK time) is hidden from [data-upcoming] lists and shown in [data-past] lists.
+---
+<script>
+  import { londonNow } from '../lib/time.js';
+  const now = londonNow().key;
+  document.querySelectorAll('[data-upcoming] [data-end]').forEach((el) => { if (el.getAttribute('data-end') < now) el.hidden = true; });
+  document.querySelectorAll('[data-past] [data-end]').forEach((el) => { el.hidden = el.getAttribute('data-end') >= now; });
+  // Lists left empty show their empty message
+  document.querySelectorAll('[data-upcoming], [data-past]').forEach((list) => {
+    const any = [...list.querySelectorAll('[data-end]')].some((el) => !el.hidden);
+    const empty = list.parentElement?.querySelector(':scope > [data-empty]');
+    if (empty) empty.hidden = any;
+  });
+</script>

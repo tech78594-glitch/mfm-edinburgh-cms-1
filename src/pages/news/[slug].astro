@@ -1,0 +1,41 @@
+---
+// News article — reading layout (narrow serif column, orange pull-quote rule).
+import Base from '../../layouts/Base.astro';
+import Icon from '../../components/Icon.astro';
+import { getNews, parts, longDate } from '../../lib/format.js';
+export function getStaticPaths() {
+  return getNews().map((n) => ({ params: { slug: n.slug }, props: { n } }));
+}
+const { n } = Astro.props;
+const p = parts(n.date);
+const { Content } = n;
+const others = getNews().filter((x) => x.slug !== n.slug).slice(0, 3);
+---
+<Base title={n.title} description={n.summary} image={n.image || undefined}>
+  <article class="container article">
+    <nav class="crumb" aria-label="Breadcrumb"><a href="/">Home</a> / <a href="/news/">News Update</a> / <span aria-current="page">{n.title}</span></nav>
+    <h1 class="h1">{n.title}</h1>
+    {p && <p class="article__date"><time datetime={n.date}>{longDate(p)}</time></p>}
+    {n.image && <img class="article__img" src={n.image} alt="" />}
+    <div class="article__body"><Content /></div>
+    <a class="link-arrow" href="/news/"><Icon name="arrow-left" size={18} /> All news</a>
+  </article>
+  {others.length > 0 && (
+    <aside class="section section--mist" aria-labelledby="more-title">
+      <div class="container"><h2 class="h3s" id="more-title">More news</h2>
+        <ul role="list">{others.map((o) => <li><a href={`/news/${o.slug}/`}>{o.title}</a></li>)}</ul>
+      </div>
+    </aside>
+  )}
+</Base>
+<style>
+  .article { max-width: 780px; padding-block: 64px 96px; display: flex; flex-direction: column; gap: 22px; }
+  .article .h1 { color: var(--ink); }
+  .article__date { font-weight: 600; color: var(--slate); }
+  .article__img { border-radius: var(--r-panel); }
+  .article__body { font-family: var(--font-serif); font-size: 1.3125rem; line-height: 1.7; display: flex; flex-direction: column; gap: 1.1em; }
+  .article__body :global(h2), .article__body :global(h3) { color: var(--plum); line-height: 1.2; margin-top: .4em; }
+  .article__body :global(ul), .article__body :global(ol) { padding-left: 1.3em; display: flex; flex-direction: column; gap: .4em; }
+  .article__body :global(blockquote) { border-left: 5px solid var(--orange); padding-left: 20px; font-weight: 700; color: var(--plum); }
+  .article__body :global(strong) { font-weight: 700; }
+</style>

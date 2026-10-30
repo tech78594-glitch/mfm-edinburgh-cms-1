@@ -1,0 +1,74 @@
+---
+// Live "Next service" line. Rendered at build time, then kept current in the browser every minute.
+// variant="pill" (home strip) | "big" (Service times hero card)
+import services from '../data/services.json';
+import { nextService, splitMinutes } from '../lib/time.js';
+const { variant = 'pill' } = Astro.props;
+const n = nextService(services.weekly);
+const sp = n ? splitMinutes(n.minutesUntil) : null;
+---
+{n && variant === 'pill' && (
+  <p class="next-pill" data-next-service data-variant="pill" aria-live="polite">
+    <span class:list={['dot', { live: n.live }]} aria-hidden="true"></span>
+    <span><span data-ns-label>{n.live ? '' : 'Next: '}</span><strong data-ns-name>{n.item.name}</strong> · <span data-ns-when>{n.when}</span></span>
+  </p>
+)}
+{n && variant === 'big' && (
+  <div class="next-big" data-next-service data-variant="big" aria-live="polite">
+    <p class="next-big__label"><span class:list={['dot', { live: n.live }]} aria-hidden="true"></span><span class="eyebrow eyebrow--fire" data-ns-label>{n.live ? 'Happening now' : 'Next service'}</span></p>
+    <p class="next-big__name" data-ns-name>{n.item.name}</p>
+    <p class="next-big__time"><span data-ns-day>{n.item.day}</span> · <span data-ns-range>{n.item.start} – {n.item.end}</span></p>
+    <div class="next-big__count" data-ns-count hidden={n.live}>
+      <span><strong data-u="days">{sp.days}</strong>days</span>
+      <span><strong data-u="hours">{sp.hours}</strong>hours</span>
+      <span><strong data-u="mins">{sp.mins}</strong>mins</span>
+    </div>
+  </div>
+)}
+<script type="application/json" id="weekly-services" set:html={JSON.stringify(services.weekly)} />
+
+<style>
+  .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--magenta); flex: none; }
+  .dot.live { background: #1E8E3E; animation: pulse 2s infinite; }
+  @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(30,142,62,.55); } 70% { box-shadow: 0 0 0 10px rgba(30,142,62,0); } 100% { box-shadow: 0 0 0 0 rgba(30,142,62,0); } }
+  .next-pill { display: inline-flex; align-items: center; gap: 10px; padding: 9px 16px; border-radius: var(--r-pill); background: var(--lilac); color: var(--plum); font-size: 1rem; line-height: 1.35; }
+  .next-big { display: flex; flex-direction: column; gap: 10px; }
+  .next-big__label { display: flex; align-items: center; gap: 10px; }
+  .next-big__name { font-family: var(--font-serif); font-weight: 700; font-size: clamp(2rem, 3.4vw, 2.75rem); line-height: 1.1; color: var(--white); }
+  .next-big__time { font-weight: 600; font-size: 1.25rem; color: var(--lilac); }
+  .next-big__count { display: flex; gap: 12px; margin-top: 8px; }
+  .next-big__count[hidden] { display: none; }
+  .next-big__count span { display: flex; flex-direction: column; align-items: center; min-width: 84px; padding: 12px 16px; border-radius: 14px; background: rgba(255,255,255,.1); color: var(--lilac); font-size: .875rem; font-weight: 600; }
+  .next-big__count strong { font-family: var(--font-serif); font-size: 2.125rem; line-height: 1.1; color: var(--fire-yellow); }
+</style>
+
+<script>
+  import { nextService, splitMinutes } from '../lib/time.js';
+  const data = document.getElementById('weekly-services');
+  const weekly = data ? JSON.parse(data.textContent || '[]') : [];
+  const paint = () => {
+    const n = nextService(weekly);
+    if (!n) return;
+    document.querySelectorAll('[data-next-service]').forEach((el) => {
+      const set = (sel, v) => { const x = el.querySelector(sel); if (x) x.textContent = v; };
+      el.querySelector('.dot')?.classList.toggle('live', n.live);
+      set('[data-ns-name]', n.item.name);
+      if (el.getAttribute('data-variant') === 'pill') {
+        set('[data-ns-label]', n.live ? '' : 'Next: ');
+        set('[data-ns-when]', n.when);
+      } else {
+        set('[data-ns-label]', n.live ? 'Happening now' : 'Next service');
+        set('[data-ns-day]', n.item.day);
+        set('[data-ns-range]', `${n.item.start} – ${n.item.end}`);
+        const c = el.querySelector('[data-ns-count]');
+        if (c) {
+          c.hidden = n.live;
+          const s = splitMinutes(n.minutesUntil);
+          for (const u of ['days', 'hours', 'mins']) { const x = c.querySelector(`[data-u="${u}"]`); if (x) x.textContent = String(s[u]); }
+        }
+      }
+    });
+  };
+  paint();
+  setInterval(paint, 30000);
+</script>

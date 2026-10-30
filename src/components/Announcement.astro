@@ -1,0 +1,18 @@
+---
+// Optional strip across the top of every page. Switch on in src/data/site.json → "announcement".
+import site from '../data/site.json';
+import { safeUrl } from '../lib/format.js';
+const a = site.announcement || {};
+const link = safeUrl(a.link_url);
+---
+{a.show && a.text && (
+  <div class="announcement" role="region" aria-label="Announcement">
+    <div class="container"><p>{a.text} {link && a.link_text && <a href={link}>{a.link_text}</a>}</p></div>
+  </div>
+)}
+<style>
+  .announcement { background: var(--orange); color: var(--ink); font-weight: 600; font-size: 1rem; text-align: center; }
+  .announcement .container { padding-block: 10px; }
+  .announcement a { color: var(--ink); font-weight: 700; }
+  .announcement :focus-visible { outline-color: var(--ink); }
+</style>

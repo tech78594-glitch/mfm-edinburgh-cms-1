@@ -1,0 +1,86 @@
+---
+// Videos — look: cinema (black stage, featured player with purple glow, channel tabs, grids).
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+import VideoCard from '../components/VideoCard.astro';
+import videos from '../data/videos.json';
+const ed = videos.channels.edinburgh, ww = videos.channels.worldwide;
+const featured = ed.items[0];
+const SHOW = 6;
+---
+<Base title="Videos" description="Watch Sunday services, programmes and teaching from MFM Edinburgh and MFM Ministries worldwide." dark>
+  <div class="cinema on-dark">
+    <section class="container stage" aria-labelledby="page-title">
+      <div class="stage__player">{featured && <VideoCard id={featured.id} title={featured.title} large />}</div>
+      <div class="stack stage__info" style="--gap:16px">
+        <nav class="crumb" aria-label="Breadcrumb"><a href="/">Home</a> / <span aria-current="page">Videos</span></nav>
+        <h1 class="visually-hidden" id="page-title">Videos</h1>
+        <span class="tag">Latest from MFM Edinburgh</span>
+        {featured && <p class="h3s">{featured.title}</p>}
+        <p class="lead">Catch up on Sunday services, programmes and teaching. Videos play right here.</p>
+        <div class="stack" style="--gap:12px">
+          <a class="btn btn--accent" href={`${ed.url}?sub_confirmation=1`} rel="noopener"><Icon name="youtube" size={20} /> Subscribe · {ed.handle}</a>
+          <a class="btn btn--ghost" href={ww.url} rel="noopener">MFM Worldwide channel <Icon name="external" size={18} /></a>
+        </div>
+      </div>
+    </section>
+
+    <section class="container library" aria-label="Video library">
+      <div class="tabs" role="tablist" aria-label="Channel">
+        <button role="tab" id="tab-ed" aria-controls="panel-ed" aria-selected="true" type="button">MFM Edinburgh</button>
+        <button role="tab" id="tab-ww" aria-controls="panel-ww" aria-selected="false" tabindex="-1" type="button">MFM Worldwide</button>
+      </div>
+      {[[ed, 'ed', 'MFM Edinburgh', ed.items.slice(1)], [ww, 'ww', 'Dr D. K. Olukoya · MFM Ministries', ww.items]].map(([ch, key, meta, list], i) => (
+        <div role="tabpanel" id={`panel-${key}`} aria-labelledby={`tab-${key}`} hidden={i !== 0} tabindex="0">
+          <ul role="list" class="grid vgrid" style="--min:300px;--gap:32px 24px">
+            {list.map((v, j) => <li hidden={j >= SHOW} data-more={j >= SHOW ? '' : undefined}><VideoCard id={v.id} title={v.title} meta={meta} /></li>)}
+          </ul>
+          <div class="cluster library__more">
+            {list.length > SHOW && <button type="button" class="btn btn--ghost" data-load-more>Show more videos</button>}
+            <a class="btn btn--ghost" href={ch.url} rel="noopener">Watch on YouTube <Icon name="external" size={18} /></a>
+          </div>
+        </div>
+      ))}
+    </section>
+  </div>
+</Base>
+
+<style>
+  .cinema { background: var(--ink); color: var(--white); }
+  .stage { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); gap: 48px; align-items: center; padding-block: 56px 72px; }
+  .stage::before { content: ""; position: absolute; }
+  .stage__info .tag { align-self: flex-start; }
+  .stage__info .lead { color: var(--line); }
+  .stage__info .btn { align-self: flex-start; }
+  .library { padding-bottom: 96px; }
+  .tabs { display: flex; gap: 8px; border-bottom: 1px solid var(--slate); margin-bottom: 32px; }
+  .tabs button { min-height: 52px; padding: 10px 14px; background: none; border: 0; border-bottom: 4px solid transparent; color: var(--line); font-weight: 700; font-size: 1.25rem; cursor: pointer; margin-bottom: -1px; }
+  .tabs button[aria-selected="true"] { color: var(--white); border-bottom-color: var(--fire-yellow); }
+  .tabs button:hover { color: var(--white); }
+  .vgrid li[hidden] { display: none; }
+  .library__more { margin-top: 40px; }
+  @media (max-width: 960px) { .stage { grid-template-columns: minmax(0, 1fr); gap: 28px; padding-block: 28px 48px; } }
+</style>
+
+<script>
+  // Tabs (arrow keys move between channels)
+  const tabs = [...document.querySelectorAll('[role="tab"]')];
+  const select = (t) => {
+    tabs.forEach((x) => { const on = x === t; x.setAttribute('aria-selected', String(on)); x.tabIndex = on ? 0 : -1; document.getElementById(x.getAttribute('aria-controls')).hidden = !on; });
+    t.focus();
+  };
+  tabs.forEach((t, i) => {
+    t.addEventListener('click', () => select(t));
+    t.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') { e.preventDefault(); select(tabs[(i + (e.key === 'ArrowRight' ? 1 : -1) + tabs.length) % tabs.length]); }
+    });
+  });
+  // Show more
+  document.querySelectorAll('[data-load-more]').forEach((b) => b.addEventListener('click', () => {
+    const panel = b.closest('[role="tabpanel"]');
+    const hidden = [...panel.querySelectorAll('[data-more][hidden]')];
+    hidden.slice(0, 6).forEach((li) => { li.hidden = false; });
+    hidden[0]?.querySelector('button')?.focus();
+    if (hidden.length <= 6) b.remove();
+  }));
+</script>

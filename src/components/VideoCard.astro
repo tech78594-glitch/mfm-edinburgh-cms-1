@@ -1,0 +1,45 @@
+---
+// Click-to-play YouTube card. Nothing loads from YouTube until the visitor presses play,
+// and then it plays from youtube-nocookie.com.
+import Icon from './Icon.astro';
+const { id, title, meta, large = false } = Astro.props;
+const thumb = large ? `https://i.ytimg.com/vi/${id}/maxresdefault.jpg` : `https://i.ytimg.com/vi/${id}/hqdefault.jpg`;
+---
+<button class:list={['video-card', { 'video-card--large': large }]} type="button" data-yt={id} data-title={title}>
+  <span class="video-card__frame">
+    <img src={thumb} alt="" loading={large ? 'eager' : 'lazy'} width="480" height="270"
+         onerror={large ? `this.onerror=null;this.src='https://i.ytimg.com/vi/${id}/hqdefault.jpg'` : undefined} />
+    <span class="play"><Icon name="play" size={large ? 40 : 26} /></span>
+  </span>
+  {!large && <span class="video-card__title">{title}</span>}
+  {!large && meta && <span class="video-card__meta">{meta}</span>}
+  <span class="visually-hidden">Play video: {title}</span>
+</button>
+
+<style>
+  .video-card--large .play { width: 96px; height: 96px; }
+  .video-card--large .video-card__frame { border-radius: 20px; box-shadow: 0 0 80px rgba(137, 28, 181, .45); }
+</style>
+
+<script>
+  // One delegated listener for every video card on the page
+  document.addEventListener('click', (e) => {
+    const btn = e.target instanceof Element ? e.target.closest('.video-card[data-yt]') : null;
+    if (!btn) return;
+    const id = btn.getAttribute('data-yt');
+    const frame = document.createElement('iframe');
+    frame.src = `https://www.youtube-nocookie.com/embed/${encodeURIComponent(id)}?autoplay=1&rel=0`;
+    frame.title = btn.getAttribute('data-title') || 'Video';
+    frame.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
+    frame.allowFullscreen = true;
+    // Replace the button with a plain block so the iframe is not inside a button
+    const card = document.createElement('div');
+    card.className = btn.className;
+    while (btn.firstChild) card.appendChild(btn.firstChild);
+    card.querySelector('.visually-hidden')?.remove();
+    const holder = card.querySelector('.video-card__frame');
+    holder.replaceChildren(frame);
+    btn.replaceWith(card);
+    frame.focus();
+  });
+</script>

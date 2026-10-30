@@ -1,0 +1,128 @@
+---
+// Service times — look: timetable (light lilac hero + live next-service card, 7-day strip, ticket programmes).
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+import NextService from '../components/NextService.astro';
+import site from '../data/site.json';
+import services from '../data/services.json';
+import { DAYS } from '../lib/time.js';
+import { tel, mapsLink, mapsEmbed } from '../lib/format.js';
+const week = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'].map((d) => ({ day: d, items: services.weekly.filter((s) => s.day === d) }));
+const tone = { Sunday: 'purple', Tuesday: 'gold', Friday: 'magenta' };
+const stub = (when) => {
+  const m = when.match(/^(\w+)\s+(Saturday|Sunday|Friday|Monday|Tuesday|Wednesday|Thursday)/i);
+  return m ? { n: m[1].replace(/(\d)(st|nd|rd|th)/, '$1$2'), d: m[2].slice(0, 3).toUpperCase() } : { n: '★', d: '' };
+};
+---
+<Base title="Service times" description="Service times for MFM Edinburgh: Sunday Worship 10:30, Tuesday Bible Study 19:00, Friday Prayer 18:00, plus monthly programmes. 13 Bangor Road, Leith.">
+  <section class="section section--lilac sv-hero" aria-labelledby="page-title">
+    <div class="container sv-hero__grid">
+      <div class="stack" style="--gap:20px">
+        <nav class="crumb" aria-label="Breadcrumb"><a href="/">Home</a> / <span aria-current="page">Service times</span></nav>
+        <h1 class="display" id="page-title">Service times</h1>
+        <p class="lead">Everything happens at 13 Bangor Road, Leith. All times are UK time — come as you are.</p>
+        <div class="cluster"><a class="btn btn--primary" href="#plan">Plan your visit</a><a class="btn btn--soft sv-white" href={mapsLink(site.map_query)} rel="noopener">Get directions</a></div>
+      </div>
+      <div class="sv-live on-dark"><NextService variant="big" /></div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="week-title">
+    <div class="container">
+      <div class="section-head"><div><span class="eyebrow">Every week</span><h2 class="h2" id="week-title">Your week at MFM Edinburgh</h2></div></div>
+      <ol role="list" class="week">
+        {week.map((d) => (
+          <li class:list={['week__day', { 'is-empty': !d.items.length }]}>
+            <h3>{d.day.slice(0, 3)}<span class="visually-hidden">{d.day.slice(3)}</span></h3>
+            {d.items.length ? (
+              <ul role="list">{d.items.map((s) => <li class={`slot slot--${tone[d.day] || 'purple'}`}><strong>{s.name}</strong><span>{s.start} – {s.end}</span></li>)}</ul>
+            ) : <p aria-label="No service">—</p>}
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <section class="section section--mist" id="monthly" aria-labelledby="monthly-title">
+    <div class="container">
+      <div class="section-head"><div><span class="eyebrow">Monthly &amp; special</span><h2 class="h2" id="monthly-title">Monthly programmes</h2></div><a class="link-arrow" href="/events/">See upcoming dates <Icon name="arrow" size={18} /></a></div>
+      <ul role="list" class="tickets">
+        {services.monthly.map((m, i) => {
+          const s = stub(m.when);
+          return (
+            <li class:list={['ticket', { 'ticket--night': /vigil/i.test(m.name) }]}>
+              <div class="ticket__stub" aria-hidden="true"><strong>{s.n}</strong><span>{s.d}</span></div>
+              <div class="ticket__body"><h3>{m.name}</h3><p>{m.when} · {m.time}</p></div>
+            </li>
+          );
+        })}
+      </ul>
+    </div>
+  </section>
+
+  <section class="section" id="plan" aria-labelledby="plan-title">
+    <div class="container">
+      <div class="section-head"><div><span class="eyebrow">Your first visit</span><h2 class="h2" id="plan-title">What to expect on a Sunday</h2></div></div>
+      <ol role="list" class="steps">
+        <li><span>1</span><h3>Arrive early</h3><p>Come by 09:30 for the Pentecostal Hour, or by 10:30 for the main service.</p></li>
+        <li><span>2</span><h3>Be welcomed</h3><p>Someone will greet you at the door and help you find a seat. Come as you are.</p></li>
+        <li><span>3</span><h3>Worship &amp; the Word</h3><p>Vibrant praise, Bible teaching and fervent prayer. The main service runs for about three hours.</p></li>
+        <li><span>4</span><h3>Getting here</h3><p>Bangor Road is just off Great Junction Street in Leith. [Add parking and bus details]</p></li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="section section--plum on-dark" aria-labelledby="venue-title">
+    <div class="container venue">
+      <iframe class="venue__map" title={`Map showing ${site.address.line1}, ${site.address.postcode}`} src={mapsEmbed(site.map_query)} loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+      <div class="stack" style="--gap:16px">
+        <span class="eyebrow">Where we meet</span>
+        <h2 class="h3s" id="venue-title">{site.address.line1}, {site.address.line2} {site.address.postcode}</h2>
+        <div class="cluster"><a class="btn btn--accent" href={mapsLink(site.map_query)} rel="noopener">Get directions</a><a class="btn btn--ghost" href={tel(site.phones[0])}>Call {site.phones[0]}</a></div>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .sv-hero__grid { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 64px; align-items: center; }
+  .sv-hero .display { color: var(--plum); }
+  .sv-white { background: var(--white); }
+  .sv-live { background: var(--plum); border-radius: 28px; padding: clamp(28px, 4vw, 40px); box-shadow: 0 24px 50px rgba(87, 11, 117, .3); }
+  .week { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 12px; }
+  .week__day { border: 1px solid var(--line); border-radius: 18px; padding: 16px 14px 18px; background: var(--mist); display: flex; flex-direction: column; gap: 10px; }
+  .week__day.is-empty { background: var(--white); }
+  .week__day h3 { font-size: .9375rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--purple); }
+  .week__day.is-empty h3, .week__day.is-empty p { color: var(--slate); }
+  .week__day ul { display: flex; flex-direction: column; gap: 10px; }
+  .slot { background: var(--white); border-radius: 12px; padding: 12px; border-left: 4px solid var(--purple); display: flex; flex-direction: column; gap: 4px; font-size: .9375rem; line-height: 1.3; }
+  .slot strong { font-size: .9375rem; }
+  .slot span { color: var(--slate); }
+  .slot--gold { border-left-color: var(--gold); }
+  .slot--magenta { border-left-color: var(--magenta); }
+  .tickets { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(460px, 100%), 1fr)); gap: 24px; }
+  .ticket { display: flex; background: var(--white); border-radius: var(--r-card); overflow: hidden; }
+  .ticket__stub { flex: none; width: 130px; background: var(--gold); color: var(--ink); display: flex; flex-direction: column; align-items: center; justify-content: center; border-right: 2px dashed var(--white); padding: 20px 8px; }
+  .ticket__stub strong { font-family: var(--font-serif); font-size: 2.25rem; line-height: 1; }
+  .ticket__stub span { font-weight: 700; letter-spacing: .12em; }
+  .ticket--night .ticket__stub { background: var(--ink); color: var(--fire-yellow); }
+  .ticket__body { padding: 24px 28px; display: flex; flex-direction: column; gap: 8px; justify-content: center; }
+  .ticket__body h3 { font-family: var(--font-serif); font-size: 1.625rem; color: var(--plum); line-height: 1.15; }
+  .ticket__body p { color: var(--slate); }
+  .steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr)); gap: 24px; }
+  .steps li { display: flex; flex-direction: column; gap: 12px; }
+  .steps span { width: 52px; height: 52px; border-radius: 50%; background: var(--magenta-ink); color: var(--white); display: flex; align-items: center; justify-content: center; font-family: var(--font-serif); font-weight: 700; font-size: 1.5rem; }
+  .steps h3 { font-size: 1.25rem; }
+  .steps p { color: var(--slate); }
+  .venue { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 48px; align-items: center; }
+  .venue__map { width: 100%; aspect-ratio: 16 / 9; border: 0; border-radius: 20px; background: var(--lilac); }
+  @media (max-width: 1060px) { .week { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+  @media (max-width: 900px) { .sv-hero__grid, .venue { grid-template-columns: minmax(0, 1fr); gap: 32px; } }
+  @media (max-width: 600px) {
+    .week { grid-template-columns: minmax(0, 1fr); }
+    .week__day { flex-direction: row; align-items: flex-start; gap: 14px; }
+    .week__day h3 { width: 44px; flex: none; padding-top: 2px; }
+    .week__day ul, .week__day p { flex: 1; }
+    .ticket__stub { width: 96px; }
+  }
+</style>

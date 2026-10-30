@@ -1,0 +1,118 @@
+{
+  "_help": "Run `npm run videos` to refresh these lists from YouTube (it rewrites this file). The first MFM Edinburgh video is featured on the Videos page.",
+  "channels": {
+    "edinburgh": {
+      "name": "MFM Edinburgh",
+      "handle": "@MFMEDINBURGH",
+      "url": "https://www.youtube.com/@MFMEDINBURGH",
+      "channel_id": "UC1s9pVF23PCw5VrhTAuHJiQ",
+      "items": [
+        {
+          "id": "Lk3ZYQvp_YQ",
+          "title": "Sunday Service | 25th Oct, 2026"
+        },
+        {
+          "id": "tJua5-bE3Kw",
+          "title": "Unrelenting Hallelujah | Choir Concert 2026 | 24th Oct, 2026"
+        },
+        {
+          "id": "XwAJdSkxX_M",
+          "title": "Sunday Service | 18th Oct, 2026"
+        },
+        {
+          "id": "rjstHj2nZ3w",
+          "title": "11th Oct, 2026 | Special Sunday Service"
+        },
+        {
+          "id": "AL8NuUiTpUM",
+          "title": "Sunday Service | 4th Oct, 2026"
+        },
+        {
+          "id": "F89Mz2nZLwU",
+          "title": "Sunday Service | 27th September 2026"
+        },
+        {
+          "id": "9UC64OuTekY",
+          "title": "Sunday Service | 27th September, 2026"
+        },
+        {
+          "id": "uELz1Yg8Pvg",
+          "title": "Sunday Service | 27th September, 2026"
+        },
+        {
+          "id": "l273oCaLDms",
+          "title": "20th September Sunday 2026"
+        },
+        {
+          "id": "iCz7sHRY_jM",
+          "title": "Sunday Service | 20th Sep, 2026"
+        },
+        {
+          "id": "dKoBtPDHmgQ",
+          "title": "Sunday Service | 13th Sep, 2026"
+        },
+        {
+          "id": "1dybm5mIigo",
+          "title": "Sunday Service | 13th Sep, 2026"
+        }
+      ]
+    },
+    "worldwide": {
+      "name": "MFM Ministries (worldwide)",
+      "handle": "@MFMMinistries",
+      "url": "https://www.youtube.com/@MFMMinistries",
+      "channel_id": "UCMd5fYoenMlMJQ6-Bt6gsRw",
+      "items": [
+        {
+          "id": "2qKPapyCZ5w",
+          "title": "CONNECTING TO THE BARTIMAEUS ANOINTING (5) - MFM MANNA WATER 28-10-2026 DR D.K. OLUKOYA"
+        },
+        {
+          "id": "KMYFhnDunxs",
+          "title": "MFM REVIVAL HOUR - 26-10-2026 MINISTERING: DR D.K. OLUKOYA"
+        },
+        {
+          "id": "eHQ_Dc6rcz8",
+          "title": "EVERYONE CANNOT BE YOUR FRIEND - MFM - THE EAGLE HOUR SUNDAY 25-10-2026"
+        },
+        {
+          "id": "skP-wruGNBA",
+          "title": "STUDENTS IN THE UNIVERSITY OF PRAYER - MFM SUNDAY WORSHIP SERVICE 25-10-2026 DR D.K. OLUKOYA"
+        },
+        {
+          "id": "3ujik3HnR-A",
+          "title": "MFM GREAT PHYSICIAN HOUR 24-10-2026 MINISTERING: DR D. K. OLUKOYA"
+        },
+        {
+          "id": "OL6FiL-SuWc",
+          "title": "MFM Ministry To Schools Teachers Deliverance 24102026"
+        },
+        {
+          "id": "NaUKQoRxSY8",
+          "title": "PRAYER RAIN SERVICE AT PRAYER CITY 23-10-2026"
+        },
+        {
+          "id": "1Xft9Cz51J8",
+          "title": "CONNECTING TO THE BARTIMAEUS ANOINTING (4) - MFM MANNA WATER 21-10-2026 DR D.K. OLUKOYA"
+        },
+        {
+          "id": "cy7p-Dj7b0w",
+          "title": "MFM REVIVAL HOUR - 19-10-2026 MINISTERING: DR D.K. OLUKOYA"
+        },
+        {
+          "id": "TksM9ndkAs0",
+          "title": "THE POWER OF FAITH - MFM - THE EAGLE HOUR SUNDAY 18-10-2026"
+        },
+        {
+          "id": "MK1UmLaL_pA",
+          "title": "THE UNIVERSITY OF LAZARUS - MFM SUNDAY WORSHIP SERVICE 18-10-2026 DR D.K. OLUKOYA"
+        },
+        {
+          "id": "bpkH2abmNlg",
+          "title": "MFM GREAT PHYSICIAN HOUR 17-10-2026 MINISTERING: DR D. K. OLUKOYA"
+        }
+      ]
+    }
+  },
+  "updated": "2026-10-30"
+}

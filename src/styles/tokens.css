@@ -1,0 +1,43 @@
+/* MFM Edinburgh design tokens
+   Core: the original site's purple, plum and orange. Accents: the MFM logo's magenta and fire colours. */
+:root {
+  /* Core brand */
+  --purple: #891CB5;        /* header bar, primary actions */
+  --purple-dark: #7B1CA2;   /* hover, active */
+  --plum: #570B75;          /* deep sections, headings */
+  --orange: #FFA500;        /* accent CTA (dark text only) */
+  --gold: #C09038;          /* header "Contact Us" (dark text only) */
+  --gold-dark: #A87C2C;
+
+  /* Logo accents */
+  --magenta: #EF0076;
+  --magenta-ink: #C8005F;  /* magenta dark enough for white text (5.8:1) */
+  --fire-red: #EF4136;
+  --fire-orange: #F7951B;
+  --fire-yellow: #FAB511;
+  --black: #000000;
+
+  /* Neutrals */
+  --ink: #1D1B20;
+  --slate: #3E464C;
+  --mist: #F5F5F5;
+  --lilac: #F7F0FA;
+  --line: #E6E0EA;
+  --white: #FFFFFF;
+
+  /* Type */
+  --font-sans: "Source Sans 3", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --font-serif: "Source Serif 4", Georgia, "Times New Roman", serif;
+
+  /* Layout */
+  --container: 1200px;
+  --gutter: 1.5rem;
+  --header-h: 74px;
+  --r-pill: 999px;
+  --r-card: 20px;
+  --r-panel: 24px;
+  --shadow-card: 0 8px 24px rgba(87, 11, 117, .08);
+  --shadow-lift: 0 24px 60px rgba(33, 33, 33, .22);
+  --shadow-header: 0 6px 24px rgba(33, 10, 45, .25);
+}
+@media (max-width: 600px) { :root { --gutter: 1rem; --header-h: 64px; } }

@@ -1,0 +1,45 @@
+{
+  "_help": "Church details used on every page. Edit, save, then rebuild the site (npm run build).",
+  "name": "MFM Edinburgh",
+  "full_name": "Mountain of Fire and Miracles Ministries, Edinburgh",
+  "url": "https://mfmedinburgh.org",
+  "announcement": {
+    "show": false,
+    "text": "",
+    "link_text": "",
+    "link_url": ""
+  },
+  "address": {
+    "venue": "MFM Worship Centre",
+    "line1": "13 Bangor Road, off Great Junction Street",
+    "line2": "Leith, Edinburgh",
+    "postcode": "EH6 5JY"
+  },
+  "map_query": "13 Bangor Road, Edinburgh EH6 5JY",
+  "phones": [
+    "07557 644650",
+    "07725 699405"
+  ],
+  "emails": [
+    "info@mfmedinburgh.org",
+    "mfmedinburgh@yahoo.co.uk"
+  ],
+  "minister_phones": [
+    "07557 644650",
+    "07725 699405",
+    "07912 220450",
+    "07947 171252",
+    "07495 130674",
+    "07770 620803"
+  ],
+  "social": {
+    "facebook": "",
+    "youtube": "",
+    "instagram": ""
+  },
+  "testimony_form": {
+    "_help": "Optional: paste a Formspree (or similar) form address. Left empty, the form opens the visitor's email app addressed to the church instead.",
+    "endpoint": "",
+    "send_to": "info@mfmedinburgh.org"
+  }
+}

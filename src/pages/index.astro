@@ -1,0 +1,239 @@
+---
+// Home — Figma: "Home – Desktop (1440)" / "Home – Mobile (390)"
+import Base from '../layouts/Base.astro';
+import HeroSlider from '../components/HeroSlider.astro';
+import NextService from '../components/NextService.astro';
+import EventCard from '../components/EventCard.astro';
+import EventFilter from '../components/EventFilter.astro';
+import VideoCard from '../components/VideoCard.astro';
+import Icon from '../components/Icon.astro';
+import site from '../data/site.json';
+import services from '../data/services.json';
+import videos from '../data/videos.json';
+import { splitEvents } from '../lib/events.js';
+import { getNews, parts, fmt, tel, mapsLink } from '../lib/format.js';
+
+const homeTimes = services.weekly.filter((s) => s.show_on_home).slice(0, 3);
+const weekCards = services.weekly.filter((s) => s.show_on_home);
+const monthly = services.monthly.filter((m) => m.show_on_home);
+const { upcoming } = splitEvents();
+const news = getNews().slice(0, 1);
+const vids = videos.channels.edinburgh.items.slice(0, 3);
+const accent = { Sunday: 'purple', Tuesday: 'gold', Friday: 'magenta', Wednesday: 'gold', Saturday: 'slate' };
+const label = (s) => (s.day === 'Sunday' ? s.name.replace(/ Service$/, '') : `${s.day} ${s.name.replace(/^Spiritual Clinic, /, '')}`);
+const ld = {
+  '@context': 'https://schema.org', '@type': 'Church', name: 'MFM Edinburgh (Mountain of Fire and Miracles Ministries)', url: site.url,
+  logo: site.url + '/images/mfm-logo.png', telephone: '+44' + site.phones[0].replace(/\s/g, '').slice(1), email: site.emails[0],
+  address: { '@type': 'PostalAddress', streetAddress: site.address.line1, addressLocality: site.address.line2, postalCode: site.address.postcode, addressCountry: 'GB' },
+  sameAs: [videos.channels.edinburgh.url],
+};
+---
+<Base>
+  <script type="application/ld+json" slot="head" set:html={JSON.stringify(ld)} />
+
+  <HeroSlider />
+
+  <!-- Visit strip overlapping the hero -->
+  <section class="visit-strip" aria-labelledby="visit-title">
+    <div class="container">
+      <div class="visit-strip__card">
+        <div class="visit-strip__when">
+          <h2 class="eyebrow" id="visit-title">Join us this week</h2>
+          <NextService variant="pill" />
+        </div>
+        <dl class="visit-strip__times">
+          {homeTimes.map((s) => <div><dt>{label(s)}</dt><dd>{s.start} – {s.end}</dd></div>)}
+        </dl>
+        <div class="visit-strip__where">
+          <address><strong>{site.address.venue}</strong><br />{site.address.line1}<br />{site.address.line2} {site.address.postcode}</address>
+          <div class="cluster" style="--gap:10px">
+            <a class="btn btn--primary btn--sm" href={mapsLink(site.map_query)} rel="noopener">Get directions</a>
+            <a class="btn btn--soft btn--sm" href={tel(site.phones[0])}>Call us</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Quick links -->
+  <nav class="quick container" aria-label="Quick links">
+    <ul role="list" class="grid" style="--min:230px;--gap:20px">
+      {[
+        ['clock', 'Service times', 'Weekly services and monthly programmes', '/services/'],
+        ['calendar', 'Events', 'What’s coming up at MFM Edinburgh', '/events/'],
+        ['chat', 'Testimonies', 'Read and share what God has done', '/testimonies/'],
+        ['heart', 'Give Online', 'Support the work of the ministry', '/give/'],
+      ].map(([ic, t, s, href]) => (
+        <li><a class="quick__card card" href={href}><span class="quick__icon"><Icon name={ic} /></span><strong>{t}</strong><span>{s}</span></a></li>
+      ))}
+    </ul>
+  </nav>
+
+  <!-- Who we are -->
+  <section class="section who" aria-labelledby="who-title">
+    <div class="container who__grid">
+      <img class="who__photo" src="/images/pastor-and-wife.jpg" alt="The Senior Pastor of MFM Edinburgh and his wife" width="640" height="640" loading="lazy" />
+      <div class="stack" style="--gap:20px">
+        <span class="eyebrow">Who we are</span>
+        <h2 class="h2" id="who-title">A full gospel church that believes God still delivers</h2>
+        <p>MFM Edinburgh is part of Mountain of Fire and Miracles Ministries, a worldwide full gospel ministry founded in Lagos in 1989. We preach salvation, practise holiness within and without, and minister deliverance.</p>
+        <p>Here you will learn to pray for yourself. We call it a do-it-yourself gospel: every believer is trained to stand, pray and see God move.</p>
+        <div class="cluster"><a class="btn btn--primary" href="/about/">About MFM Edinburgh</a><a class="btn btn--soft" href="/about/#beliefs">What we believe</a></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Our week -->
+  <section class="section section--mist" aria-labelledby="week-title">
+    <div class="container">
+      <div class="section-head">
+        <div><span class="eyebrow">Our week</span><h2 class="h2" id="week-title">Find a time to pray with us</h2></div>
+        <a class="link-arrow" href="/services/">See all service times <Icon name="arrow" size={18} /></a>
+      </div>
+      <ul role="list" class="grid" style="--min:240px">
+        {weekCards.map((s) => (
+          <li class={`week-card week-card--${accent[s.day] || 'purple'}`}><span class="week-card__day">{s.day}</span><h3>{s.name.replace(/ Session$| Service$/, '')}</h3><span class="muted">{s.start} – {s.end}</span></li>
+        ))}
+      </ul>
+      {monthly.length > 0 && (
+        <div class="monthly-band on-dark">
+          <strong>Every month</strong>
+          {monthly.map((m) => <span>{m.when.replace(/, monthly$/, '')} · {m.name}, {m.time}</span>)}
+          <a href="/services/#monthly">All programmes</a>
+        </div>
+      )}
+    </div>
+  </section>
+
+  <!-- Coming up & latest news -->
+  <section class="section" aria-label="Coming up and latest news">
+    <div class="container two-col">
+      <div>
+        <div class="section-head"><div><span class="eyebrow">Coming up</span><h2 class="h3s">Upcoming events</h2></div><a class="link-arrow" href="/events/">All events <Icon name="arrow" size={18} /></a></div>
+        <ul role="list" class="stack" data-upcoming>
+          {upcoming.slice(0, 3).map((e) => <EventCard event={e} />)}
+        </ul>
+        <p class="empty" data-empty hidden={upcoming.length > 0}>No events are listed right now. Our weekly services run as normal.</p>
+      </div>
+      <div>
+        <div class="section-head"><div><span class="eyebrow">From the church</span><h2 class="h3s">Latest news</h2></div><a class="link-arrow" href="/news/">All news <Icon name="arrow" size={18} /></a></div>
+        {news.map((n) => {
+          const p = parts(n.date);
+          return (
+            <article class="card news-mini">
+              {p && <time datetime={n.date}>{fmt(p, { day: 'numeric', month: 'long', year: 'numeric' })}</time>}
+              <h3><a href={`/news/${n.slug}/`}>{n.title}</a></h3>
+              <p class="muted">{n.summary}</p>
+              <span class="link-arrow" aria-hidden="true">Read more <Icon name="arrow" size={18} /></span>
+            </article>
+          );
+        })}
+      </div>
+    </div>
+  </section>
+
+  <!-- Watch -->
+  <section class="section section--ink on-dark" aria-labelledby="watch-title">
+    <div class="container">
+      <div class="section-head"><div><span class="eyebrow">Watch &amp; listen</span><h2 class="h2" id="watch-title">Can’t make it in person? Worship with us online.</h2></div></div>
+      <ul role="list" class="grid" style="--min:300px;--gap:24px">
+        {vids.map((v) => <li><VideoCard id={v.id} title={v.title} meta="MFM Edinburgh" /></li>)}
+      </ul>
+      <div class="cluster" style="margin-top:36px">
+        <a class="btn btn--accent" href="/videos/">All videos</a>
+        <a class="btn btn--ghost" href={videos.channels.edinburgh.url} rel="noopener"><Icon name="youtube" size={20} /> Subscribe on YouTube</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonies & giving -->
+  <section class="section" aria-label="Testimonies and giving">
+    <div class="container two-col two-col--panels">
+      <div class="panel panel--lilac">
+        <span class="eyebrow">Testimonies</span>
+        <h2 class="h3s">Has God answered your prayer?</h2>
+        <p>Read what God has done in the lives of the church family, and share your own story to strengthen someone else’s faith.</p>
+        <a class="btn btn--primary" href="/testimonies/">Read &amp; share testimonies</a>
+      </div>
+      <div class="panel panel--plum on-dark">
+        <span class="eyebrow">Give online</span>
+        <h2 class="h3s">Partner with the work of God in Edinburgh</h2>
+        <p class="lead">Your tithes and offerings support worship, prayer and outreach across Leith and beyond.</p>
+        <a class="btn btn--gold" href="/give/">Give online</a>
+      </div>
+    </div>
+  </section>
+
+  <EventFilter />
+</Base>
+
+<style>
+  /* Visit strip */
+  .visit-strip { position: relative; z-index: 4; margin-top: -72px; }
+  .visit-strip__card { background: var(--white); border-radius: var(--r-panel); box-shadow: var(--shadow-lift); padding: 28px 32px; display: grid; grid-template-columns: auto minmax(0, 1.3fr) minmax(0, 1fr); gap: 40px; align-items: center; }
+  .visit-strip__when { display: flex; flex-direction: column; gap: 12px; }
+  .visit-strip__times div { display: flex; justify-content: space-between; gap: 16px; padding-block: 8px; border-bottom: 1px solid var(--line); }
+  .visit-strip__times div:last-child { border-bottom: 0; }
+  .visit-strip__times dt { font-weight: 600; }
+  .visit-strip__times dd { color: var(--slate); white-space: nowrap; }
+  .visit-strip__where { display: flex; flex-direction: column; gap: 12px; font-size: 1rem; line-height: 1.45; }
+  .visit-strip__where address { font-style: normal; }
+
+  /* Quick links */
+  .quick { margin-top: 48px; }
+  .quick__card { height: 100%; display: flex; flex-direction: column; gap: 8px; padding: 24px; text-decoration: none; color: var(--ink); box-shadow: var(--shadow-card); transition: border-color .15s, transform .15s; }
+  .quick__card:hover { color: var(--ink); border-color: var(--purple); transform: translateY(-2px); }
+  .quick__card strong { font-size: 1.1875rem; }
+  .quick__card > span:last-child { color: var(--slate); font-size: 1rem; }
+  .quick__icon { width: 44px; height: 44px; border-radius: 12px; background: var(--lilac); color: var(--purple); display: flex; align-items: center; justify-content: center; }
+
+  /* Who */
+  .who__grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 72px; align-items: center; }
+  .who__photo { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: var(--r-panel); }
+
+  /* Week cards */
+  .week-card { background: var(--white); border-radius: var(--r-card); padding: 26px 28px 28px; display: flex; flex-direction: column; gap: 8px; border-top: 6px solid var(--purple); height: 100%; }
+  .week-card--gold { border-top-color: var(--gold); }
+  .week-card--magenta { border-top-color: var(--magenta); }
+  .week-card--slate { border-top-color: var(--slate); }
+  .week-card__day { font-weight: 700; color: var(--purple); }
+  .week-card h3 { font-size: 1.375rem; line-height: 1.25; }
+  .monthly-band { margin-top: 24px; background: var(--plum); color: var(--white); border-radius: var(--r-card); padding: 26px 32px; display: flex; flex-wrap: wrap; gap: 12px 40px; align-items: center; }
+  .monthly-band strong { color: var(--fire-yellow); font-size: 1.1875rem; }
+  .monthly-band a { color: var(--white); font-weight: 700; margin-left: auto; min-height: 44px; display: inline-flex; align-items: center; }
+
+  /* Two columns */
+  .two-col { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 40px; align-items: start; }
+  .news-mini { padding: 24px 26px; display: flex; flex-direction: column; gap: 10px; position: relative; }
+  .news-mini time { font-size: .9375rem; font-weight: 700; color: var(--purple); }
+  .news-mini h3 { font-family: var(--font-serif); font-size: 1.5rem; line-height: 1.2; }
+  .news-mini h3 a { color: var(--ink); text-decoration: none; }
+  .news-mini h3 a::after { content: ""; position: absolute; inset: 0; }
+  .news-mini:hover { border-color: var(--purple); }
+
+  /* Panels */
+  .two-col--panels { align-items: stretch; gap: 24px; }
+  .panel { border-radius: var(--r-panel); padding: clamp(28px, 4vw, 44px); display: flex; flex-direction: column; gap: 16px; align-items: flex-start; }
+  .panel--lilac { background: var(--lilac); }
+  .panel--plum { background: var(--plum); color: var(--white); }
+  .panel .btn { margin-top: auto; }
+
+  @media (max-width: 1060px) {
+    .visit-strip__card { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+    .visit-strip__when { grid-column: 1 / -1; flex-direction: row; flex-wrap: wrap; align-items: center; justify-content: space-between; }
+  }
+  @media (max-width: 860px) {
+    .who__grid, .two-col { grid-template-columns: minmax(0, 1fr); gap: 32px; }
+  }
+  @media (max-width: 600px) {
+    .visit-strip { margin-top: -60px; }
+    .visit-strip__card { grid-template-columns: minmax(0, 1fr); padding: 22px; gap: 16px; }
+    .visit-strip__where .cluster { display: grid; grid-template-columns: 1fr 1fr; }
+    .quick { margin-top: 28px; }
+    .quick .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+    .quick__card { padding: 16px; box-shadow: none; }
+    .quick__card > span:last-child { display: none; }
+    .monthly-band a { margin-left: 0; }
+    .who__photo { aspect-ratio: 4 / 3; object-position: top; }
+  }
+</style>

@@ -1,0 +1,67 @@
+---
+import site from '../data/site.json';
+import videos from '../data/videos.json';
+import { tel } from '../lib/format.js';
+import Icon from './Icon.astro';
+const a = site.address;
+const year = new Date().getFullYear();
+---
+<footer class="site-footer on-dark">
+  <div class="container site-footer__inner">
+    <div class="site-footer__grid">
+      <div class="site-footer__brand">
+        <a class="site-footer__logo" href="/">
+          <span class="site-footer__badge"><img src="/images/mfm-logo.png" alt="" width="44" height="44" loading="lazy" /></span>
+          <span>MFM Edinburgh</span>
+        </a>
+        <address>{a.line1}<br />{a.line2} {a.postcode}</address>
+      </div>
+      <nav aria-labelledby="f-church">
+        <h2 id="f-church">Church</h2>
+        <ul role="list">
+          <li><a href="/about/">About us</a></li>
+          <li><a href="/services/">Service times</a></li>
+          <li><a href="/events/">Events</a></li>
+          <li><a href="/testimonies/">Testimonies</a></li>
+        </ul>
+      </nav>
+      <nav aria-labelledby="f-media">
+        <h2 id="f-media">Media</h2>
+        <ul role="list">
+          <li><a href="/gallery/">Gallery</a></li>
+          <li><a href="/news/">News Update</a></li>
+          <li><a href="/videos/">Videos</a></li>
+          <li><a href="/give/">Give Online</a></li>
+        </ul>
+      </nav>
+      <div>
+        <h2>Contact</h2>
+        <ul role="list">
+          {site.phones.map((p) => <li><a href={tel(p)}>{p}</a></li>)}
+          <li><a href={`mailto:${site.emails[0]}`}>{site.emails[0]}</a></li>
+          <li><a class="site-footer__yt" href={videos.channels.edinburgh.url} rel="noopener"><Icon name="youtube" size={20} /> {videos.channels.edinburgh.handle}</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="site-footer__bottom">
+      <span>© {year} MFM Edinburgh · Mountain of Fire and Miracles Ministries</span>
+      <a href="#main">Back to top</a>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .site-footer { background: var(--ink); color: var(--line); font-size: 1rem; }
+  .site-footer__inner { padding-block: 72px 32px; display: flex; flex-direction: column; gap: 48px; }
+  .site-footer__grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr)); gap: 40px; }
+  .site-footer h2 { font-size: .875rem; letter-spacing: .08em; text-transform: uppercase; color: var(--white); margin-bottom: 10px; }
+  .site-footer ul { display: flex; flex-direction: column; gap: 6px; margin: 0; padding: 0; }
+  .site-footer a { color: var(--line); }
+  .site-footer a:hover { color: var(--white); }
+  .site-footer address { font-style: normal; margin-top: 12px; }
+  .site-footer__logo { display: inline-flex; align-items: center; gap: 12px; text-decoration: none; font-family: var(--font-serif); font-weight: 700; font-size: 1.5rem; color: var(--white) !important; }
+  .site-footer__badge { width: 44px; height: 44px; border-radius: 50%; overflow: hidden; background: var(--white); flex: none; }
+  .site-footer__badge img { width: 100%; height: 100%; object-fit: cover; }
+  .site-footer__yt { display: inline-flex; align-items: center; gap: 8px; }
+  .site-footer__bottom { border-top: 1px solid var(--slate); padding-top: 24px; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; font-size: .9375rem; }
+</style>

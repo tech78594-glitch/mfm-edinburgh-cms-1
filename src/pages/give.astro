@@ -1,0 +1,110 @@
+---
+// Give Online — look: generosity (plum hero with gold scripture, floating gold-topped bank card with copy buttons).
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+import site from '../data/site.json';
+import give from '../data/give.json';
+import { tel } from '../lib/format.js';
+const b = give.bank;
+const rows = [
+  ['Account name', b.account_name, false],
+  ['Bank', b.bank, false],
+  ['Sort code', b.sort_code, true],
+  ['Account number', b.account_number, true],
+  ['IBAN (from abroad)', b.iban, true],
+  ['BIC / SWIFT', b.bic, true],
+];
+const isPlaceholder = /placeholder/i.test(JSON.stringify(b)) || b.account_number === '12345678';
+---
+<Base title="Give Online" description="Give your tithes and offerings to MFM Edinburgh by bank transfer.">
+  <section class="give-hero on-dark" aria-labelledby="page-title">
+    <div class="container give-hero__inner">
+      <nav class="crumb" aria-label="Breadcrumb"><a href="/">Home</a> / <span aria-current="page">Give Online</span></nav>
+      <span class="eyebrow eyebrow--gold">Give online</span>
+      <h1 class="h1" id="page-title">Partner with the work of God in Edinburgh</h1>
+      <blockquote><p>“{give.scripture.text}”</p><cite>{give.scripture.ref}</cite></blockquote>
+    </div>
+  </section>
+
+  <section class="container bank-wrap" aria-labelledby="bank-title">
+    <div class="bank">
+      <div class="bank__head">
+        <h2 id="bank-title">Bank transfer</h2>
+        {isPlaceholder && <span class="placeholder-note">Placeholder details</span>}
+      </div>
+      <p class="muted">{give.intro}</p>
+      <dl class="bank__rows">
+        {rows.map(([k, v, mono]) => (
+          <div class="bank__row">
+            <dt>{k}</dt>
+            <dd class:list={{ mono }} data-value={v}>{v}</dd>
+            <button type="button" class="copy" data-copy={String(v).replace(/\s/g, mono ? '' : ' ')} aria-label={`Copy ${k}`}><span class="copy__i"><Icon name="copy" size={18} /></span><span class="copy__t">Copy</span></button>
+          </div>
+        ))}
+      </dl>
+      <div class="refs">
+        <p>Use a reference so we can record your gift:</p>
+        <ul role="list" class="cluster" style="--gap:10px">
+          {give.references.map((r) => <li><button type="button" class="ref" data-copy={r.ref} aria-label={`Copy reference ${r.ref} (${r.label})`}>{r.ref}<span>{r.label}</span></button></li>)}
+        </ul>
+      </div>
+      <p class="visually-hidden" role="status" data-copied></p>
+    </div>
+  </section>
+
+  <section class="section section--mist" aria-labelledby="ways-title">
+    <div class="container">
+      <div class="section-head"><div><span class="eyebrow">Other ways to give</span><h2 class="h2" id="ways-title">Every gift makes a difference</h2></div></div>
+      <ul role="list" class="grid" style="--min:280px;--gap:24px">
+        <li class="way way--gold"><h3>In person</h3><p>{give.other_ways[0]}</p></li>
+        <li class="way way--magenta"><h3>Speak to a minister</h3><p>{give.other_ways[1]} <a href={tel(site.phones[0])}>Call {site.phones[0]}</a>.</p></li>
+        <li class="way way--purple"><h3>Where it goes</h3><p>Worship, prayer, outreach across Leith, and the care of the church family.</p></li>
+      </ul>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .give-hero { background: radial-gradient(120% 100% at 50% 0%, #6B1590 0%, var(--plum) 55%, #3A0750 100%); color: var(--white); text-align: center; padding-block: 80px 200px; }
+  .give-hero__inner { display: flex; flex-direction: column; align-items: center; gap: 18px; }
+  .give-hero h1 { max-width: 15em; }
+  .give-hero blockquote { max-width: 40em; display: flex; flex-direction: column; gap: 10px; align-items: center; }
+  .give-hero blockquote p { font-family: var(--font-serif); font-style: italic; font-size: clamp(1.125rem, 2vw, 1.375rem); line-height: 1.5; color: var(--lilac); }
+  .give-hero cite { font-style: normal; font-weight: 700; color: var(--gold); }
+  .bank-wrap { margin-top: -140px; padding-bottom: 80px; position: relative; z-index: 2; }
+  .bank { max-width: 780px; margin-inline: auto; background: var(--white); border-radius: 28px; border-top: 8px solid var(--gold); box-shadow: 0 30px 70px rgba(29, 27, 32, .18); padding: clamp(24px, 5vw, 48px); display: flex; flex-direction: column; gap: 16px; }
+  .bank__head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; }
+  .bank__head h2 { font-family: var(--font-serif); font-size: 2rem; color: var(--plum); }
+  .bank__row { display: grid; grid-template-columns: 200px minmax(0, 1fr) auto; gap: 16px; align-items: center; padding-block: 14px; border-top: 1px solid var(--line); }
+  .bank__row dt { font-weight: 600; color: var(--slate); }
+  .bank__row dd { font-weight: 700; font-size: 1.25rem; overflow-wrap: anywhere; }
+  .bank__row dd.mono { font-family: var(--font-serif); font-size: 1.5rem; font-variant-numeric: tabular-nums; letter-spacing: .02em; }
+  .copy { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 8px 16px; border-radius: var(--r-pill); border: 0; background: var(--lilac); color: var(--plum); font-weight: 700; cursor: pointer; }
+  .copy:hover { background: #EBDDF2; }
+  .copy.is-done { background: #E7F4EC; color: #1E6B3A; }
+  .copy span { display: inline-flex; pointer-events: none; }
+  .refs { border-top: 1px solid var(--line); padding-top: 18px; display: flex; flex-direction: column; gap: 12px; font-weight: 600; }
+  .ref { min-height: 44px; display: inline-flex; align-items: baseline; gap: 8px; padding: 8px 16px; border-radius: 10px; border: 2px solid var(--gold); background: var(--white); font-weight: 700; letter-spacing: .06em; cursor: pointer; }
+  .ref span { font-weight: 600; letter-spacing: 0; color: var(--slate); font-size: .9375rem; }
+  .ref:hover, .ref.is-done { background: #FFF4DE; }
+  .way { background: var(--white); border-radius: 22px; padding: 32px; border-top: 6px solid var(--purple); display: flex; flex-direction: column; gap: 10px; height: 100%; }
+  .way--gold { border-top-color: var(--gold); }
+  .way--magenta { border-top-color: var(--magenta); }
+  .way h3 { font-family: var(--font-serif); font-size: 1.625rem; }
+  .way p { color: var(--slate); }
+  @media (max-width: 600px) { .bank__row { grid-template-columns: minmax(0, 1fr) auto; } .bank__row dt { grid-column: 1 / -1; font-size: .9375rem; } .give-hero { padding-bottom: 180px; } }
+</style>
+
+<script>
+  // Copy buttons: copy the value, confirm visually and to screen readers
+  const live = document.querySelector('[data-copied]');
+  document.querySelectorAll('[data-copy]').forEach((btn) => btn.addEventListener('click', async () => {
+    const v = btn.getAttribute('data-copy');
+    try { await navigator.clipboard.writeText(v); }
+    catch { const t = document.createElement('textarea'); t.value = v; document.body.appendChild(t); t.select(); document.execCommand('copy'); t.remove(); }
+    btn.classList.add('is-done');
+    const label = btn.querySelector('.copy__t'); if (label) label.textContent = 'Copied';
+    if (live) live.textContent = `Copied ${v}`;
+    setTimeout(() => { btn.classList.remove('is-done'); if (label) label.textContent = 'Copy'; }, 2000);
+  }));
+</script>

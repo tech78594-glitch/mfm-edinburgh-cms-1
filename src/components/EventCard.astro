@@ -1,0 +1,19 @@
+---
+// Figma: "Event card" (compact) — plum date block with fire-yellow day number.
+import Icon from './Icon.astro';
+import { describe, endKey } from '../lib/events.js';
+const { event, showPlace = true } = Astro.props;
+const d = describe(event);
+---
+<li class="card event-card" data-end={endKey(event)}>
+  <div class="date-block" aria-hidden="true"><span>{d.month}</span><strong>{d.day}</strong><span>{d.weekday}</span></div>
+  <div class="event-card__body">
+    <h3>{event.title}</h3>
+    <p class="meta-line"><Icon name="clock" size={18} /><span><span class="visually-hidden">{d.dateFull}. </span>{d.dateLong}{d.time && `, ${d.time}`}{d.ends && ` (ends ${d.ends})`}</span></p>
+    {showPlace && event.location && <p class="meta-line"><Icon name="pin" size={18} /><span>{event.location}</span></p>}
+  </div>
+</li>
+<style>
+  .event-card__body { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+  .event-card h3 { font-size: 1.25rem; line-height: 1.3; }
+</style>

@@ -7,13 +7,13 @@ import { tel } from '../lib/format.js';
 const basePath = import.meta.env.BASE_URL.replace(/\/+$/, '');
 const path = Astro.url.pathname.slice(basePath && Astro.url.pathname.startsWith(basePath) ? basePath.length : 0).replace(/\/+$/, '') || '/';
 const isCurrent = (href) => (href === '/' ? path === '/' : path === href.replace(/\/$/, '') || path.startsWith(href.replace(/\/$/, '') + '/'));
-// A section link is also current on the pages that sit under it (Videos sits under Gallery).
+// A section link is also current on the pages that sit under it (Pictures and Videos sit under Gallery).
 const inSection = (l) => isCurrent(l.href) || (l.also || []).some(isCurrent);
 
 // Links shown in the bar (desktop)
 const main = [
   { href: '/', label: 'Home' },
-  { href: '/gallery/', label: 'Gallery', also: ['/videos/'] },
+  { href: '/gallery/', label: 'Gallery', also: ['/pictures/', '/videos/'] },
   { href: '/news/', label: 'News Update' },
   { href: '/community/', label: 'Community' },
   { href: '/give/', label: 'Give Online' },
@@ -27,6 +27,7 @@ const all = [
   { href: '/testimonies/', label: 'Testimonies' },
   { href: '/community/', label: 'Community support' },
   { href: '/gallery/', label: 'Gallery' },
+  { href: '/pictures/', label: 'Pictures', sub: true },
   { href: '/videos/', label: 'Videos', sub: true },
   { href: '/news/', label: 'News Update' },
   { href: '/give/', label: 'Give Online' },
@@ -186,7 +187,7 @@ const phone = site.phones[0];
   }
   .site-menu nav a:hover { color: var(--fire-yellow); }
   .site-menu nav a[aria-current="page"] { color: var(--fire-yellow); }
-  /* Pages that sit under another (Videos under Gallery): indented, smaller, with a branch mark */
+  /* Pages that sit under another (Pictures and Videos under Gallery): indented, smaller, with a branch mark */
   .site-menu nav li.is-sub a { position: relative; padding-left: 30px; font-size: 1.25rem; }
   .site-menu nav li.is-sub a::before { content: ""; position: absolute; left: 8px; top: 0; width: 12px; height: 50%; border-left: 2px solid rgba(255, 255, 255, .45); border-bottom: 2px solid rgba(255, 255, 255, .45); border-bottom-left-radius: 6px; }
   .site-menu__foot { margin-top: auto; padding-top: 28px; display: flex; flex-direction: column; gap: 14px; }

@@ -26,6 +26,8 @@ All content lives in `src/data/`:
 | `videos.json` | Video lists for MFM Edinburgh and MFM Worldwide. Update with `npm run videos`. |
 | `give.json` | **Bank details: currently PLACEHOLDER numbers.** Replace them before going live. |
 | `gallery.json` | Photo albums. Each photo needs `src`, `alt`, `w` and `h`. |
+| `pictures.json` | Pictures page (scrapbook lookbook): chapters, each with a title, a handwritten note and its photos. Add `name.jpg` (1600px wide) and `name-sm.jpg` (900px wide) to `public/images/pictures/`, then list them here. Photos are 3:2 unless you add `w` and `h`. |
+| `community.json` | Community support page: the ways the church helps, the steps to ask, trusted local services and FAQs. Items with `"confirm": true` show "Details to follow". |
 | `testimonies.json` | Approved testimonies shown on the Testimonies page |
 | `news/*.md` | News stories. Add a new `.md` file with `title`, `date`, `summary` and optionally `image`. |
 

@@ -30,7 +30,9 @@ function basePathLinks() {
             if (e.isDirectory()) await walk(p);
             else if (/\.(html|css)$/.test(e.name)) {
               const s = await readFile(p, 'utf8');
-              const out = s.replace(attr, `$1${base}/`).replace(css, `$1${base}/`).replace(json, `$1${base}/`);
+              const srcset = new RegExp(`(,\\s*)/(?!/|${skip}/)`, 'g');
+              const out = s.replace(attr, `$1${base}/`).replace(css, `$1${base}/`).replace(json, `$1${base}/`)
+                .replace(/(srcset=["'])([^"']*)/g, (m, a, v) => a + v.replace(srcset, `$1${base}/`));
               if (out !== s) await writeFile(p, out);
             }
           }

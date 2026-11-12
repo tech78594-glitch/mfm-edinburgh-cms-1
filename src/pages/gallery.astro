@@ -4,6 +4,10 @@ import Base from '../layouts/Base.astro';
 import Icon from '../components/Icon.astro';
 import site from '../data/site.json';
 import gallery from '../data/gallery.json';
+import videos from '../data/videos.json';
+import VideoCard from '../components/VideoCard.astro';
+import MediaSwitch from '../components/MediaSwitch.astro';
+const latest = videos.channels.edinburgh.items.slice(0, 3);
 const albums = gallery.albums || [];
 const photos = albums.flatMap((a) => a.items.map((p) => ({ ...p, album: a.slug, albumTitle: a.title })));
 ---
@@ -11,6 +15,7 @@ const photos = albums.flatMap((a) => a.items.map((p) => ({ ...p, album: a.slug, 
   <div class="gal on-dark">
     <section class="container gal-hero" aria-labelledby="page-title">
       <nav class="crumb" aria-label="Breadcrumb"><a href="/">Home</a> / <span aria-current="page">Gallery</span></nav>
+      <MediaSwitch current="photos" />
       <div class="gal-hero__row">
         <div class="stack" style="--gap:12px">
           <h1 class="display" id="page-title">Gallery</h1>
@@ -37,6 +42,19 @@ const photos = albums.flatMap((a) => a.items.map((p) => ({ ...p, album: a.slug, 
       </ul>
     </section>
 
+    <section class="container gal-videos" aria-labelledby="gal-videos-title">
+      <div class="gal-videos__head">
+        <div class="stack" style="--gap:8px">
+          <span class="eyebrow eyebrow--gold">Videos</span>
+          <h2 class="h2" id="gal-videos-title">Watch services &amp; programmes</h2>
+        </div>
+        <a class="btn btn--accent" href="/videos/">See all videos <Icon name="arrow" size={20} /></a>
+      </div>
+      <ul role="list" class="grid" style="--min:280px;--gap:28px 24px">
+        {latest.map((v) => <li><VideoCard id={v.id} title={v.title} meta="MFM Edinburgh" /></li>)}
+      </ul>
+    </section>
+
     <section class="gal-share" aria-labelledby="share-title">
       <div class="container gal-share__inner">
         <h2 class="h3s" id="share-title">Have photos from a service or programme? Send them to the church office.</h2>
@@ -57,6 +75,8 @@ const photos = albums.flatMap((a) => a.items.map((p) => ({ ...p, album: a.slug, 
 
 <style>
   .gal { background: var(--ink); color: var(--white); }
+  .gal-videos { padding-block: var(--space-l); border-top: 1px solid rgba(255, 255, 255, .12); }
+  .gal-videos__head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 20px; margin-bottom: var(--space-m); }
   .gal-hero { padding-block: clamp(48px, 1.5rem + 3vw, 96px) 32px; display: flex; flex-direction: column; gap: 24px; }
   .gal-hero__row { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 16px; }
   .gal-hero .lead { color: var(--line); max-width: 34em; }

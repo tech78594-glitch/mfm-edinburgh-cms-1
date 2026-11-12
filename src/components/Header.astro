@@ -7,13 +7,14 @@ import { tel } from '../lib/format.js';
 const basePath = import.meta.env.BASE_URL.replace(/\/+$/, '');
 const path = Astro.url.pathname.slice(basePath && Astro.url.pathname.startsWith(basePath) ? basePath.length : 0).replace(/\/+$/, '') || '/';
 const isCurrent = (href) => (href === '/' ? path === '/' : path === href.replace(/\/$/, '') || path.startsWith(href.replace(/\/$/, '') + '/'));
+// A section link is also current on the pages that sit under it (Videos sits under Gallery).
+const inSection = (l) => isCurrent(l.href) || (l.also || []).some(isCurrent);
 
 // Links shown in the bar (desktop)
 const main = [
   { href: '/', label: 'Home' },
-  { href: '/gallery/', label: 'Gallery' },
+  { href: '/gallery/', label: 'Gallery', also: ['/videos/'] },
   { href: '/news/', label: 'News Update' },
-  { href: '/videos/', label: 'Videos' },
   { href: '/community/', label: 'Community' },
   { href: '/give/', label: 'Give Online' },
 ];
@@ -26,8 +27,8 @@ const all = [
   { href: '/testimonies/', label: 'Testimonies' },
   { href: '/community/', label: 'Community support' },
   { href: '/gallery/', label: 'Gallery' },
+  { href: '/videos/', label: 'Videos', sub: true },
   { href: '/news/', label: 'News Update' },
-  { href: '/videos/', label: 'Videos' },
   { href: '/give/', label: 'Give Online' },
   { href: '/contact/', label: 'Contact us' },
 ];
@@ -43,7 +44,7 @@ const phone = site.phones[0];
     <nav class="main-nav" aria-label="Main">
       <ul role="list">
         {main.map((l) => (
-          <li><a href={l.href} aria-current={isCurrent(l.href) ? 'page' : undefined}>{l.label}</a></li>
+          <li><a href={l.href} aria-current={inSection(l) ? 'page' : undefined}>{l.label}</a></li>
         ))}
       </ul>
     </nav>
@@ -73,7 +74,7 @@ const phone = site.phones[0];
     <nav aria-label="All pages">
       <ul role="list">
         {all.map((l, i) => (
-          <li style={`--i:${i}`}><a href={l.href} aria-current={isCurrent(l.href) ? 'page' : undefined}>{l.label}</a></li>
+          <li style={`--i:${i}`} class:list={{ 'is-sub': l.sub }}><a href={l.href} aria-current={isCurrent(l.href) ? 'page' : undefined}>{l.label}</a></li>
         ))}
       </ul>
     </nav>
@@ -185,6 +186,9 @@ const phone = site.phones[0];
   }
   .site-menu nav a:hover { color: var(--fire-yellow); }
   .site-menu nav a[aria-current="page"] { color: var(--fire-yellow); }
+  /* Pages that sit under another (Videos under Gallery): indented, smaller, with a branch mark */
+  .site-menu nav li.is-sub a { position: relative; padding-left: 30px; font-size: 1.25rem; }
+  .site-menu nav li.is-sub a::before { content: ""; position: absolute; left: 8px; top: 0; width: 12px; height: 50%; border-left: 2px solid rgba(255, 255, 255, .45); border-bottom: 2px solid rgba(255, 255, 255, .45); border-bottom-left-radius: 6px; }
   .site-menu__foot { margin-top: auto; padding-top: 28px; display: flex; flex-direction: column; gap: 14px; }
   .site-menu__foot p { margin: 0; font-size: .9375rem; color: #E8D6F1; }
   .btn-contact--block { width: 100%; }

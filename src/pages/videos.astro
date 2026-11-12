@@ -3,6 +3,7 @@
 import Base from '../layouts/Base.astro';
 import Icon from '../components/Icon.astro';
 import VideoCard from '../components/VideoCard.astro';
+import MediaSwitch from '../components/MediaSwitch.astro';
 import videos from '../data/videos.json';
 const ed = videos.channels.edinburgh, ww = videos.channels.worldwide;
 const featured = ed.items[0];
@@ -13,7 +14,8 @@ const SHOW = 6;
     <section class="container stage" aria-labelledby="page-title">
       <div class="stage__player">{featured && <VideoCard id={featured.id} title={featured.title} large />}</div>
       <div class="stack stage__info" style="--gap:16px">
-        <nav class="crumb" aria-label="Breadcrumb"><a href="/">Home</a> / <span aria-current="page">Videos</span></nav>
+        <nav class="crumb" aria-label="Breadcrumb"><a href="/">Home</a> / <a href="/gallery/">Gallery</a> / <span aria-current="page">Videos</span></nav>
+        <MediaSwitch current="videos" />
         <h1 class="visually-hidden" id="page-title">Videos</h1>
         <span class="tag">Latest from MFM Edinburgh</span>
         {featured && <p class="h3s">{featured.title}</p>}

@@ -1,0 +1,17 @@
+---
+// Photos / Videos switch shared by the Gallery and Videos pages (Videos sits under Gallery).
+import Icon from './Icon.astro';
+const { current = 'photos' } = Astro.props;
+---
+<nav class="media-switch" aria-label="Gallery sections">
+  <a href="/gallery/" aria-current={current === 'photos' ? 'page' : undefined}><Icon name="image" size={20} /> Photos</a>
+  <a href="/videos/" aria-current={current === 'videos' ? 'page' : undefined}><Icon name="play" size={18} /> Videos</a>
+</nav>
+
+<style>
+  .media-switch { display: inline-flex; align-self: flex-start; gap: 4px; padding: 5px; border-radius: var(--r-pill); background: rgba(255, 255, 255, .08); border: 1px solid rgba(255, 255, 255, .16); }
+  .media-switch a { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 8px 20px; border-radius: var(--r-pill); color: var(--line); font-weight: 700; text-decoration: none; transition: background .2s, color .2s; }
+  .media-switch a:hover { color: var(--white); background: rgba(255, 255, 255, .1); }
+  .media-switch a[aria-current="page"] { background: var(--white); color: var(--plum); }
+  .media-switch a:focus-visible { outline: 3px solid var(--fire-yellow); outline-offset: 2px; }
+</style>

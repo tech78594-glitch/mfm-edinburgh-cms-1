@@ -123,12 +123,12 @@
         {
           "file": "preaching-with-fire",
           "title": "Preaching with Fire",
-          "caption": "A minister brings the word with passion from the pulpit."
+          "caption": "Our Regional Overseer brings the word with passion from the pulpit."
         },
         {
           "file": "preaching-daniel",
           "title": "Daniel 10:13",
-          "caption": "A minister teaches from the book of Daniel."
+          "caption": "Our Regional Overseer teaches from the book of Daniel."
         },
         {
           "file": "teaching-revelation",
@@ -143,12 +143,12 @@
         {
           "file": "minister-at-lectern",
           "title": "From the Lectern",
-          "caption": "A minister addresses the church from the pulpit."
+          "caption": "Our Regional Overseer addresses the church from the pulpit."
         },
         {
           "file": "minister-in-prayer",
           "title": "In Prayer",
-          "caption": "A minister prays over the tithes and offerings."
+          "caption": "Our Regional Overseer prays over the tithes and offerings."
         }
       ],
       "word": "WORD",
@@ -236,25 +236,25 @@
       "style": "crossfade"
     },
     {
-      "id": "christmas",
+      "id": "blessings",
       "numeral": "06",
-      "title": "Christmas Love Feast",
+      "title": "Father Blessings Feast",
       "tag": "a gift for every child",
       "text": "Gifts, smiles and a very special visitor for the children.",
       "colour": "#7A1238",
       "items": [
         {
-          "file": "christmas-love-feast",
-          "title": "Father Christmas Arrives",
-          "caption": "Father Christmas waits by the stage with gifts for the children at the Love Feast."
+          "file": "blessings-feast",
+          "title": "Father's Blessings Arrive",
+          "caption": "Our Regional Overseer waits by the stage with gifts for the children at the Blessings Feast."
         },
         {
-          "file": "christmas-gifts",
+          "file": "blessings-gifts",
           "title": "A Gift for Every Child",
           "caption": "Children line up in their best dresses to receive their presents."
         }
       ],
-      "word": "CHRISTMAS",
+      "word": "BLESSINGS",
       "style": "split"
     }
   ]

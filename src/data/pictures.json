@@ -1,5 +1,5 @@
 {
-  "_help": "Pictures page (scrapbook lookbook with parallax). 'opening' holds the six photos in the opening stack; each chapter has a spread-letter 'word', a handwritten 'tag', and its photos: the first is the full-screen feature, the rest form the parallax collage. Every photo should appear only once. Put photos in public/images/pictures/ as name.jpg (1600px wide) and name-sm.jpg (900px wide). Photos are 3:2 unless you add \"w\" and \"h\".",
+  "_help": "Pictures page (scrapbook lookbook with parallax). 'opening' holds the six photos in the opening stack; each chapter has a spread-letter 'word', a parallax 'style' (window, horizontal, stack, columns, crossfade or split), a handwritten 'tag', and its photos: the first is the full-screen feature, the rest form the parallax collage. Every photo should appear only once. Put photos in public/images/pictures/ as name.jpg (1600px wide) and name-sm.jpg (900px wide). Photos are 3:2 unless you add \"w\" and \"h\".",
   "opening": [
     {
       "file": "youth-singers",
@@ -77,7 +77,8 @@
           "caption": "A worship leader sings with eyes closed beneath the purple drapes."
         }
       ],
-      "word": "PRAISE"
+      "word": "PRAISE",
+      "style": "window"
     },
     {
       "id": "rejoice",
@@ -108,7 +109,8 @@
           "caption": "Children dance and sing along with the praise leader."
         }
       ],
-      "word": "REJOICE"
+      "word": "REJOICE",
+      "style": "horizontal"
     },
     {
       "id": "the-word",
@@ -149,7 +151,8 @@
           "caption": "A minister prays over the tithes and offerings."
         }
       ],
-      "word": "WORD"
+      "word": "WORD",
+      "style": "stack"
     },
     {
       "id": "prayer",
@@ -185,20 +188,21 @@
           "caption": "A young member speaks from the lectern."
         }
       ],
-      "word": "PRAYER"
+      "word": "PRAYER",
+      "style": "columns"
     },
     {
-      "id": "family",
+      "id": "dedication",
       "numeral": "05",
-      "title": "Testimonies & Family",
-      "tag": "look what God has done",
-      "text": "Our leaders, our church family and the friends who join us.",
+      "title": "Testimonies & Dedication",
+      "tag": "dedicated to the Lord",
+      "text": "Testimonies, dedications and the friends who stand with us.",
       "colour": "#8A6420",
       "items": [
         {
           "file": "family-celebration",
-          "title": "A Family Celebration",
-          "caption": "Family and friends gather in matching blue for a special celebration.",
+          "title": "Dedication Day",
+          "caption": "Family and friends gather in matching blue to dedicate a little one to the Lord.",
           "w": 1600,
           "h": 1200
         },
@@ -228,7 +232,8 @@
           "caption": "Ministers and mothers in Israel follow the service."
         }
       ],
-      "word": "FAMILY"
+      "word": "DEDICATION",
+      "style": "crossfade"
     },
     {
       "id": "christmas",
@@ -249,7 +254,8 @@
           "caption": "Children line up in their best dresses to receive their presents."
         }
       ],
-      "word": "CHRISTMAS"
+      "word": "CHRISTMAS",
+      "style": "split"
     }
   ]
 }

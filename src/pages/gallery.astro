@@ -9,7 +9,6 @@ import VideoCard from '../components/VideoCard.astro';
 import { prettyTitle } from '../lib/videos.js';
 import MediaSwitch from '../components/MediaSwitch.astro';
 import pictures from '../data/pictures.json';
-const picTotal = pictures.chapters.reduce((n, r) => n + r.items.length, 0);
 const picPreview = ['congregation-rejoicing', 'family-celebration', 'praise-team-joyful-noise'];
 // Skip any service whose thumbnail is already in the photo albums above, so no image appears twice
 const inAlbums = new Set(JSON.stringify(gallery).match(/vi\/([\w-]{11})\//g)?.map((m) => m.slice(3, -1)) ?? []);
@@ -53,7 +52,7 @@ const photos = albums.flatMap((a) => a.items.map((p) => ({ ...p, album: a.slug, 
         <div class="stack gal-pics__copy" style="--gap:14px">
           <span class="eyebrow eyebrow--gold">New · The Picture Lookbook</span>
           <h2 class="h2" id="gal-pics-title">Scroll through our story in pictures</h2>
-          <p class="lead">{picTotal} photographs of praise, prayer, the Word and church family, told in {pictures.chapters.length} chapters.</p>
+          <p class="lead">Photographs of praise, prayer, the Word and church family, told in {pictures.chapters.length} chapters.</p>
           <a class="btn btn--accent" href="/pictures/">Open the Picture Gallery <Icon name="arrow" size={20} /></a>
         </div>
         <a class="gal-pics__frames" href="/pictures/" tabindex="-1" aria-hidden="true">

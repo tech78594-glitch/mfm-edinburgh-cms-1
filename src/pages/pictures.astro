@@ -1,9 +1,14 @@
 ---
 // Pictures — a scrapbook lookbook with editorial parallax.
 //  • Opening: a stack of six photos bursts open around the title (lookbook style).
-//  • Each chapter: a spread-letter word whose letters drift at different speeds, then a feature photo
-//    that grows from a small window to fill the screen, then a collage of large photos in an
-//    off-balance layout, each moving at its own scroll speed and revealing as it enters.
+//  • Each chapter opens with a spread-letter word (letters drift at different speeds, or the word slides
+//    sideways), then uses its own parallax style:
+//      window     – a photo grows from a small window to full screen, then an off-balance collage
+//      horizontal – the page scrolls sideways through a strip of large photos
+//      stack      – photos pin and stack on top of each other like cards
+//      columns    – three columns of photos moving at different speeds
+//      crossfade  – full-screen photos dissolve into one another with a slow zoom
+//      split      – two photos slide in from either side and meet in the middle
 //  • Every photo appears once, opens full size, and is listed in "All photos".
 // Without JavaScript, or with reduced motion, everything is shown still.
 import Base from '../layouts/Base.astro';
@@ -16,7 +21,7 @@ const opening = data.opening.map(prep);
 const chapters = data.chapters.map((c) => ({ ...c, items: c.items.map(prep) }));
 let n = 0;
 opening.forEach((p) => { p.no = n++; });
-chapters.forEach((c) => c.items.forEach((p) => { p.no = n++; }));
+chapters.forEach((c) => c.items.forEach((p, i) => { p.no = n++; p.cn = i; })); // p.cn: number within its chapter
 const all = [...opening.map((p) => ({ ...p, chapter: 'Opening' })), ...chapters.flatMap((c) => c.items.map((p) => ({ ...p, chapter: c.title })))];
 const total = all.length;
 const pad = (i) => String(i).padStart(2, '0');
@@ -37,8 +42,13 @@ const place = (i) => {
   return { style: `--col:${p.col};--row:${row};--mt:${p.mt}vh;--colm:${MOBILE[i % MOBILE.length]}`, speed: p.speed };
 };
 const letterSpeed = (i) => [0.06, -0.04, 0.1, -0.08, 0.03, -0.1, 0.08, -0.02, 0.05][i % 9];
+const lab = (p) => `${p.title}: ${p.caption} Open full size.`;
+const ss = (p) => `${p.sm} 900w, ${p.lg} 1600w`;
+const ASPECTS = ['4 / 5', '3 / 2', '1 / 1', '3 / 4', '16 / 10'];
+const COL_SPEEDS = [-0.16, 0.12, -0.06];
+const columns = (items) => [0, 1, 2].map((k) => items.filter((_, i) => i % 3 === k));
 ---
-<Base title="Pictures" description={`The MFM Edinburgh picture lookbook: ${total} moments of praise, prayer, the Word, testimonies and family.`}>
+<Base title="Pictures" description="The MFM Edinburgh picture lookbook: moments of praise, prayer, the Word, testimonies and dedication.">
   <Fragment slot="head">
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -57,10 +67,10 @@ const letterSpeed = (i) => [0.06, -0.04, 0.1, -0.08, 0.03, -0.1, 0.08, -0.02, 0.
         <div class="lb-intro__title">
           <p class="hand lb-intro__kicker">our church in pictures</p>
           <h1 class="lb-intro__h1" id="page-title">The Picture <em>Gallery</em></h1>
-          <p class="lb-intro__sub">{total} moments from the life of MFM Edinburgh, in {chapters.length} chapters.</p>
+          <p class="lb-intro__sub">Moments from the life of MFM Edinburgh, in {chapters.length} chapters.</p>
           <div class="cluster lb-intro__cta">
             <a class="btn btn--primary" href={`#ch-${chapters[0].id}`}>Start the tour <Icon name="arrow" size={20} /></a>
-            <button type="button" class="btn lb-btn-outline" data-sheet-open><Icon name="image" size={20} /> See all {total} photos</button>
+            <button type="button" class="btn lb-btn-outline" data-sheet-open><Icon name="image" size={20} /> See all photos</button>
           </div>
         </div>
         <ul role="list" class="lb-stack" aria-label="Opening photos" data-stack-wrap>
@@ -79,12 +89,13 @@ const letterSpeed = (i) => [0.06, -0.04, 0.1, -0.08, 0.03, -0.1, 0.08, -0.02, 0.
     <!-- Chapters -->
     {chapters.map((c, ci) => {
       const [feature, ...rest] = c.items;
+      const slide = ci % 2 === 1;
       return (
-        <section class="pc" id={`ch-${c.id}`} data-chapter={ci} style={`--c:${c.colour}`} aria-labelledby={`ch-${c.id}-title`}>
+        <section class:list={['pc', `pc--${c.style}`]} id={`ch-${c.id}`} data-chapter={ci} style={`--c:${c.colour};--n:${c.items.length}`} aria-labelledby={`ch-${c.id}-title`}>
           <header class="container pc-open">
             <p class="pc-open__meta"><span class="pc-open__no">Chapter {c.numeral}</span><span class="hand pc-open__tag">{c.tag}</span></p>
-            <p class="pc-word" aria-hidden="true">
-              {[...c.word].map((ch, li) => <span data-speed={letterSpeed(li + ci)} style={`--d:${li * 60}ms`}>{ch}</span>)}
+            <p class:list={['pc-word', { 'pc-word--slide': slide, 'pc-word--outline': ci === 2 || ci === 5, 'pc-word--long': c.word.length > 8 }]} aria-hidden="true" data-slide={slide ? (ci % 4 === 1 ? 1 : -1) : undefined}>
+              {[...c.word].map((ch, li) => <span data-speed={slide ? undefined : letterSpeed(li + ci)} style={`--d:${li * 60}ms`}>{ch}</span>)}
             </p>
             <div class="pc-open__row">
               <h2 class="pc-open__title" id={`ch-${c.id}-title`}>{c.title}</h2>
@@ -92,36 +103,126 @@ const letterSpeed = (i) => [0.06, -0.04, 0.1, -0.08, 0.03, -0.1, 0.08, -0.02, 0.
             </div>
           </header>
 
-          <div class="pc-hero" data-hero>
-            <div class="pc-hero__stage">
-              <button type="button" class="pc-hero__frame" data-view={feature.no} aria-label={`${feature.title}: ${feature.caption} Open full size.`}>
-                <img src={feature.sm} srcset={`${feature.sm} 900w, ${feature.lg} 1600w`} sizes="100vw" alt={feature.caption} width={feature.w} height={feature.h} loading="lazy" decoding="async" />
-              </button>
-              <div class="pc-hero__cap" aria-hidden="true">
-                <span class="pc-num">{pad(feature.no + 1)}</span>
-                <span class="hand pc-hero__title">{feature.title}</span>
-                <span class="pc-hero__text">{feature.caption}</span>
+          {c.style === 'window' && (
+            <Fragment>
+              <div class="pc-hero" data-hero>
+                <div class="pc-hero__stage">
+                  <button type="button" class="pc-hero__frame" data-view={feature.no} aria-label={lab(feature)}>
+                    <img src={feature.sm} srcset={ss(feature)} sizes="100vw" alt={feature.caption} width={feature.w} height={feature.h} loading="lazy" decoding="async" />
+                  </button>
+                  <div class="pc-hero__cap" aria-hidden="true">
+                    <span class="pc-num">{pad(feature.cn + 1)}</span>
+                    <span class="hand pc-hero__title">{feature.title}</span>
+                    <span class="pc-hero__text">{feature.caption}</span>
+                  </div>
+                </div>
+              </div>
+              {rest.length > 0 && (
+                <ul role="list" class="container pc-collage">
+                  {rest.map((p, i) => {
+                    const pl = place(i);
+                    return (
+                      <li class="pc-item" style={pl.style}>
+                        <div class="pc-item__float" data-speed={pl.speed}>
+                          <button type="button" class="pc-item__frame pc-reveal" data-view={p.no} aria-label={lab(p)} style={`aspect-ratio:${p.w}/${p.h}`}>
+                            <img src={p.sm} srcset={ss(p)} sizes="(max-width: 760px) 92vw, 60vw" alt={p.caption} width={p.w} height={p.h} loading="lazy" decoding="async" data-inner />
+                          </button>
+                          <p class="pc-item__cap"><span class="pc-num">{pad(p.cn + 1)}</span><span class="hand">{p.title}</span></p>
+                          <p class="pc-item__text">{p.caption}</p>
+                        </div>
+                      </li>
+                    );
+                  })}
+                </ul>
+              )}
+            </Fragment>
+          )}
+
+          {c.style === 'horizontal' && (
+            <div class="hz" data-hz>
+              <div class="hz__stage">
+                <ul role="list" class="hz__track" data-track>
+                  {c.items.map((p) => (
+                    <li class="hz__item">
+                      <button type="button" class="hz__frame" data-view={p.no} aria-label={lab(p)}>
+                        <img src={p.sm} srcset={ss(p)} sizes="(max-width: 760px) 84vw, 62vw" alt={p.caption} width={p.w} height={p.h} loading="lazy" decoding="async" data-hz-img />
+                      </button>
+                      <p class="pc-item__cap"><span class="pc-num">{pad(p.cn + 1)}</span><span class="hand">{p.title}</span></p>
+                      <p class="pc-item__text">{p.caption}</p>
+                    </li>
+                  ))}
+                </ul>
+                <p class="hand hz__hint" aria-hidden="true">keep scrolling →</p>
               </div>
             </div>
-          </div>
+          )}
 
-          {rest.length > 0 && (
-            <ul role="list" class="container pc-collage">
-              {rest.map((p, i) => {
-                const pl = place(i);
-                return (
-                  <li class="pc-item" style={pl.style}>
-                    <div class="pc-item__float" data-speed={pl.speed}>
-                      <button type="button" class="pc-item__frame pc-reveal" data-view={p.no} aria-label={`${p.title}: ${p.caption} Open full size.`} style={`aspect-ratio:${p.w}/${p.h}`}>
-                        <img src={p.sm} srcset={`${p.sm} 900w, ${p.lg} 1600w`} sizes="(max-width: 760px) 92vw, 60vw" alt={p.caption} width={p.w} height={p.h} loading="lazy" decoding="async" data-inner />
-                      </button>
-                      <p class="pc-item__cap"><span class="pc-num">{pad(p.no + 1)}</span><span class="hand">{p.title}</span></p>
-                      <p class="pc-item__text">{p.caption}</p>
-                    </div>
-                  </li>
-                );
-              })}
+          {c.style === 'stack' && (
+            <ul role="list" class="container st" data-stack-cards>
+              {c.items.map((p, i) => (
+                <li class="st__item" style={`--i:${i}`}>
+                  <div class="st__card" data-st-card>
+                    <button type="button" class="st__frame" data-view={p.no} aria-label={lab(p)}>
+                      <img src={p.sm} srcset={ss(p)} sizes="(max-width: 760px) 92vw, 80vw" alt={p.caption} width={p.w} height={p.h} loading="lazy" decoding="async" />
+                    </button>
+                    <p class="st__cap"><span class="pc-num">{pad(p.cn + 1)}</span><span class="hand">{p.title}</span><span class="st__text">{p.caption}</span></p>
+                  </div>
+                </li>
+              ))}
             </ul>
+          )}
+
+          {c.style === 'columns' && (
+            <div class="container co">
+              {columns(c.items).map((col, k) => (
+                <ul role="list" class="co__col" data-speed={COL_SPEEDS[k]} style={`--k:${k}`}>
+                  {col.map((p, j) => (
+                    <li class="co__item">
+                      <button type="button" class="co__frame pc-reveal" data-view={p.no} aria-label={lab(p)} style={`aspect-ratio:${ASPECTS[(p.no + k + j) % ASPECTS.length]}`}>
+                        <img src={p.sm} srcset={ss(p)} sizes="(max-width: 760px) 46vw, 30vw" alt={p.caption} width={p.w} height={p.h} loading="lazy" decoding="async" />
+                      </button>
+                      <p class="pc-item__cap"><span class="pc-num">{pad(p.cn + 1)}</span><span class="hand">{p.title}</span></p>
+                    </li>
+                  ))}
+                </ul>
+              ))}
+            </div>
+          )}
+
+          {c.style === 'crossfade' && (
+            <div class="cf" data-cf>
+              <div class="cf__stage">
+                <ul role="list" class="cf__list">
+                  {c.items.map((p, i) => (
+                    <li class="cf__slide" data-cf-slide style={`--dir:${i % 2 ? 1 : -1}`}>
+                      <button type="button" class="cf__frame" data-view={p.no} aria-label={lab(p)}>
+                        <img src={p.sm} srcset={ss(p)} sizes="100vw" alt={p.caption} width={p.w} height={p.h} loading="lazy" decoding="async" />
+                      </button>
+                      <p class="cf__cap"><span class="pc-num">{pad(p.cn + 1)} / {pad(c.items.length)}</span><span class="hand cf__title">{p.title}</span><span class="cf__text">{p.caption}</span></p>
+                    </li>
+                  ))}
+                </ul>
+                <ol class="cf__dots" aria-hidden="true">{c.items.map(() => <li data-cf-dot></li>)}</ol>
+              </div>
+            </div>
+          )}
+
+          {c.style === 'split' && (
+            <div class="sp" data-sp>
+              <div class="sp__stage">
+                <p class="hand sp__note" aria-hidden="true">{c.tag}</p>
+                <ul role="list" class="sp__list">
+                  {c.items.map((p, i) => (
+                    <li class="sp__card" data-sp-card={i}>
+                      <button type="button" class="sp__frame" data-view={p.no} aria-label={lab(p)}>
+                        <img src={p.sm} srcset={ss(p)} sizes="(max-width: 760px) 84vw, 44vw" alt={p.caption} width={p.w} height={p.h} loading="lazy" decoding="async" />
+                      </button>
+                      <p class="pc-item__cap"><span class="pc-num">{pad(p.cn + 1)}</span><span class="hand">{p.title}</span></p>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
           )}
         </section>
       );
@@ -134,7 +235,7 @@ const letterSpeed = (i) => [0.06, -0.04, 0.1, -0.08, 0.03, -0.1, 0.08, -0.02, 0.
         <p class="lead">Come and be part of the next picture. Sundays at 10:30, 13 Bangor Road, Leith.</p>
         <div class="cluster">
           <a class="btn btn--primary" href="/services/">Service times</a>
-          <button type="button" class="btn lb-btn-outline" data-sheet-open><Icon name="image" size={20} /> See all {total} photos</button>
+          <button type="button" class="btn lb-btn-outline" data-sheet-open><Icon name="image" size={20} /> See all photos</button>
           <a class="btn lb-btn-outline" href="/videos/">Watch our videos</a>
         </div>
       </div>
@@ -153,7 +254,7 @@ const letterSpeed = (i) => [0.06, -0.04, 0.1, -0.08, 0.03, -0.1, 0.08, -0.02, 0.
   <dialog class="sheet" aria-labelledby="sheet-title" data-sheet>
     <div class="sheet__inner">
       <header class="sheet__head">
-        <h2 id="sheet-title" class="h3s">All {total} photos</h2>
+        <h2 id="sheet-title" class="h3s">All photos</h2>
         <button type="button" class="v-btn sheet__close" data-sheet-close aria-label="Close"><Icon name="close" /></button>
       </header>
       {[{ numeral: '00', title: 'Opening', items: opening }, ...chapters].map((c) => (
@@ -335,6 +436,88 @@ const letterSpeed = (i) => [0.06, -0.04, 0.1, -0.08, 0.03, -0.1, 0.08, -0.02, 0.
   :global(body.lb-modal) { overflow: hidden; }
 
   /* ---------- Small screens ---------- */
+
+  /* ---------- Word variations ---------- */
+  .pc-word--outline { color: transparent; -webkit-text-stroke: 2px var(--c); }
+  .pc-word--long { font-size: clamp(2.5rem, .5rem + 8vw, 9rem); }
+  .lb.is-fly .pc-word--slide { justify-content: flex-start; gap: .5em; white-space: nowrap; overflow: visible; border-color: transparent; }
+  .lb.is-fly .pc-word--slide span:first-child { margin-left: var(--wx, 0px); }
+
+  /* ---------- Shared photo button ---------- */
+  .hz__frame, .st__frame, .co__frame, .cf__frame, .sp__frame { display: block; width: 100%; padding: 0; border: 0; overflow: hidden; background: #DCD2C2; cursor: zoom-in; }
+  .hz__frame:focus-visible, .st__frame:focus-visible, .co__frame:focus-visible, .cf__frame:focus-visible, .sp__frame:focus-visible { outline: 3px solid var(--purple); outline-offset: 4px; }
+  .hz__frame img, .st__frame img, .co__frame img, .cf__frame img, .sp__frame img { display: block; width: 100%; height: 100%; object-fit: cover; }
+
+  /* Static layout for every style (no JavaScript or reduced motion): a tidy grid */
+  .hz__track, .st, .cf__list, .sp__list { list-style: none; margin: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(340px, 100%), 1fr)); gap: clamp(24px, 1rem + 2vw, 48px); padding-block: 24px; }
+  .hz__track, .cf__list, .sp__list { width: 100%; max-width: var(--container); margin-inline: auto; padding-inline: var(--gutter); }
+  .hz__frame, .cf__frame, .sp__frame, .st__frame { border-radius: 8px; aspect-ratio: 3 / 2; }
+  .hz__hint, .cf__dots, .sp__note { display: none; }
+  .st__cap, .cf__cap { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 12px; margin-top: 12px; }
+  .st__cap .hand, .cf__title { font-size: clamp(1.125rem, 1rem + .4vw, 1.375rem); }
+  .st__text, .cf__text { flex-basis: 100%; color: var(--slate); font-size: .9375rem; }
+
+  /* ---------- 02 Horizontal: the page scrolls sideways ---------- */
+  .lb.is-fly .hz { height: calc(var(--n) * 75svh + 100svh); }
+  .lb.is-fly .hz__stage { position: sticky; top: var(--header-h); height: calc(100svh - var(--header-h)); overflow: hidden; display: flex; align-items: center; }
+  .lb.is-fly .hz__track { display: flex; align-items: center; gap: 5vw; width: max-content; max-width: none; margin: 0; padding: 0 30vw 0 var(--gutter); transform: translate3d(var(--hx, 0px), 0, 0); will-change: transform; }
+  .lb.is-fly .hz__item { flex: none; width: min(62vw, calc((100svh - var(--header-h) - 220px) * 1.5)); }
+  .lb.is-fly .hz__item:nth-child(even) { margin-top: 10vh; }
+  .lb.is-fly .hz__item:nth-child(odd) { margin-bottom: 8vh; }
+  .lb.is-fly .hz__frame img { width: 120%; max-width: none; margin-left: -10%; transform: translate3d(var(--ix, 0px), 0, 0); will-change: transform; }
+  .lb.is-fly .hz__hint { display: block; position: absolute; right: var(--gutter); top: 18px; color: var(--c); font-size: 1.25rem; }
+
+  /* ---------- 03 Stack: photos pin and pile up like cards ---------- */
+  .st__card { background: #fff; border-radius: 12px; padding: clamp(8px, .4rem + .5vw, 14px); box-shadow: 0 24px 60px rgba(40, 20, 10, .2); }
+  .st__card .st__cap { margin: 10px 4px 4px; }
+  .lb.is-fly .st { display: block; padding-block: 0 8vh; }
+  .lb.is-fly .st__item { height: 88svh; }
+  .lb.is-fly .st__item:last-child { height: auto; }
+  .lb.is-fly .st__card { position: sticky; top: calc(var(--header-h) + 2.5vh + var(--i) * 12px); width: min(100%, calc((100svh - var(--header-h) - 190px) * 1.5 + 28px)); margin-inline: auto; transform-origin: 50% 0; transform: scale(var(--ss, 1)) rotate(calc((var(--i) - 2) * .6deg)); filter: brightness(var(--sb, 1)); will-change: transform, filter; }
+
+  /* ---------- 04 Columns: three columns at different speeds ---------- */
+  .co { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(16px, 1rem + 2vw, 48px); align-items: start; padding-block: 24px; }
+  .co__col { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: clamp(28px, 1rem + 3vw, 72px); }
+  .co__frame { border-radius: 6px; box-shadow: 0 24px 50px rgba(40, 20, 10, .16); }
+  .lb.is-fly .co { padding-block: 8vh 20vh; }
+  .lb.is-fly .co__col { will-change: transform; }
+  .lb.is-fly .co__col:nth-child(2) { margin-top: 22vh; }
+  .lb.is-fly .co__col:nth-child(3) { margin-top: 9vh; }
+
+  /* ---------- 05 Crossfade: full-screen photos dissolve with a slow zoom ---------- */
+  .lb.is-fly .cf { height: calc(var(--n) * 85svh + 60svh); }
+  .lb.is-fly .cf__stage { position: sticky; top: var(--header-h); height: calc(100svh - var(--header-h)); overflow: hidden; background: var(--ink); }
+  .lb.is-fly .cf__list { display: block; position: absolute; inset: 0; max-width: none; padding: 0; }
+  .lb.is-fly .cf__slide { position: absolute; inset: 0; opacity: var(--o, 0); pointer-events: none; }
+  .lb.is-fly .cf__slide.is-live { pointer-events: auto; }
+  .lb.is-fly .cf__frame { position: absolute; inset: 0; border-radius: 0; aspect-ratio: auto; height: 100%; background: var(--ink); }
+  .lb.is-fly .cf__frame img { transform: scale(var(--kz, 1.15)) translate3d(calc(var(--kx, 0) * 1%), 0, 0); will-change: transform; }
+  .lb.is-fly .cf__cap { opacity: var(--co, 0); transition: opacity .35s ease; position: absolute; left: 0; right: 0; bottom: 0; margin: 0; padding: 80px var(--gutter) 92px; color: var(--white); background: linear-gradient(0deg, rgba(20, 8, 26, .85), transparent); pointer-events: none; }
+  .lb.is-fly .cf__cap .pc-num { color: var(--fire-yellow); }
+  .lb.is-fly .cf__text { color: #EDE4F2; max-width: 40em; }
+  .lb.is-fly .cf__dots { display: flex; flex-direction: column; gap: 10px; position: absolute; right: var(--gutter); top: 50%; transform: translateY(-50%); margin: 0; padding: 0; list-style: none; }
+  .lb.is-fly .cf__dots li { width: 10px; height: 10px; border-radius: 50%; border: 2px solid rgba(255,255,255,.8); transition: background .3s, transform .3s; }
+  .lb.is-fly .cf__dots li.is-on { background: var(--fire-yellow); border-color: var(--fire-yellow); transform: scale(1.3); }
+
+  /* ---------- 06 Split: two photos slide in from either side ---------- */
+  .lb.is-fly .sp { height: 210svh; }
+  .lb.is-fly .sp__stage { position: sticky; top: var(--header-h); height: calc(100svh - var(--header-h)); overflow: hidden; }
+  .lb.is-fly .sp__list { display: block; position: absolute; inset: 0; max-width: none; padding: 0; }
+  .lb.is-fly .sp__card { position: absolute; left: 50%; top: 50%; width: min(44vw, calc((100svh - var(--header-h) - 200px) * 1.5)); padding: 10px 10px 4px; background: #fff; border-radius: 10px; box-shadow: 0 30px 70px rgba(40, 20, 10, .28); will-change: transform; }
+  .lb.is-fly .sp__card .pc-item__cap { margin: 8px 4px; }
+  .lb.is-fly .sp__note { display: block; position: absolute; left: 50%; top: 9%; transform: translateX(-50%) rotate(-3deg); color: var(--c); font-size: clamp(1.5rem, 1rem + 2vw, 2.75rem); white-space: nowrap; opacity: var(--no, 0); }
+
+  @media (max-width: 760px) {
+    .co { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .co__col:nth-child(3) { grid-column: 1 / -1; }
+    .lb.is-fly .co__col:nth-child(2) { margin-top: 12vh; }
+    .lb.is-fly .co__col:nth-child(3) { margin-top: 0; }
+    .lb.is-fly .hz__item { width: 84vw; }
+    .lb.is-fly .hz__item:nth-child(even) { margin-top: 4vh; }
+    .lb.is-fly .sp__card { width: 82vw; }
+    .lb.is-fly .cf__dots { top: 18px; transform: none; flex-direction: row; right: 50%; translate: 50% 0; }
+  }
+
   @media (max-width: 760px) {
     .lb.is-fly .lb-stack__card { width: 50vw; }
     .lb.is-fly .lb-note--a { left: 6vw; top: 18%; }
@@ -371,7 +554,7 @@ const letterSpeed = (i) => [0.06, -0.04, 0.1, -0.08, 0.03, -0.1, 0.08, -0.02, 0.
     img.src = p.src; img.alt = p.caption; img.width = p.w; img.height = p.h;
     vq('[data-v-title]').textContent = p.title;
     vq('[data-v-cap]').textContent = p.caption;
-    vq('[data-v-meta]').textContent = `${p.chapter} · ${vi + 1} of ${items.length}`;
+    vq('[data-v-meta]').textContent = p.chapter;
     const card = vq('.viewer__card'); card.style.animation = 'none'; void card.offsetWidth; card.style.animation = '';
     new Image().src = items[(vi + 1) % items.length].src;
   };
@@ -467,6 +650,78 @@ const letterSpeed = (i) => [0.06, -0.04, 0.1, -0.08, 0.03, -0.1, 0.08, -0.02, 0.
       });
     };
 
+
+    // Words: some chapters' words slide sideways as the page scrolls
+    const slideWords = [...root.querySelectorAll('[data-slide]')].map((el) => ({ el, first: el.querySelector('span'), dir: +el.dataset.slide }));
+    const paintWords = () => slideWords.forEach((w) => {
+      const r = w.el.getBoundingClientRect();
+      if (r.bottom < 0 || r.top > innerHeight) return;
+      const d = (innerHeight / 2) - (r.top + r.height / 2);
+      w.el.style.setProperty('--wx', `${(d * .3 * w.dir).toFixed(1)}px`);
+    });
+
+    // 02 Horizontal: vertical scrolling moves the strip sideways; photos shift inside their frames
+    const hzs = [...root.querySelectorAll('[data-hz]')].map((el) => ({ el, stage: el.querySelector('.hz__stage'), track: el.querySelector('[data-track]'), imgs: [...el.querySelectorAll('[data-hz-img]')] }));
+    const paintHz = (h) => {
+      const r = h.el.getBoundingClientRect();
+      if (r.bottom < 0 || r.top > innerHeight) return;
+      const p = progress(h.el, h.stage);
+      const dist = Math.max(0, h.track.scrollWidth - innerWidth);
+      h.track.style.setProperty('--hx', `${(-p * dist).toFixed(1)}px`);
+      h.imgs.forEach((img) => { const b = img.parentElement.getBoundingClientRect(); const dx = (b.left + b.width / 2) - innerWidth / 2; img.style.setProperty('--ix', `${(-dx * .08).toFixed(1)}px`); });
+    };
+
+    // 03 Stack: each card shrinks and dims as the next one slides over it
+    const stacks = [...root.querySelectorAll('[data-stack-cards]')].map((el) => [...el.querySelectorAll('[data-st-card]')]);
+    const paintStack = (cards) => cards.forEach((card, i) => {
+      const next = cards[i + 1];
+      if (!next) return;
+      const a = card.getBoundingClientRect(), b = next.getBoundingClientRect();
+      if (a.bottom < -200 || a.top > innerHeight) return;
+      const k = clamp(1 - (b.top - a.top) / Math.max(1, a.height));
+      card.style.setProperty('--ss', (1 - k * .07).toFixed(3));
+      card.style.setProperty('--sb', (1 - k * .45).toFixed(3));
+    });
+
+    // 05 Crossfade: one photo dissolves into the next with a slow zoom
+    const cfs = [...root.querySelectorAll('[data-cf]')].map((el) => ({ el, stage: el.querySelector('.cf__stage'), slides: [...el.querySelectorAll('[data-cf-slide]')], dots: [...el.querySelectorAll('[data-cf-dot]')] }));
+    const paintCf = (c) => {
+      const r = c.el.getBoundingClientRect();
+      if (r.bottom < 0 || r.top > innerHeight) return;
+      const n = c.slides.length;
+      const pos = progress(c.el, c.stage) * (n - 1);
+      const cur = Math.round(pos);
+      c.slides.forEach((sl, i) => {
+        // Each new photo fades in over the previous one (which stays solid), so the screen never dims
+        const o = i <= Math.floor(pos) ? 1 : clamp((pos - i + 1 - .3) / .4);
+        sl.style.setProperty('--co', i === cur ? '1' : '0');
+        const t = clamp((pos - i + 1) / 2);
+        sl.style.setProperty('--o', o.toFixed(3));
+        sl.style.setProperty('--kz', (1.18 - .18 * t).toFixed(3));
+        sl.style.setProperty('--kx', ((1 - t) * 3 * +getComputedStyle(sl).getPropertyValue('--dir')).toFixed(2));
+        sl.style.zIndex = i + 1;
+        sl.classList.toggle('is-live', i === cur);
+      });
+      c.dots.forEach((d, i) => d.classList.toggle('is-on', i === cur));
+    };
+
+    // 06 Split: two photos fly in from the sides and meet in the middle
+    const sps = [...root.querySelectorAll('[data-sp]')].map((el) => ({ el, stage: el.querySelector('.sp__stage'), cards: [...el.querySelectorAll('[data-sp-card]')], note: el.querySelector('.sp__note') }));
+    const paintSp = (sp) => {
+      const r = sp.el.getBoundingClientRect();
+      if (r.bottom < 0 || r.top > innerHeight) return;
+      const t = easeOut(clamp(progress(sp.el, sp.stage) / .65));
+      const m = mobile.matches;
+      sp.cards.forEach((card, i) => {
+        const side = i ? 1 : -1;
+        const x = m ? side * 90 * (1 - t) : side * (24 + 56 * (1 - t));
+        const y = m ? side * 18 : side * 4 * t;
+        const rot = side * (3 + 14 * (1 - t));
+        card.style.transform = `translate(-50%, -50%) translate3d(${x.toFixed(2)}vw, ${y.toFixed(2)}vh, 0) rotate(${rot.toFixed(2)}deg)`;
+      });
+      sp.stage.style.setProperty('--no', clamp((t - .7) / .3).toFixed(3));
+    };
+
     // Reveal photos and spread words as they come into view
     const io = new IntersectionObserver((entries) => entries.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('is-in'); io.unobserve(e.target); } }), { rootMargin: '0px 0px -6% 0px' });
     root.querySelectorAll('.pc-reveal, .pc-word').forEach((el) => io.observe(el));
@@ -486,7 +741,7 @@ const letterSpeed = (i) => [0.06, -0.04, 0.1, -0.08, 0.03, -0.1, 0.08, -0.02, 0.
     };
 
     let ticking = false;
-    const paint = () => { ticking = false; paintIntro(); heroes.forEach(paintHero); paintFloats(); paintBar(); };
+    const paint = () => { ticking = false; paintIntro(); heroes.forEach(paintHero); paintFloats(); paintWords(); hzs.forEach(paintHz); stacks.forEach(paintStack); cfs.forEach(paintCf); sps.forEach(paintSp); paintBar(); };
     const request = () => { if (!ticking) { ticking = true; requestAnimationFrame(paint); } };
     addEventListener('scroll', request, { passive: true });
     addEventListener('resize', request);
@@ -499,7 +754,17 @@ const letterSpeed = (i) => [0.06, -0.04, 0.1, -0.08, 0.03, -0.1, 0.08, -0.02, 0.
       e.preventDefault();
       scrollTo({ top: el.getBoundingClientRect().top + scrollY - headerH(), behavior: 'instant' });
     }));
-    // Keyboard users: uncover photos as soon as they receive focus
-    root.addEventListener('focusin', (e) => { e.target.closest('.pc-reveal')?.classList.add('is-in'); });
+    // Keyboard users: uncover photos as they receive focus, and scroll pinned scenes so the focused photo is on screen
+    const toProgress = (el, stage, p) => scrollTo({ top: el.getBoundingClientRect().top + scrollY - headerH() + p * (el.offsetHeight - stage.offsetHeight), behavior: 'instant' });
+    root.addEventListener('focusin', (e) => {
+      e.target.closest('.pc-reveal')?.classList.add('is-in');
+      if (!e.target.matches(':focus-visible')) return;
+      const h = hzs.find((x) => x.el.contains(e.target));
+      if (h) { const items = [...h.track.children]; const i = items.indexOf(e.target.closest('li')); toProgress(h.el, h.stage, i / Math.max(1, items.length - 1)); }
+      const c = cfs.find((x) => x.el.contains(e.target));
+      if (c) { const i = c.slides.indexOf(e.target.closest('[data-cf-slide]')); toProgress(c.el, c.stage, i / Math.max(1, c.slides.length - 1)); }
+      const sp = sps.find((x) => x.el.contains(e.target));
+      if (sp) toProgress(sp.el, sp.stage, .8);
+    });
   }
 </script>

@@ -55,7 +55,7 @@ const SHOW = 6;
         <button role="tab" id="tab-ed" aria-controls="panel-ed" aria-selected="true" type="button">MFM Edinburgh</button>
         <button role="tab" id="tab-ww" aria-controls="panel-ww" aria-selected="false" tabindex="-1" type="button">MFM Worldwide</button>
       </div>
-      {[[ed, 'ed', 'MFM Edinburgh', ed.items.slice(1)], [ww, 'ww', 'Dr D. K. Olukoya · MFM Ministries', ww.items]].map(([ch, key, meta, list], i) => (
+      {[[ed, 'ed', 'MFM Edinburgh', ed.items.slice(1)], [ww, 'ww', 'Dr D. K. Olukoya · MFM Ministries', ww.items.filter((v) => v.id !== message?.id)]].map(([ch, key, meta, list], i) => (
         <div role="tabpanel" id={`panel-${key}`} aria-labelledby={`tab-${key}`} hidden={i !== 0} tabindex="0">
           <ul role="list" class="grid vgrid" style="--min:300px;--gap:32px 24px">
             {list.map((v, j) => <li hidden={j >= SHOW} data-more={j >= SHOW ? '' : undefined}><VideoCard id={v.id} title={prettyTitle(v.title)} meta={`${meta}${len(v)}`} /></li>)}

@@ -1,5 +1,37 @@
 {
-  "_help": "Pictures page (scrapbook lookbook). Each chapter is a pinned scene the photos fly through as visitors scroll. Put photos in public/images/pictures/ as name.jpg (1600px wide) and name-sm.jpg (900px wide), then list them here. Photos are 3:2 unless you add \"w\" and \"h\". 'tag' is the handwritten note. 'colour' is the big title colour.",
+  "_help": "Pictures page (scrapbook lookbook with parallax). 'opening' holds the six photos in the opening stack; each chapter has a spread-letter 'word', a handwritten 'tag', and its photos: the first is the full-screen feature, the rest form the parallax collage. Every photo should appear only once. Put photos in public/images/pictures/ as name.jpg (1600px wide) and name-sm.jpg (900px wide). Photos are 3:2 unless you add \"w\" and \"h\".",
+  "opening": [
+    {
+      "file": "youth-singers",
+      "title": "Voices Lifted",
+      "caption": "Young singers lead praise during a service."
+    },
+    {
+      "file": "praise-leader",
+      "title": "Make It Loud",
+      "caption": "A praise leader calls the congregation to rejoice."
+    },
+    {
+      "file": "word-of-exhortation",
+      "title": "A Word of Exhortation",
+      "caption": "A minister encourages the church from the lectern."
+    },
+    {
+      "file": "guests-taking-notes",
+      "title": "Taking Notes",
+      "caption": "Guests and members take notes during the teaching."
+    },
+    {
+      "file": "standing-in-prayer",
+      "title": "Ask, Believing",
+      "caption": "Members pray with Matthew 21:22 on the screen."
+    },
+    {
+      "file": "congregation-and-guests",
+      "title": "One Congregation",
+      "caption": "Members and guests sit together during a special programme."
+    }
+  ],
   "chapters": [
     {
       "id": "joyful-noise",
@@ -9,16 +41,43 @@
       "text": "Songs of thanksgiving that fill the house at 13 Bangor Road.",
       "colour": "#570B75",
       "items": [
-        { "file": "joyful-noise-concert", "title": "A Joyful Noise", "caption": "The choir leads the church in “Yahweh, the mighty God” at the Joyful Noise concert." },
-        { "file": "praise-team-joyful-noise", "title": "Lift Your Voice", "caption": "The praise team ministers in front of the Joyful Noise flower wall." },
-        { "file": "we-thank-you-lord", "title": "We Thank You, Lord", "caption": "The choir and band lead the song of thanksgiving." },
-        { "file": "worship-leader-choir", "title": "With All Our Hearts", "caption": "A worship leader sings out with the choir behind him." },
-        { "file": "choir-ministration", "title": "Robed in White", "caption": "The choir ministers in song while a minister leads from the lectern." },
-        { "file": "choir-rehearsal", "title": "Before the Downbeat", "caption": "The choir director gives the cue to the choir in white and green." },
-        { "file": "youth-singers", "title": "Voices Lifted", "caption": "Young singers lead praise during a service." },
-        { "file": "worship-leader", "title": "Deep Worship", "caption": "A worship leader sings with eyes closed beneath the purple drapes." },
-        { "file": "praise-leader", "title": "Make It Loud", "caption": "A praise leader calls the congregation to rejoice." }
-      ]
+        {
+          "file": "joyful-noise-concert",
+          "title": "A Joyful Noise",
+          "caption": "The choir leads the church in “Yahweh, the mighty God” at the Joyful Noise concert."
+        },
+        {
+          "file": "praise-team-joyful-noise",
+          "title": "Lift Your Voice",
+          "caption": "The praise team ministers in front of the Joyful Noise flower wall."
+        },
+        {
+          "file": "we-thank-you-lord",
+          "title": "We Thank You, Lord",
+          "caption": "The choir and band lead the song of thanksgiving."
+        },
+        {
+          "file": "worship-leader-choir",
+          "title": "With All Our Hearts",
+          "caption": "A worship leader sings out with the choir behind him."
+        },
+        {
+          "file": "choir-ministration",
+          "title": "Robed in White",
+          "caption": "The choir ministers in song while a minister leads from the lectern."
+        },
+        {
+          "file": "choir-rehearsal",
+          "title": "Before the Downbeat",
+          "caption": "The choir director gives the cue to the choir in white and green."
+        },
+        {
+          "file": "worship-leader",
+          "title": "Deep Worship",
+          "caption": "A worship leader sings with eyes closed beneath the purple drapes."
+        }
+      ],
+      "word": "PRAISE"
     },
     {
       "id": "rejoice",
@@ -28,11 +87,28 @@
       "text": "Dancing, singing and children’s laughter: the church at its happiest.",
       "colour": "#C8005F",
       "items": [
-        { "file": "congregation-rejoicing", "title": "Rejoice!", "caption": "Members on their feet, singing and clapping in praise." },
-        { "file": "dancing-in-the-aisle", "title": "Dancing in the Aisle", "caption": "Members dance with joy along the red carpet." },
-        { "file": "joyful-song", "title": "Joyful Song", "caption": "A minister of song worships in front of the “Joyful” floral display." },
-        { "file": "children-praise", "title": "Children’s Praise", "caption": "Children dance and sing along with the praise leader." }
-      ]
+        {
+          "file": "congregation-rejoicing",
+          "title": "Rejoice!",
+          "caption": "Members on their feet, singing and clapping in praise."
+        },
+        {
+          "file": "dancing-in-the-aisle",
+          "title": "Dancing in the Aisle",
+          "caption": "Members dance with joy along the red carpet."
+        },
+        {
+          "file": "joyful-song",
+          "title": "Joyful Song",
+          "caption": "A minister of song worships in front of the “Joyful” floral display."
+        },
+        {
+          "file": "children-praise",
+          "title": "Children’s Praise",
+          "caption": "Children dance and sing along with the praise leader."
+        }
+      ],
+      "word": "REJOICE"
     },
     {
       "id": "the-word",
@@ -42,15 +118,38 @@
       "text": "Teaching and preaching that sends us home strengthened.",
       "colour": "#1D1B20",
       "items": [
-        { "file": "preaching-with-fire", "title": "Preaching with Fire", "caption": "A minister brings the word with passion from the pulpit." },
-        { "file": "preaching-daniel", "title": "Daniel 10:13", "caption": "A minister teaches from the book of Daniel." },
-        { "file": "teaching-revelation", "title": "The Holy City", "caption": "A teacher shares from Revelation 21 as the church follows along." },
-        { "file": "congregation-listening", "title": "All Ears", "caption": "The congregation follows the message, Bibles open." },
-        { "file": "guests-taking-notes", "title": "Taking Notes", "caption": "Guests and members take notes during the teaching." },
-        { "file": "word-of-exhortation", "title": "A Word of Exhortation", "caption": "A minister encourages the church from the lectern." },
-        { "file": "minister-at-lectern", "title": "From the Lectern", "caption": "A minister addresses the church from the pulpit." },
-        { "file": "minister-in-prayer", "title": "In Prayer", "caption": "A minister prays over the tithes and offerings." }
-      ]
+        {
+          "file": "preaching-with-fire",
+          "title": "Preaching with Fire",
+          "caption": "A minister brings the word with passion from the pulpit."
+        },
+        {
+          "file": "preaching-daniel",
+          "title": "Daniel 10:13",
+          "caption": "A minister teaches from the book of Daniel."
+        },
+        {
+          "file": "teaching-revelation",
+          "title": "The Holy City",
+          "caption": "A teacher shares from Revelation 21 as the church follows along."
+        },
+        {
+          "file": "congregation-listening",
+          "title": "All Ears",
+          "caption": "The congregation follows the message, Bibles open."
+        },
+        {
+          "file": "minister-at-lectern",
+          "title": "From the Lectern",
+          "caption": "A minister addresses the church from the pulpit."
+        },
+        {
+          "file": "minister-in-prayer",
+          "title": "In Prayer",
+          "caption": "A minister prays over the tithes and offerings."
+        }
+      ],
+      "word": "WORD"
     },
     {
       "id": "prayer",
@@ -60,13 +159,33 @@
       "text": "A house of prayer, where everyone learns to pray for themselves.",
       "colour": "#891CB5",
       "items": [
-        { "file": "mountain-moving-prayers", "title": "Mountain Moving Prayers", "caption": "The whole church stands for ten minutes of mountain-moving prayer." },
-        { "file": "standing-in-prayer", "title": "Ask, Believing", "caption": "Members pray with Matthew 21:22 on the screen." },
-        { "file": "standing-together", "title": "Standing Together", "caption": "Guests and members stand side by side in prayer." },
-        { "file": "young-men-praying", "title": "Young Men at Prayer", "caption": "Two young men pray with open hands." },
-        { "file": "young-prayer-leader", "title": "Leading in Prayer", "caption": "A young member leads the church in prayer." },
-        { "file": "youth-at-lectern", "title": "A Young Voice", "caption": "A young member speaks from the lectern." }
-      ]
+        {
+          "file": "mountain-moving-prayers",
+          "title": "Mountain Moving Prayers",
+          "caption": "The whole church stands for ten minutes of mountain-moving prayer."
+        },
+        {
+          "file": "standing-together",
+          "title": "Standing Together",
+          "caption": "Guests and members stand side by side in prayer."
+        },
+        {
+          "file": "young-men-praying",
+          "title": "Young Men at Prayer",
+          "caption": "Two young men pray with open hands."
+        },
+        {
+          "file": "young-prayer-leader",
+          "title": "Leading in Prayer",
+          "caption": "A young member leads the church in prayer."
+        },
+        {
+          "file": "youth-at-lectern",
+          "title": "A Young Voice",
+          "caption": "A young member speaks from the lectern."
+        }
+      ],
+      "word": "PRAYER"
     },
     {
       "id": "family",
@@ -76,14 +195,40 @@
       "text": "Our leaders, our church family and the friends who join us.",
       "colour": "#8A6420",
       "items": [
-        { "file": "family-celebration", "title": "A Family Celebration", "caption": "Family and friends gather in matching blue for a special celebration.", "w": 1600, "h": 1200 },
-        { "file": "testimony-time", "title": "Testimony Time", "caption": "A sister shares what God has done, with a minister beside her." },
-        { "file": "sharing-testimony", "title": "Thanks Be to God", "caption": "Another testimony of God’s goodness." },
-        { "file": "youth-fellowship", "title": "After the Service", "caption": "A minister with young men of the church after service." },
-        { "file": "community-guests", "title": "Friends from the Community", "caption": "Guests from the wider Edinburgh community share a word with the church." },
-        { "file": "congregation-and-guests", "title": "One Congregation", "caption": "Members and guests sit together during a special programme." },
-        { "file": "front-row", "title": "The Front Row", "caption": "Ministers and mothers in Israel follow the service." }
-      ]
+        {
+          "file": "family-celebration",
+          "title": "A Family Celebration",
+          "caption": "Family and friends gather in matching blue for a special celebration.",
+          "w": 1600,
+          "h": 1200
+        },
+        {
+          "file": "testimony-time",
+          "title": "Testimony Time",
+          "caption": "A sister shares what God has done, with a minister beside her."
+        },
+        {
+          "file": "sharing-testimony",
+          "title": "Thanks Be to God",
+          "caption": "Another testimony of God’s goodness."
+        },
+        {
+          "file": "youth-fellowship",
+          "title": "After the Service",
+          "caption": "A minister with young men of the church after service."
+        },
+        {
+          "file": "community-guests",
+          "title": "Friends from the Community",
+          "caption": "Guests from the wider Edinburgh community share a word with the church."
+        },
+        {
+          "file": "front-row",
+          "title": "The Front Row",
+          "caption": "Ministers and mothers in Israel follow the service."
+        }
+      ],
+      "word": "FAMILY"
     },
     {
       "id": "christmas",
@@ -93,9 +238,18 @@
       "text": "Gifts, smiles and a very special visitor for the children.",
       "colour": "#7A1238",
       "items": [
-        { "file": "christmas-love-feast", "title": "Father Christmas Arrives", "caption": "Father Christmas waits by the stage with gifts for the children at the Love Feast." },
-        { "file": "christmas-gifts", "title": "A Gift for Every Child", "caption": "Children line up in their best dresses to receive their presents." }
-      ]
+        {
+          "file": "christmas-love-feast",
+          "title": "Father Christmas Arrives",
+          "caption": "Father Christmas waits by the stage with gifts for the children at the Love Feast."
+        },
+        {
+          "file": "christmas-gifts",
+          "title": "A Gift for Every Child",
+          "caption": "Children line up in their best dresses to receive their presents."
+        }
+      ],
+      "word": "CHRISTMAS"
     }
   ]
 }

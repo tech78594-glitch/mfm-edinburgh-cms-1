@@ -11,7 +11,9 @@ import MediaSwitch from '../components/MediaSwitch.astro';
 import pictures from '../data/pictures.json';
 const picTotal = pictures.chapters.reduce((n, r) => n + r.items.length, 0);
 const picPreview = ['congregation-rejoicing', 'family-celebration', 'praise-team-joyful-noise'];
-const latest = videos.channels.edinburgh.items.slice(0, 3);
+// Skip any service whose thumbnail is already in the photo albums above, so no image appears twice
+const inAlbums = new Set(JSON.stringify(gallery).match(/vi\/([\w-]{11})\//g)?.map((m) => m.slice(3, -1)) ?? []);
+const latest = videos.channels.edinburgh.items.filter((v) => !inAlbums.has(v.id)).slice(0, 3);
 const albums = gallery.albums || [];
 const photos = albums.flatMap((a) => a.items.map((p) => ({ ...p, album: a.slug, albumTitle: a.title })));
 ---

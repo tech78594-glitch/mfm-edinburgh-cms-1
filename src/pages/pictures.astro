@@ -1,27 +1,42 @@
 ---
-// Pictures — look: a scroll-driven scrapbook lookbook (inspired by fashion lookbooks).
-// Cream paper, handwritten notes, a stack of photos that bursts open, then six pinned chapters where
-// photos fly towards you over a giant title and pause in focus so each one can be looked at.
-// Every photo opens full-size in a viewer, and "See all photos" shows a contact sheet.
-// Without JavaScript, or with reduced motion, the chapters show as a simple scrapbook collage.
+// Pictures — a scrapbook lookbook with editorial parallax.
+//  • Opening: a stack of six photos bursts open around the title (lookbook style).
+//  • Each chapter: a spread-letter word whose letters drift at different speeds, then a feature photo
+//    that grows from a small window to fill the screen, then a collage of large photos in an
+//    off-balance layout, each moving at its own scroll speed and revealing as it enters.
+//  • Every photo appears once, opens full size, and is listed in "All photos".
+// Without JavaScript, or with reduced motion, everything is shown still.
 import Base from '../layouts/Base.astro';
 import Icon from '../components/Icon.astro';
 import MediaSwitch from '../components/MediaSwitch.astro';
 import data from '../data/pictures.json';
 
-const chapters = data.chapters.map((c) => ({
-  ...c,
-  items: c.items.map((p) => ({ ...p, w: p.w ?? 1600, h: p.h ?? 1067, lg: `/images/pictures/${p.file}.jpg`, sm: `/images/pictures/${p.file}-sm.jpg` })),
-}));
+const prep = (p) => ({ ...p, w: p.w ?? 1600, h: p.h ?? 1067, lg: `/images/pictures/${p.file}.jpg`, sm: `/images/pictures/${p.file}-sm.jpg` });
+const opening = data.opening.map(prep);
+const chapters = data.chapters.map((c) => ({ ...c, items: c.items.map(prep) }));
 let n = 0;
+opening.forEach((p) => { p.no = n++; });
 chapters.forEach((c) => c.items.forEach((p) => { p.no = n++; }));
-const all = chapters.flatMap((c) => c.items.map((p) => ({ ...p, chapter: c.title })));
+const all = [...opening.map((p) => ({ ...p, chapter: 'Opening' })), ...chapters.flatMap((c) => c.items.map((p) => ({ ...p, chapter: c.title })))];
 const total = all.length;
 const pad = (i) => String(i).padStart(2, '0');
-const find = (f) => all.find((p) => p.file === f) ?? all[0];
-const stack = ['christmas-love-feast', 'mountain-moving-prayers', 'preaching-with-fire', 'family-celebration', 'congregation-rejoicing', 'joyful-noise-concert'].map(find);
-const tapes = ['#F7C948', '#E9A6C9', '#9ED8C6', '#C7B4F0', '#F5B08A'];
-const sizes = '(max-width: 760px) 94vw, 70vw';
+
+// Off-balance collage: where each photo sits (12-column grid), how far it is pushed down, and its scroll speed.
+const PATTERN = [
+  { col: '1 / span 7', row: 1, mt: 0, speed: -0.05 },
+  { col: '9 / span 4', row: 1, mt: 26, speed: 0.12 },
+  { col: '3 / span 8', row: 2, mt: 4, speed: -0.03 },
+  { col: '1 / span 5', row: 3, mt: 8, speed: 0.09 },
+  { col: '7 / span 6', row: 3, mt: -6, speed: -0.06 },
+  { col: '2 / span 10', row: 4, mt: 6, speed: 0.04 },
+];
+const MOBILE = ['1 / span 6', '2 / span 5', '1 / span 6', '1 / span 5', '2 / span 5', '1 / span 6'];
+const place = (i) => {
+  const p = PATTERN[i % PATTERN.length];
+  const row = p.row + Math.floor(i / PATTERN.length) * 4;
+  return { style: `--col:${p.col};--row:${row};--mt:${p.mt}vh;--colm:${MOBILE[i % MOBILE.length]}`, speed: p.speed };
+};
+const letterSpeed = (i) => [0.06, -0.04, 0.1, -0.08, 0.03, -0.1, 0.08, -0.02, 0.05][i % 9];
 ---
 <Base title="Pictures" description={`The MFM Edinburgh picture lookbook: ${total} moments of praise, prayer, the Word, testimonies and family.`}>
   <Fragment slot="head">
@@ -36,7 +51,7 @@ const sizes = '(max-width: 760px) 94vw, 70vw';
       <MediaSwitch current="pictures" />
     </div>
 
-    <!-- Intro: a stack of photos that bursts open -->
+    <!-- Opening: six photos that burst open around the title -->
     <section class="lb-intro" aria-labelledby="page-title" data-intro>
       <div class="lb-stage lb-intro__stage">
         <div class="lb-intro__title">
@@ -48,11 +63,13 @@ const sizes = '(max-width: 760px) 94vw, 70vw';
             <button type="button" class="btn lb-btn-outline" data-sheet-open><Icon name="image" size={20} /> See all {total} photos</button>
           </div>
         </div>
-        <div class="lb-stack" aria-hidden="true">
-          {stack.map((p, i) => (
-            <span class="lb-stack__card" data-stack={i} style={`--i:${i}`}><img src={p.sm} alt="" width={p.w} height={p.h} loading="eager" /></span>
+        <ul role="list" class="lb-stack" aria-label="Opening photos" data-stack-wrap>
+          {opening.map((p, i) => (
+            <li class="lb-stack__card" data-stack={i} style={`--i:${i}`}>
+              <button type="button" data-view={p.no} aria-label={`${p.title}: ${p.caption} Open full size.`}><img src={p.sm} alt={p.caption} width={p.w} height={p.h} loading="eager" /></button>
+            </li>
           ))}
-        </div>
+        </ul>
         <p class="hand lb-note lb-note--a" aria-hidden="true" data-intro-note>MFM Edinburgh · 2026 <svg viewBox="0 0 60 40" width="52"><path d="M4 8c18 4 34 12 44 26m0 0-11-2m11 2 1-11" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></p>
         <p class="hand lb-note lb-note--b" aria-hidden="true" data-intro-note><svg viewBox="0 0 60 40" width="52"><path d="M56 6C40 10 22 18 12 34m0 0 11-2m-11 2-1-11" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg> Joyful noise!</p>
         <p class="hand lb-scroll" aria-hidden="true" data-intro-note>scroll to walk through <span>↓</span></p>
@@ -60,35 +77,55 @@ const sizes = '(max-width: 760px) 94vw, 70vw';
     </section>
 
     <!-- Chapters -->
-    {chapters.map((c, ci) => (
-      <section class="lb-ch" id={`ch-${c.id}`} data-chapter={ci} style={`--n:${c.items.length};--c:${c.colour}`} aria-labelledby={`ch-${c.id}-title`}>
-        <div class="lb-stage">
-          <header class="lb-ch__head">
-            <p class="lb-ch__no">Chapter {c.numeral} <span>· {c.items.length} photos</span></p>
-            <p class="hand lb-ch__tag">{c.tag}</p>
-            <p class="lb-ch__text">{c.text}</p>
+    {chapters.map((c, ci) => {
+      const [feature, ...rest] = c.items;
+      return (
+        <section class="pc" id={`ch-${c.id}`} data-chapter={ci} style={`--c:${c.colour}`} aria-labelledby={`ch-${c.id}-title`}>
+          <header class="container pc-open">
+            <p class="pc-open__meta"><span class="pc-open__no">Chapter {c.numeral}</span><span class="hand pc-open__tag">{c.tag}</span></p>
+            <p class="pc-word" aria-hidden="true">
+              {[...c.word].map((ch, li) => <span data-speed={letterSpeed(li + ci)} style={`--d:${li * 60}ms`}>{ch}</span>)}
+            </p>
+            <div class="pc-open__row">
+              <h2 class="pc-open__title" id={`ch-${c.id}-title`}>{c.title}</h2>
+              <p class="pc-open__text">{c.text} <span>{c.items.length} photos</span></p>
+            </div>
           </header>
-          <h2 class="lb-ch__title" id={`ch-${c.id}-title`}><span>{c.title}</span></h2>
-          <ul role="list" class="lb-cards">
-            {c.items.map((p, i) => (
-              <li class="lb-card" data-card={i} style={`--tape:${tapes[(p.no) % tapes.length]};--rot:${[-4, 3, -2, 4, -3, 2][i % 6]}deg`}>
-                <button type="button" class="lb-card__btn" data-view={p.no} aria-label={`${p.title}: ${p.caption} Open full size.`}>
-                  <span class="lb-card__img" style={`aspect-ratio:${p.w}/${p.h}`}>
-                    <img src={p.sm} srcset={`${p.sm} 900w, ${p.lg} 1600w`} sizes={sizes} alt={p.caption} width={p.w} height={p.h} loading="lazy" decoding="async" />
-                  </span>
-                  <span class="lb-card__cap"><span class="hand">{p.title}</span><span class="lb-card__no">{pad(p.no + 1)}</span></span>
-                </button>
-              </li>
-            ))}
-          </ul>
-          <div class="lb-ch__now" aria-hidden="true">
-            <span class="lb-ch__count"><b data-count>01</b> / {pad(c.items.length)}</span>
-            <span class="lb-ch__caption" data-caption>{c.items[0].caption}</span>
-            <span class="lb-ch__hint">Tap the photo to view it full size</span>
+
+          <div class="pc-hero" data-hero>
+            <div class="pc-hero__stage">
+              <button type="button" class="pc-hero__frame" data-view={feature.no} aria-label={`${feature.title}: ${feature.caption} Open full size.`}>
+                <img src={feature.sm} srcset={`${feature.sm} 900w, ${feature.lg} 1600w`} sizes="100vw" alt={feature.caption} width={feature.w} height={feature.h} loading="lazy" decoding="async" />
+              </button>
+              <div class="pc-hero__cap" aria-hidden="true">
+                <span class="pc-num">{pad(feature.no + 1)}</span>
+                <span class="hand pc-hero__title">{feature.title}</span>
+                <span class="pc-hero__text">{feature.caption}</span>
+              </div>
+            </div>
           </div>
-        </div>
-      </section>
-    ))}
+
+          {rest.length > 0 && (
+            <ul role="list" class="container pc-collage">
+              {rest.map((p, i) => {
+                const pl = place(i);
+                return (
+                  <li class="pc-item" style={pl.style}>
+                    <div class="pc-item__float" data-speed={pl.speed}>
+                      <button type="button" class="pc-item__frame pc-reveal" data-view={p.no} aria-label={`${p.title}: ${p.caption} Open full size.`} style={`aspect-ratio:${p.w}/${p.h}`}>
+                        <img src={p.sm} srcset={`${p.sm} 900w, ${p.lg} 1600w`} sizes="(max-width: 760px) 92vw, 60vw" alt={p.caption} width={p.w} height={p.h} loading="lazy" decoding="async" data-inner />
+                      </button>
+                      <p class="pc-item__cap"><span class="pc-num">{pad(p.no + 1)}</span><span class="hand">{p.title}</span></p>
+                      <p class="pc-item__text">{p.caption}</p>
+                    </div>
+                  </li>
+                );
+              })}
+            </ul>
+          )}
+        </section>
+      );
+    })}
 
     <!-- Outro -->
     <section class="lb-outro" data-outro aria-labelledby="outro-title">
@@ -119,7 +156,7 @@ const sizes = '(max-width: 760px) 94vw, 70vw';
         <h2 id="sheet-title" class="h3s">All {total} photos</h2>
         <button type="button" class="v-btn sheet__close" data-sheet-close aria-label="Close"><Icon name="close" /></button>
       </header>
-      {chapters.map((c) => (
+      {[{ numeral: '00', title: 'Opening', items: opening }, ...chapters].map((c) => (
         <section class="sheet__ch">
           <h3><span>{c.numeral}</span> {c.title}</h3>
           <ul role="list">
@@ -161,8 +198,9 @@ const sizes = '(max-width: 760px) 94vw, 70vw';
   .lb :global(.media-switch) { background: var(--ink); border-color: var(--ink); }
   .lb-btn-outline { background: transparent; color: var(--ink); border: 2px solid var(--ink); }
   .lb-btn-outline:hover { background: var(--ink); color: var(--white); }
+  .pc-num { font-size: .75rem; font-weight: 700; letter-spacing: .12em; color: var(--slate); }
 
-  /* ---------- Base (static scrapbook: no JavaScript or reduced motion) ---------- */
+  /* ---------- Opening (static) ---------- */
   .lb-stage { position: relative; }
   .lb-intro__stage { padding-block: clamp(32px, 1rem + 3vw, 64px); display: grid; gap: 32px; justify-items: center; text-align: center; }
   .lb-intro__title { display: flex; flex-direction: column; align-items: center; gap: 14px; position: relative; z-index: 3; }
@@ -172,43 +210,21 @@ const sizes = '(max-width: 760px) 94vw, 70vw';
   .lb-intro__sub { font-size: clamp(1.0625rem, .95rem + .5vw, 1.375rem); color: var(--slate); max-width: 32em; }
   .lb-intro__cta { justify-content: center; }
   .lb-stack { display: flex; flex-wrap: wrap; justify-content: center; gap: 16px; }
-  .lb-stack__card { display: block; width: clamp(120px, 18vw, 220px); padding: 7px 7px 22px; background: #fff; border-radius: 6px; box-shadow: 0 10px 24px rgba(40, 20, 10, .18); transform: rotate(calc((var(--i) - 2.5) * 3deg)); }
+  .lb-stack__card { width: clamp(140px, 22vw, 280px); transform: rotate(calc((var(--i) - 2.5) * 3deg)); }
+  .lb-stack__card button { display: block; width: 100%; padding: 7px 7px 22px; border: 0; background: #fff; border-radius: 6px; box-shadow: 0 10px 24px rgba(40, 20, 10, .18); cursor: zoom-in; }
+  .lb-stack__card button:focus-visible { outline: 3px solid var(--purple); outline-offset: 4px; }
   .lb-stack__card img { display: block; width: 100%; height: auto; border-radius: 3px; }
   .lb-note, .lb-scroll { display: none; }
 
-  .lb-ch { padding-block: clamp(48px, 2rem + 4vw, 112px); border-top: 1px dashed rgba(29, 27, 32, .18); }
-  .lb-ch .lb-stage { width: 100%; max-width: var(--container); margin-inline: auto; padding-inline: var(--gutter); display: grid; gap: 20px; }
-  .lb-ch__head { display: flex; flex-direction: column; gap: 6px; max-width: 30em; }
-  .lb-ch__no { font-size: .875rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--c); }
-  .lb-ch__no span { color: var(--slate); }
-  .lb-ch__tag { font-size: clamp(1.25rem, 1rem + 1vw, 1.75rem); color: var(--magenta-ink); transform: rotate(-2deg); transform-origin: left; }
-  .lb-ch__text { color: var(--slate); }
-  .lb-ch__title { order: -1; font-family: var(--font-serif); font-weight: 700; color: var(--c); font-size: clamp(2.5rem, 1.5rem + 5vw, 6rem); line-height: .95; letter-spacing: -.02em; }
-  .lb-cards { display: flex; flex-wrap: wrap; justify-content: center; gap: clamp(20px, 1rem + 2vw, 44px); padding-block: 20px; }
-  .lb-card { width: clamp(280px, 42vw, 620px); transform: rotate(var(--rot)); }
-  .lb-ch__now { display: none; }
-
-  /* Polaroid card with tape */
-  .lb-card__btn { position: relative; display: block; width: 100%; padding: 10px 10px 0; border: 0; border-radius: 8px; background: #fff; color: var(--ink); text-align: left; cursor: zoom-in;
-    box-shadow: 0 1px 0 rgba(0,0,0,.04), 0 18px 40px rgba(40, 20, 10, .22), 0 4px 10px rgba(40, 20, 10, .12); transition: box-shadow .3s ease, transform .3s ease; }
-  .lb-card__btn::before { content: ""; position: absolute; top: -12px; left: 50%; width: 92px; height: 26px; transform: translateX(-50%) rotate(-3deg); background: var(--tape); opacity: .78; box-shadow: 0 1px 2px rgba(0,0,0,.12); clip-path: polygon(2% 0, 98% 6%, 100% 94%, 0 100%); }
-  .lb-card__btn:hover { box-shadow: 0 1px 0 rgba(0,0,0,.04), 0 28px 60px rgba(40, 20, 10, .3), 0 6px 14px rgba(40, 20, 10, .16); }
-  .lb-card__btn:focus-visible { outline: 3px solid var(--purple); outline-offset: 5px; }
-  .lb-card__img { display: block; overflow: hidden; border-radius: 4px; background: var(--paper-2); }
-  .lb-card__img img { display: block; width: 100%; height: 100%; object-fit: cover; }
-  .lb-card__cap { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; padding: 10px 4px 14px; }
-  .lb-card__cap .hand { font-size: clamp(1rem, .9rem + .4vw, 1.25rem); line-height: 1.2; }
-  .lb-card__no { flex: none; font-size: .75rem; font-weight: 700; letter-spacing: .1em; color: var(--slate); }
-
-  /* ---------- Fly-through (JavaScript on, motion allowed) ---------- */
+  /* ---------- Opening (motion) ---------- */
   .lb.is-fly .lb-intro { height: 210svh; }
-  .lb.is-fly .lb-stage { position: sticky; top: var(--header-h); height: calc(100svh - var(--header-h)); overflow: hidden; padding: 0; }
-  .lb.is-fly .lb-intro__stage { display: block; }
-  .lb.is-fly .lb-intro__title { position: absolute; inset: 0; justify-content: center; padding-inline: var(--gutter); opacity: var(--title-op, 0); transform: scale(calc(.9 + var(--title-op, 0) * .1)); }
+  .lb.is-fly .lb-intro .lb-stage { position: sticky; top: var(--header-h); height: calc(100svh - var(--header-h)); overflow: hidden; padding: 0; display: block; }
+  .lb.is-fly .lb-intro__title { position: absolute; inset: 0; justify-content: center; padding-inline: var(--gutter); opacity: var(--title-op, 0); transform: scale(calc(.9 + var(--title-op, 0) * .1)); pointer-events: none; }
   .lb.is-fly .lb-intro__title > * { pointer-events: auto; }
-  .lb.is-fly .lb-intro__title { pointer-events: none; }
   .lb.is-fly .lb-stack { position: absolute; inset: 0; display: block; z-index: 2; pointer-events: none; }
+  .lb.is-fly .lb-stack.is-open .lb-stack__card { pointer-events: auto; }
   .lb.is-fly .lb-stack__card { position: absolute; left: 50%; top: 50%; width: clamp(220px, 30vw, 480px); will-change: transform; }
+  .lb.is-fly .lb-stack:not(.is-open) .lb-stack__card button { cursor: default; }
   .lb.is-fly .lb-note, .lb.is-fly .lb-scroll { display: flex; align-items: center; gap: 6px; position: absolute; z-index: 3; color: var(--ink); font-size: clamp(1rem, .9rem + .5vw, 1.375rem); opacity: var(--note-op, 1); }
   .lb.is-fly .lb-note--a { left: calc(50% - clamp(220px, 30vw, 480px) / 2 - clamp(150px, 15vw, 240px)); top: 30%; transform: rotate(-6deg); }
   .lb.is-fly .lb-note--b { left: calc(50% + clamp(220px, 30vw, 480px) / 2 + 24px); top: 64%; transform: rotate(4deg); }
@@ -216,25 +232,53 @@ const sizes = '(max-width: 760px) 94vw, 70vw';
   .lb-scroll span { display: inline-block; animation: bob 1.6s ease-in-out infinite; }
   @keyframes bob { 50% { transform: translateY(6px); } }
 
-  .lb.is-fly .lb-ch { height: calc(var(--n) * 85svh + 110svh); padding: 0; border: 0; }
-  .lb.is-fly .lb-ch .lb-stage { max-width: none; display: block; }
-  .lb.is-fly .lb-ch__title { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; text-align: center; padding-inline: 2vw; z-index: 0;
-    font-size: clamp(3.25rem, 1rem + 11vw, 13rem); line-height: .88; opacity: .95; pointer-events: none; }
-  .lb.is-fly .lb-ch__title span { max-width: 12ch; }
-  .lb.is-fly .lb-ch__head { position: absolute; left: var(--gutter); top: clamp(12px, 2.2vh, 28px); z-index: 30; max-width: min(28em, 40vw); flex-direction: row; flex-wrap: wrap; align-items: baseline; gap: 4px 16px; }
-  .lb.is-fly .lb-ch__text { display: none; }
-  .lb.is-fly .lb-cards { position: absolute; inset: 0; display: block; padding: 0; z-index: 10; }
-  /* Photos are as large as the screen allows: up to 70% of the width, never taller than the stage minus room for the chapter label */
-  .lb.is-fly .lb-card { position: absolute; left: 50%; top: 51%; width: clamp(300px, min(70vw, calc((100svh - var(--header-h) - 230px) * 1.42)), 1280px); opacity: 0; pointer-events: none; will-change: transform, opacity; }
-  .lb.is-fly .lb-card.is-live { pointer-events: auto; }
-  /* Counter and caption sit top-right, opposite the chapter label, clear of the photo */
-  .lb.is-fly .lb-ch__now { position: absolute; right: var(--gutter); top: clamp(10px, 2vh, 26px); z-index: 30; display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; column-gap: 14px; max-width: min(34em, 50vw); text-align: left; }
-  .lb.is-fly .lb-ch__count { grid-row: span 2; }
-  .lb.is-fly .lb-ch__caption { background: none; padding: 0; font-size: .9375rem; line-height: 1.35; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-  .lb-ch__count { font-family: var(--font-serif); font-size: clamp(1.25rem, 1rem + .8vw, 1.75rem); color: var(--slate); }
-  .lb-ch__count b { color: var(--c); font-size: 1.4em; }
-  .lb-ch__caption { font-size: 1rem; color: var(--ink); background: rgba(244, 239, 230, .85); padding: 4px 8px; border-radius: 6px; }
-  .lb-ch__hint { font-size: .8125rem; color: var(--slate); }
+  /* ---------- Chapter opener: spread-letter word ---------- */
+  .pc { position: relative; border-top: 1px dashed rgba(29, 27, 32, .18); padding-bottom: clamp(64px, 2rem + 6vw, 160px); }
+  .pc-open { padding-block: clamp(56px, 2rem + 5vw, 128px) clamp(24px, 1rem + 2vw, 48px); display: flex; flex-direction: column; gap: clamp(12px, .5rem + 1vw, 24px); }
+  .pc-open__meta { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 18px; }
+  .pc-open__no { font-size: .875rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--c); }
+  .pc-open__tag { font-size: clamp(1.25rem, 1rem + 1vw, 1.75rem); color: var(--magenta-ink); transform: rotate(-2deg); }
+  .pc-word { display: flex; justify-content: space-between; font-family: var(--font-serif); font-weight: 400; font-size: clamp(3.5rem, 1rem + 11vw, 12rem); line-height: .9; color: var(--c); border-block: 1px solid rgba(29, 27, 32, .14); padding-block: .08em; overflow: hidden; }
+  .pc-word span { display: inline-block; will-change: transform; }
+  .pc-open__row { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px 48px; align-items: end; }
+  .pc-open__title { font-family: var(--font-serif); font-weight: 700; font-size: clamp(1.75rem, 1.2rem + 2vw, 3rem); line-height: 1.05; color: var(--ink); }
+  .pc-open__text { color: var(--slate); max-width: 30em; justify-self: end; }
+  .pc-open__text span { display: block; margin-top: 4px; font-size: .8125rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--c); }
+
+  /* ---------- Feature photo: grows from a window to fill the screen ---------- */
+  .pc-hero__stage { position: relative; }
+  .pc-hero__frame { display: block; width: 100%; padding: 0; border: 0; background: var(--ink); cursor: zoom-in; overflow: hidden; }
+  .pc-hero__frame:focus-visible { outline: 4px solid var(--purple); outline-offset: -4px; }
+  .pc-hero__frame img { display: block; width: 100%; height: min(86svh, 66vw); object-fit: cover; }
+  .pc-hero__cap { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 16px; padding: 14px var(--gutter) 0; }
+  .pc-hero__title { font-size: clamp(1.25rem, 1rem + .8vw, 1.75rem); }
+  .pc-hero__text { color: var(--slate); flex-basis: 100%; }
+  .lb.is-fly .pc-hero { height: 190svh; }
+  .lb.is-fly .pc-hero__stage { position: sticky; top: var(--header-h); height: calc(100svh - var(--header-h)); overflow: hidden; }
+  .lb.is-fly .pc-hero__frame { position: absolute; inset: 0; height: 100%; clip-path: inset(var(--ct, 16%) var(--cs, 28%) var(--ct, 16%) var(--cs, 28%) round var(--cr, 18px)); }
+  .lb.is-fly .pc-hero__frame img { height: 100%; transform: scale(var(--zs, 1.3)); will-change: transform; }
+  .lb.is-fly .pc-hero__cap { position: absolute; left: 0; right: 0; bottom: 0; padding: 60px var(--gutter) 92px; color: var(--white); background: linear-gradient(0deg, rgba(20, 8, 26, .85), transparent); opacity: var(--cap-op, 0); transform: translateY(calc((1 - var(--cap-op, 0)) * 20px)); pointer-events: none; }
+  .lb.is-fly .pc-hero__cap .pc-num { color: var(--fire-yellow); }
+  .lb.is-fly .pc-hero__text { color: #EDE4F2; max-width: 40em; }
+
+  /* ---------- Collage: off-balance, each photo at its own speed ---------- */
+  .pc-collage { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: clamp(16px, 1rem + 2vw, 48px); row-gap: clamp(48px, 2rem + 6vw, 140px); padding-top: clamp(56px, 2rem + 6vw, 140px); }
+  .pc-item { grid-column: var(--col); grid-row: var(--row); margin-top: var(--mt); min-width: 0; }
+  .pc-item__float { will-change: transform; }
+  .pc-item__frame { position: relative; display: block; width: 100%; padding: 0; border: 0; border-radius: 6px; overflow: hidden; background: #DCD2C2; cursor: zoom-in; box-shadow: 0 30px 60px rgba(40, 20, 10, .16); }
+  .pc-item__frame:focus-visible { outline: 3px solid var(--purple); outline-offset: 5px; }
+  .pc-item__frame img { display: block; width: 100%; height: 100%; object-fit: cover; }
+  .pc-item__cap { display: flex; align-items: baseline; gap: 12px; margin-top: 14px; }
+  .pc-item__cap .hand { font-size: clamp(1.125rem, 1rem + .4vw, 1.375rem); line-height: 1.2; }
+  .pc-item__text { color: var(--slate); font-size: .9375rem; max-width: 34em; margin-top: 2px; }
+  /* Photos shift slightly inside their frames as you scroll, uncover from the bottom as they arrive, and settle from a slight zoom */
+  .lb.is-fly .pc-item__frame img { height: 118%; margin-top: -9%; transform: translate3d(0, var(--iy, 0px), 0); will-change: transform; }
+  .lb.is-fly .pc-reveal { clip-path: inset(100% 0 0 0); transition: clip-path 1.2s cubic-bezier(.77, 0, .18, 1); }
+  .lb.is-fly .pc-reveal.is-in { clip-path: inset(0 0 0 0); }
+  .lb.is-fly .pc-reveal img { scale: 1.14; transition: scale 1.6s cubic-bezier(.2, .7, .2, 1); }
+  .lb.is-fly .pc-reveal.is-in img { scale: 1; }
+  .lb.is-fly .pc-word span { opacity: 0; translate: 0 .35em; transition: opacity .8s ease var(--d), translate 1s cubic-bezier(.2, .7, .2, 1) var(--d); }
+  .lb.is-fly .pc-word.is-in span { opacity: 1; translate: 0 0; }
 
   /* Chapter bar */
   .lb-bar { display: none; }
@@ -292,24 +336,23 @@ const sizes = '(max-width: 760px) 94vw, 70vw';
 
   /* ---------- Small screens ---------- */
   @media (max-width: 760px) {
-    .lb.is-fly .lb-card { width: min(94vw, calc((100svh - var(--header-h) - 230px) * 1.42)); top: 52%; }
     .lb.is-fly .lb-stack__card { width: 50vw; }
     .lb.is-fly .lb-note--a { left: 6vw; top: 18%; }
     .lb.is-fly .lb-note--b { left: auto; right: 6vw; top: 74%; }
-    .lb.is-fly .lb-ch__head { max-width: calc(100vw - 2 * var(--gutter)); }
-    .lb.is-fly .lb-ch__text { display: none; }
-    .lb.is-fly .lb-ch__now { top: auto; left: var(--gutter); right: var(--gutter); bottom: 74px; max-width: none; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 4px; }
-    .lb.is-fly .lb-ch__caption { background: rgba(244, 239, 230, .85); padding: 4px 8px; -webkit-line-clamp: 3; }
-    .lb.is-fly .lb-ch__title { font-size: clamp(3rem, 15vw, 6rem); }
+    .pc-open__row { grid-template-columns: minmax(0, 1fr); }
+    .pc-open__text { justify-self: start; }
+    .pc-word { font-size: clamp(2.75rem, 14vw, 5rem); }
+    .pc-collage { grid-template-columns: repeat(6, minmax(0, 1fr)); row-gap: 56px; }
+    .pc-item { grid-column: var(--colm); grid-row: auto; margin-top: 0; }
     .lb-bar ol { display: none; }
     .lb.is-fly .lb-bar { padding: 4px; }
     .v-btn--prev, .v-btn--next { top: auto; bottom: 14px; transform: none; }
     .viewer__inner { padding: 60px 10px 80px; }
     .viewer__card img { max-height: calc(100dvh - 260px); }
   }
-  @media (max-width: 1100px) and (min-width: 761px) { .lb-bar a { padding-inline: 9px; } .lb-bar a { font-size: .8125rem; } }
+  @media (max-width: 1100px) and (min-width: 761px) { .lb-bar a { padding-inline: 9px; font-size: .8125rem; } }
   @media (max-width: 960px) and (min-width: 761px) { .lb-bar a { font-size: 0; gap: 0; } .lb-bar a span { font-size: .875rem; } }
-  @media (prefers-reduced-motion: reduce) { .lb-scroll span, .viewer[open], .viewer__card { animation: none; } .lb.is-fly .lb-bar { transition: none; } }
+  @media (prefers-reduced-motion: reduce) { .lb-scroll span, .viewer[open], .viewer__card { animation: none; } }
 </style>
 
 <script>
@@ -358,49 +401,28 @@ const sizes = '(max-width: 760px) 94vw, 70vw';
   sheet.addEventListener('close', () => { modalOpen(); sheetOpener?.focus(); });
   sheet.addEventListener('click', (e) => { if (e.target === sheet) sheet.close(); });
 
-  /* ---------- Fly-through ---------- */
+  /* ---------- Motion ---------- */
   if (root && !reduce) {
     root.classList.add('is-fly');
     const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
     const easeOut = (t) => 1 - Math.pow(1 - t, 3);
     const headerH = () => parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--header-h')) || 74;
     const mobile = window.matchMedia('(max-width: 760px)');
-
-    // Where each photo rests while in focus (vw, vh, degrees); they alternate sides so they never pile up.
-    const lanes = [[-7, -1, -3], [7, 1.5, 2.5], [-3, 2, -1.5], [8, -1, 3], [-8, 1.5, 2], [3, -1.5, -2]];
-    const lane = (i) => { const [x, y, r] = lanes[i % lanes.length]; return mobile.matches ? [x * .25, y * .8, r * .7] : [x, y, r]; };
-    // The stack fans out to these spots (vw, vh, degrees)
-    const fan = [[-33, -22, -9], [32, -24, 7], [-36, 20, 6], [34, 22, -6], [-14, 34, -3], [16, -36, 4]];
-    // On phones the title fills the middle, so the photos fan to the top and bottom bands.
-    const fanMobile = [[-24, -30, -9], [25, -33, 7], [-25, 31, 6], [25, 33, -6], [0, 41, -3], [0, -41, 4]];
-    const stackRot = [-8, 6, -3, 9, -5, 2];
-
-    const intro = root.querySelector('[data-intro]');
-    const stackCards = [...root.querySelectorAll('[data-stack]')];
-    const notes = [...root.querySelectorAll('[data-intro-note]')];
-    const titleBox = root.querySelector('.lb-intro__title');
-    const chapters = [...root.querySelectorAll('[data-chapter]')].map((el) => ({
-      el, stage: el.querySelector('.lb-stage'), cards: [...el.querySelectorAll('[data-card]')],
-      count: el.querySelector('[data-count]'), caption: el.querySelector('[data-caption]'), focus: -1,
-    }));
-    const captions = chapters.map((c) => c.cards.map((li) => li.querySelector('img').alt));
-    const bar = root.querySelector('[data-bar]');
-    const barLinks = [...root.querySelectorAll('[data-jump]')];
-    const outro = root.querySelector('[data-outro]');
-
     const progress = (el, stage) => {
       const top = el.getBoundingClientRect().top - headerH();
       const dist = el.offsetHeight - stage.offsetHeight;
       return dist > 0 ? clamp(-top / dist) : 0;
     };
-    // Each photo's own timeline: 0 = far away, 1 = resting in focus, 2 = flown past
-    const local = (p, n, i) => {
-      const L = p * (n + 1) - i;
-      if (L < .82) return L / .82;
-      if (L < 1.28) return 1;
-      return 1 + (L - 1.28) / .72;
-    };
 
+    // Opening stack
+    const intro = root.querySelector('[data-intro]');
+    const stackWrap = root.querySelector('[data-stack-wrap]');
+    const stackCards = [...root.querySelectorAll('[data-stack]')];
+    const notes = [...root.querySelectorAll('[data-intro-note]')];
+    const titleBox = root.querySelector('.lb-intro__title');
+    const fan = [[-33, -22, -9], [32, -24, 7], [-36, 20, 6], [34, 22, -6], [-14, 34, -3], [16, -36, 4]];
+    const fanMobile = [[-24, -30, -9], [25, -33, 7], [-25, 31, 6], [25, 33, -6], [0, 41, -3], [0, -41, 4]];
+    const stackRot = [-8, 6, -3, 9, -5, 2];
     const paintIntro = () => {
       const r = intro.getBoundingClientRect();
       if (r.bottom < 0 || r.top > innerHeight) return;
@@ -412,74 +434,72 @@ const sizes = '(max-width: 760px) 94vw, 70vw';
         const rot = stackRot[i] + (fr - stackRot[i]) * t;
         c.style.transform = `translate(-50%, -50%) translate3d(${fx * t}vw, ${fy * t}vh, 0) rotate(${rot}deg) scale(${1 - t * (m ? .42 : .32)})`;
       });
+      stackWrap.classList.toggle('is-open', t > .85);
       titleBox.style.setProperty('--title-op', clamp((p - .12) / .4).toFixed(3));
       notes.forEach((nn) => nn.style.setProperty('--note-op', (1 - clamp(p / .18)).toFixed(3)));
     };
 
-    const paintChapter = (c, ci) => {
-      const r = c.el.getBoundingClientRect();
+    // Feature photos: a small window that opens to the full screen
+    const heroes = [...root.querySelectorAll('[data-hero]')].map((el) => ({ el, stage: el.querySelector('.pc-hero__stage') }));
+    const paintHero = (h) => {
+      const r = h.el.getBoundingClientRect();
       if (r.bottom < 0 || r.top > innerHeight) return;
-      const p = progress(c.el, c.stage);
-      const n = c.cards.length;
-      let focus = 0;
-      c.cards.forEach((li, i) => {
-        const L = local(p, n, i);
-        const [lx, ly, lr] = lane(i);
-        let x, y, s, o, rot, z;
-        if (L <= 0) { li.style.opacity = '0'; li.classList.remove('is-live'); return; }
-        if (L <= 1) {
-          const e = easeOut(L);
-          s = .28 + .72 * e; o = clamp(L * 3); x = lx * e; y = ly * e + (1 - e) * 4; rot = lr * e; z = 10 + Math.round(L * 10);
-        } else {
-          const k = L - 1;
-          s = 1 + 1.5 * k * k; o = clamp(1 - k * (mobile.matches ? 2.6 : 1.7)); x = lx * (1 + 2.2 * k) + Math.sign(lx || 1) * k * 30; y = ly * (1 + 2 * k); rot = lr * (1 + k); z = 25;
-        }
-        if (o <= .001) { li.style.opacity = '0'; li.classList.remove('is-live'); return; }
-        li.style.opacity = o.toFixed(3);
-        li.style.zIndex = z;
-        li.style.transform = `translate(-50%, -50%) translate3d(${x.toFixed(2)}vw, ${y.toFixed(2)}vh, 0) rotate(${rot.toFixed(2)}deg) scale(${s.toFixed(3)})`;
-        li.classList.toggle('is-live', L > .55 && L < 1.25);
-        if (L >= .6 && L <= 1.3) focus = i;
-      });
-      if (focus !== c.focus) {
-        c.focus = focus;
-        c.count.textContent = String(focus + 1).padStart(2, '0');
-        c.caption.textContent = captions[ci][focus];
-      }
+      const p = progress(h.el, h.stage);
+      const t = easeOut(clamp(p / .62));
+      const s = h.stage.style;
+      s.setProperty('--ct', `${(1 - t) * (mobile.matches ? 24 : 16)}%`);
+      s.setProperty('--cs', `${(1 - t) * (mobile.matches ? 10 : 28)}%`);
+      s.setProperty('--cr', `${(1 - t) * 18}px`);
+      s.setProperty('--zs', (1.3 - .3 * t).toFixed(3));
+      s.setProperty('--cap-op', clamp((p - .55) / .2).toFixed(3));
     };
 
+    // Parallax: each [data-speed] element drifts at its own speed; collage photos also shift inside their frames
+    const floats = [...root.querySelectorAll('[data-speed]')].map((el) => ({ el, speed: parseFloat(el.dataset.speed) || 0, inner: el.querySelector('[data-inner]') }));
+    const paintFloats = () => {
+      const vh = innerHeight, k = mobile.matches ? .45 : 1;
+      floats.forEach((f) => {
+        const r = f.el.getBoundingClientRect();
+        if (r.bottom < -vh * .5 || r.top > vh * 1.5) return;
+        const d = (vh / 2) - (r.top + r.height / 2);
+        f.el.style.transform = `translate3d(0, ${(d * f.speed * k).toFixed(1)}px, 0)`;
+        if (f.inner) f.inner.style.setProperty('--iy', `${(-d * .06).toFixed(1)}px`);
+      });
+    };
+
+    // Reveal photos and spread words as they come into view
+    const io = new IntersectionObserver((entries) => entries.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('is-in'); io.unobserve(e.target); } }), { rootMargin: '0px 0px -6% 0px' });
+    root.querySelectorAll('.pc-reveal, .pc-word').forEach((el) => io.observe(el));
+
+    // Chapter bar
+    const chapters = [...root.querySelectorAll('[data-chapter]')];
+    const bar = root.querySelector('[data-bar]');
+    const barLinks = [...root.querySelectorAll('[data-jump]')];
+    const outro = root.querySelector('[data-outro]');
     const paintBar = () => {
       const start = intro.getBoundingClientRect().bottom < innerHeight * .6;
       const end = outro.getBoundingClientRect().top < innerHeight * .8;
       bar.classList.toggle('is-shown', start && !end);
       let current = -1;
-      chapters.forEach((c, i) => { const r = c.el.getBoundingClientRect(); if (r.top < innerHeight * .5 && r.bottom > innerHeight * .5) current = i; });
+      chapters.forEach((c, i) => { const r = c.getBoundingClientRect(); if (r.top < innerHeight * .5 && r.bottom > innerHeight * .5) current = i; });
       barLinks.forEach((a, i) => (i === current ? a.setAttribute('aria-current', 'true') : a.removeAttribute('aria-current')));
     };
 
     let ticking = false;
-    const paint = () => { ticking = false; paintIntro(); chapters.forEach(paintChapter); paintBar(); };
+    const paint = () => { ticking = false; paintIntro(); heroes.forEach(paintHero); paintFloats(); paintBar(); };
     const request = () => { if (!ticking) { ticking = true; requestAnimationFrame(paint); } };
     addEventListener('scroll', request, { passive: true });
     addEventListener('resize', request);
     paint();
 
-    // Scroll so photo i of chapter c rests in focus (used by chapter links and keyboard focus).
-    const scrollToPhoto = (c, i) => {
-      const n = c.cards.length;
-      const p = (i + 1.05) / (n + 1);
-      const top = c.el.getBoundingClientRect().top + scrollY - headerH();
-      scrollTo({ top: top + p * (c.el.offsetHeight - c.stage.offsetHeight), behavior: 'instant' });
-    };
-    const jump = (ci) => scrollToPhoto(chapters[ci], 0);
-    barLinks.forEach((a, ci) => a.addEventListener('click', (e) => { e.preventDefault(); jump(ci); }));
-    root.querySelectorAll('a[href^="#ch-"]:not([data-jump])').forEach((a) => a.addEventListener('click', (e) => {
-      const ci = chapters.findIndex((c) => `#${c.el.id}` === a.getAttribute('href'));
-      if (ci >= 0) { e.preventDefault(); jump(ci); }
+    // Chapter links jump straight to the chapter
+    root.querySelectorAll('a[href^="#ch-"]').forEach((a) => a.addEventListener('click', (e) => {
+      const el = root.querySelector(a.getAttribute('href'));
+      if (!el) return;
+      e.preventDefault();
+      scrollTo({ top: el.getBoundingClientRect().top + scrollY - headerH(), behavior: 'instant' });
     }));
-    chapters.forEach((c) => c.cards.forEach((li, i) => li.querySelector('button').addEventListener('focus', (e) => {
-      if (!e.target.matches(':focus-visible')) return;
-      scrollToPhoto(c, i);
-    })));
+    // Keyboard users: uncover photos as soon as they receive focus
+    root.addEventListener('focusin', (e) => { e.target.closest('.pc-reveal')?.classList.add('is-in'); });
   }
 </script>

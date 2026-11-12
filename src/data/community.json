@@ -1,0 +1,94 @@
+{
+  "_help": "Community support page. Edit the wording, add or remove items, save, then rebuild (npm run build). Items marked \"confirm\": true show a small 'details to follow' note until you set it to false.",
+  "intro": "Whatever you are facing, you do not have to face it alone. MFM Edinburgh is here for our members, our neighbours in Leith and anyone new to the city. Our help is free, confidential and open to everyone, whatever your faith.",
+  "help": [
+    {
+      "icon": "chat",
+      "title": "Prayer & spiritual counsel",
+      "text": "Speak with a minister in confidence, or come to our Tuesday Spiritual Clinic for prayer, counsel and the Word.",
+      "when": "Tuesdays 7:00pm, or by appointment",
+      "accent": "purple",
+      "confirm": false
+    },
+    {
+      "icon": "heart",
+      "title": "Hospital & home visits",
+      "text": "If you or a loved one is unwell, housebound or in hospital, a minister can visit to pray with you.",
+      "when": "On request",
+      "accent": "magenta",
+      "confirm": false
+    },
+    {
+      "icon": "star",
+      "title": "Bereavement support",
+      "text": "Comfort, prayer and practical help when you have lost someone, including help planning a funeral or memorial service.",
+      "when": "On request",
+      "accent": "plum",
+      "confirm": false
+    },
+    {
+      "icon": "pin",
+      "title": "New to Edinburgh",
+      "text": "Students, families and workers settling in Scotland: a warm welcome, a church family and help finding your way around.",
+      "when": "Speak to us after any service",
+      "accent": "gold",
+      "confirm": false
+    },
+    {
+      "icon": "check",
+      "title": "Food & essentials",
+      "text": "If money is tight, talk to us. We will pray with you and help you reach local food banks and emergency grants quickly.",
+      "when": "Ask any minister",
+      "accent": "orange",
+      "confirm": true
+    },
+    {
+      "icon": "calendar",
+      "title": "Marriage & family",
+      "text": "Prayer and counsel for couples, parents and young people, and support preparing for marriage.",
+      "when": "By appointment",
+      "accent": "fire",
+      "confirm": true
+    }
+  ],
+  "steps": [
+    { "title": "Reach out", "text": "Call or message a minister, email us, or speak to anyone on the welcome team after a service." },
+    { "title": "We listen", "text": "Tell us what is happening, in confidence. There is no judgement and no paperwork." },
+    { "title": "We walk with you", "text": "We pray with you, help where we can, and connect you with the right local services." }
+  ],
+  "services": [
+    {
+      "group": "Urgent help",
+      "items": [
+        { "name": "Emergency services", "detail": "Police, ambulance or fire, when life is at risk", "phone": "999" },
+        { "name": "NHS 24", "detail": "Urgent health advice when your GP is closed", "phone": "111", "url": "https://www.nhs24.scot" },
+        { "name": "Samaritans", "detail": "Someone to talk to, any time, free", "phone": "116 123", "url": "https://www.samaritans.org" },
+        { "name": "Breathing Space", "detail": "Scotland's free, confidential listening line", "phone": "0800 83 85 87", "url": "https://breathingspace.scot" }
+      ]
+    },
+    {
+      "group": "Money & food",
+      "items": [
+        { "name": "Food support in Edinburgh", "detail": "City of Edinburgh Council's guide to food banks and free meals", "url": "https://www.edinburgh.gov.uk/cost-living/food-bank-information" },
+        { "name": "Crisis Grant (Scottish Welfare Fund)", "detail": "Emergency help with living costs, from the council", "url": "https://www.edinburgh.gov.uk/crisisgrant" }
+      ]
+    },
+    {
+      "group": "Advice & local services",
+      "items": [
+        { "name": "Citizens Advice Scotland", "detail": "Free advice on benefits, debt, housing, work and immigration", "url": "https://www.cas.org.uk" },
+        { "name": "EVOC Red Book", "detail": "Directory of community services across Edinburgh", "url": "https://www.evocredbook.org.uk" }
+      ]
+    }
+  ],
+  "volunteer": {
+    "title": "Serve your community with us",
+    "text": "Help with welcoming, visiting, prayer, children and youth, or practical support. Every gift and every pair of hands makes a difference."
+  },
+  "faqs": [
+    { "q": "Do I need to be a member of the church?", "a": "No. Our support is open to everyone in Edinburgh, whatever your background or faith." },
+    { "q": "Is it confidential?", "a": "Yes. What you share stays with the minister you speak to. The only exception is if someone is at risk of serious harm, when we may need to involve the right services to keep them safe." },
+    { "q": "Does it cost anything?", "a": "No. Prayer, counsel, visits and signposting are all free." },
+    { "q": "Can you help in an emergency?", "a": "If anyone is in immediate danger, call 999 first. Then call us and we will support you." }
+  ]
+}

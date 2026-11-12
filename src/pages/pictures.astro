@@ -21,7 +21,7 @@ const pad = (i) => String(i).padStart(2, '0');
 const find = (f) => all.find((p) => p.file === f) ?? all[0];
 const stack = ['christmas-love-feast', 'mountain-moving-prayers', 'preaching-with-fire', 'family-celebration', 'congregation-rejoicing', 'joyful-noise-concert'].map(find);
 const tapes = ['#F7C948', '#E9A6C9', '#9ED8C6', '#C7B4F0', '#F5B08A'];
-const sizes = '(max-width: 760px) 80vw, 36vw';
+const sizes = '(max-width: 760px) 94vw, 70vw';
 ---
 <Base title="Pictures" description={`The MFM Edinburgh picture lookbook: ${total} moments of praise, prayer, the Word, testimonies and family.`}>
   <Fragment slot="head">
@@ -185,7 +185,7 @@ const sizes = '(max-width: 760px) 80vw, 36vw';
   .lb-ch__text { color: var(--slate); }
   .lb-ch__title { order: -1; font-family: var(--font-serif); font-weight: 700; color: var(--c); font-size: clamp(2.5rem, 1.5rem + 5vw, 6rem); line-height: .95; letter-spacing: -.02em; }
   .lb-cards { display: flex; flex-wrap: wrap; justify-content: center; gap: clamp(20px, 1rem + 2vw, 44px); padding-block: 20px; }
-  .lb-card { width: clamp(240px, 28vw, 380px); transform: rotate(var(--rot)); }
+  .lb-card { width: clamp(280px, 42vw, 620px); transform: rotate(var(--rot)); }
   .lb-ch__now { display: none; }
 
   /* Polaroid card with tape */
@@ -208,10 +208,10 @@ const sizes = '(max-width: 760px) 80vw, 36vw';
   .lb.is-fly .lb-intro__title > * { pointer-events: auto; }
   .lb.is-fly .lb-intro__title { pointer-events: none; }
   .lb.is-fly .lb-stack { position: absolute; inset: 0; display: block; z-index: 2; pointer-events: none; }
-  .lb.is-fly .lb-stack__card { position: absolute; left: 50%; top: 50%; width: clamp(200px, 22vw, 340px); will-change: transform; }
+  .lb.is-fly .lb-stack__card { position: absolute; left: 50%; top: 50%; width: clamp(220px, 30vw, 480px); will-change: transform; }
   .lb.is-fly .lb-note, .lb.is-fly .lb-scroll { display: flex; align-items: center; gap: 6px; position: absolute; z-index: 3; color: var(--ink); font-size: clamp(1rem, .9rem + .5vw, 1.375rem); opacity: var(--note-op, 1); }
-  .lb.is-fly .lb-note--a { left: calc(50% - clamp(200px, 22vw, 340px) / 2 - clamp(150px, 15vw, 240px)); top: 34%; transform: rotate(-6deg); }
-  .lb.is-fly .lb-note--b { left: calc(50% + clamp(200px, 22vw, 340px) / 2 + 24px); top: 60%; transform: rotate(4deg); }
+  .lb.is-fly .lb-note--a { left: calc(50% - clamp(220px, 30vw, 480px) / 2 - clamp(150px, 15vw, 240px)); top: 30%; transform: rotate(-6deg); }
+  .lb.is-fly .lb-note--b { left: calc(50% + clamp(220px, 30vw, 480px) / 2 + 24px); top: 64%; transform: rotate(4deg); }
   .lb.is-fly .lb-scroll { left: 50%; bottom: 28px; transform: translateX(-50%); }
   .lb-scroll span { display: inline-block; animation: bob 1.6s ease-in-out infinite; }
   @keyframes bob { 50% { transform: translateY(6px); } }
@@ -221,11 +221,16 @@ const sizes = '(max-width: 760px) 80vw, 36vw';
   .lb.is-fly .lb-ch__title { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; text-align: center; padding-inline: 2vw; z-index: 0;
     font-size: clamp(3.25rem, 1rem + 11vw, 13rem); line-height: .88; opacity: .95; pointer-events: none; }
   .lb.is-fly .lb-ch__title span { max-width: 12ch; }
-  .lb.is-fly .lb-ch__head { position: absolute; left: var(--gutter); top: clamp(16px, 3vh, 40px); z-index: 30; max-width: min(28em, 44vw); }
+  .lb.is-fly .lb-ch__head { position: absolute; left: var(--gutter); top: clamp(12px, 2.2vh, 28px); z-index: 30; max-width: min(28em, 40vw); flex-direction: row; flex-wrap: wrap; align-items: baseline; gap: 4px 16px; }
+  .lb.is-fly .lb-ch__text { display: none; }
   .lb.is-fly .lb-cards { position: absolute; inset: 0; display: block; padding: 0; z-index: 10; }
-  .lb.is-fly .lb-card { position: absolute; left: 50%; top: 52%; width: clamp(260px, 34vw, 600px); opacity: 0; pointer-events: none; will-change: transform, opacity; }
+  /* Photos are as large as the screen allows: up to 70% of the width, never taller than the stage minus room for the chapter label */
+  .lb.is-fly .lb-card { position: absolute; left: 50%; top: 51%; width: clamp(300px, min(70vw, calc((100svh - var(--header-h) - 230px) * 1.42)), 1280px); opacity: 0; pointer-events: none; will-change: transform, opacity; }
   .lb.is-fly .lb-card.is-live { pointer-events: auto; }
-  .lb.is-fly .lb-ch__now { position: absolute; right: var(--gutter); bottom: clamp(84px, 11vh, 120px); z-index: 30; display: flex; flex-direction: column; align-items: flex-end; gap: 4px; max-width: min(24em, 40vw); text-align: right; }
+  /* Counter and caption sit top-right, opposite the chapter label, clear of the photo */
+  .lb.is-fly .lb-ch__now { position: absolute; right: var(--gutter); top: clamp(10px, 2vh, 26px); z-index: 30; display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; column-gap: 14px; max-width: min(34em, 50vw); text-align: left; }
+  .lb.is-fly .lb-ch__count { grid-row: span 2; }
+  .lb.is-fly .lb-ch__caption { background: none; padding: 0; font-size: .9375rem; line-height: 1.35; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
   .lb-ch__count { font-family: var(--font-serif); font-size: clamp(1.25rem, 1rem + .8vw, 1.75rem); color: var(--slate); }
   .lb-ch__count b { color: var(--c); font-size: 1.4em; }
   .lb-ch__caption { font-size: 1rem; color: var(--ink); background: rgba(244, 239, 230, .85); padding: 4px 8px; border-radius: 6px; }
@@ -251,13 +256,13 @@ const sizes = '(max-width: 760px) 80vw, 36vw';
   .lb-outro .cluster { justify-content: center; }
 
   /* Contact sheet */
-  .sheet { width: min(1200px, 100vw - 24px); max-width: none; max-height: calc(100dvh - 24px); margin: auto; padding: 0; border: 0; border-radius: var(--r-panel); background: var(--white); color: var(--ink); box-shadow: 0 40px 100px rgba(0,0,0,.4); }
+  .sheet { width: min(1500px, 100vw - 24px); max-width: none; max-height: calc(100dvh - 24px); margin: auto; padding: 0; border: 0; border-radius: var(--r-panel); background: var(--white); color: var(--ink); box-shadow: 0 40px 100px rgba(0,0,0,.4); }
   .sheet::backdrop { background: rgba(20, 10, 26, .7); }
   .sheet__inner { padding: clamp(18px, 1rem + 1.5vw, 36px); display: flex; flex-direction: column; gap: 28px; }
   .sheet__head { position: sticky; top: calc(-1 * clamp(18px, 1rem + 1.5vw, 36px)); display: flex; justify-content: space-between; align-items: center; gap: 16px; padding-block: 8px; background: var(--white); z-index: 2; }
   .sheet__ch h3 { display: flex; align-items: center; gap: 10px; font-family: var(--font-serif); font-size: 1.375rem; margin-bottom: 12px; }
   .sheet__ch h3 span { font-family: var(--font-sans); font-size: .8125rem; font-weight: 700; letter-spacing: .1em; color: var(--white); background: var(--plum); border-radius: var(--r-pill); padding: 3px 9px; }
-  .sheet__ch ul { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(180px, 100%), 1fr)); gap: 12px; }
+  .sheet__ch ul { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(260px, 100%), 1fr)); gap: 16px; }
   .sheet__thumb { display: flex; flex-direction: column; gap: 6px; width: 100%; padding: 0; border: 0; background: none; text-align: left; cursor: zoom-in; color: var(--ink); font: inherit; font-size: .9375rem; font-weight: 600; }
   .sheet__thumb img { width: 100%; aspect-ratio: 3 / 2; object-fit: cover; border-radius: 10px; transition: transform .25s ease, box-shadow .25s ease; }
   .sheet__thumb:hover img { transform: translateY(-2px); box-shadow: 0 10px 24px rgba(0,0,0,.2); }
@@ -287,13 +292,14 @@ const sizes = '(max-width: 760px) 80vw, 36vw';
 
   /* ---------- Small screens ---------- */
   @media (max-width: 760px) {
-    .lb.is-fly .lb-card { width: min(80vw, 420px); top: 54%; }
-    .lb.is-fly .lb-stack__card { width: 46vw; }
+    .lb.is-fly .lb-card { width: min(94vw, calc((100svh - var(--header-h) - 230px) * 1.42)); top: 52%; }
+    .lb.is-fly .lb-stack__card { width: 50vw; }
     .lb.is-fly .lb-note--a { left: 6vw; top: 18%; }
     .lb.is-fly .lb-note--b { left: auto; right: 6vw; top: 74%; }
     .lb.is-fly .lb-ch__head { max-width: calc(100vw - 2 * var(--gutter)); }
     .lb.is-fly .lb-ch__text { display: none; }
-    .lb.is-fly .lb-ch__now { left: var(--gutter); right: var(--gutter); bottom: 74px; max-width: none; align-items: center; text-align: center; }
+    .lb.is-fly .lb-ch__now { top: auto; left: var(--gutter); right: var(--gutter); bottom: 74px; max-width: none; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 4px; }
+    .lb.is-fly .lb-ch__caption { background: rgba(244, 239, 230, .85); padding: 4px 8px; -webkit-line-clamp: 3; }
     .lb.is-fly .lb-ch__title { font-size: clamp(3rem, 15vw, 6rem); }
     .lb-bar ol { display: none; }
     .lb.is-fly .lb-bar { padding: 4px; }
@@ -361,7 +367,7 @@ const sizes = '(max-width: 760px) 80vw, 36vw';
     const mobile = window.matchMedia('(max-width: 760px)');
 
     // Where each photo rests while in focus (vw, vh, degrees); they alternate sides so they never pile up.
-    const lanes = [[-14, -2, -4], [15, 3, 3], [-6, 6, -2], [17, -4, 4], [-17, 4, 3], [5, -5, -3]];
+    const lanes = [[-7, -1, -3], [7, 1.5, 2.5], [-3, 2, -1.5], [8, -1, 3], [-8, 1.5, 2], [3, -1.5, -2]];
     const lane = (i) => { const [x, y, r] = lanes[i % lanes.length]; return mobile.matches ? [x * .25, y * .8, r * .7] : [x, y, r]; };
     // The stack fans out to these spots (vw, vh, degrees)
     const fan = [[-33, -22, -9], [32, -24, 7], [-36, 20, 6], [34, 22, -6], [-14, 34, -3], [16, -36, 4]];

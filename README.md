@@ -8,7 +8,7 @@ A fast static website built with [Astro](https://astro.build). There is no admin
 npm install
 npm run dev      # preview at http://localhost:4321 while editing
 npm run build    # produce the finished site in dist/
-npm run videos   # refresh the video lists from both YouTube channels
+npm run videos   # refresh the video lists from both YouTube channels (the GitHub workflow also does this daily)
 ```
 
 Requires Node.js 22 or newer.
@@ -28,6 +28,7 @@ All content lives in `src/data/`:
 | `gallery.json` | Photo albums. Each photo needs `src`, `alt`, `w` and `h`. |
 | `pictures.json` | Pictures page (scrapbook lookbook): chapters, each with a title, a handwritten note and its photos. Add `name.jpg` (1600px wide) and `name-sm.jpg` (900px wide) to `public/images/pictures/`, then list them here. Photos are 3:2 unless you add `w` and `h`. |
 | `community.json` | Community support page: the ways the church helps, the steps to ask, trusted local services and FAQs. Items with `"confirm": true` show "Details to follow". |
+| `impact.json` | Our impact page: intro, figures, the five areas of impact and the year ribbon. Figures with `"show": false` stay hidden until you enter a real number and set `show` to `true`. |
 | `testimonies.json` | Approved testimonies shown on the Testimonies page |
 | `news/*.md` | News stories. Add a new `.md` file with `title`, `date`, `summary` and optionally `image`. |
 

@@ -1,0 +1,154 @@
+---
+// Our impact — look: an impact report. Deep plum cover with big outlined figures, zig-zag stories
+// with offset colour-block photos, a "through the year" ribbon and three ways to join in.
+// Sits under Community support.
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+import CommunitySwitch from '../components/CommunitySwitch.astro';
+import site from '../data/site.json';
+import services from '../data/services.json';
+import impact from '../data/impact.json';
+import { tel } from '../lib/format.js';
+
+const live = { services: String(services.weekly.length), ministers: String(site.minister_phones.length) };
+const stats = impact.stats.filter((s) => s.show && (s.value || live[s.source])).map((s) => ({ ...s, value: live[s.source] ?? s.value }));
+const accents = ['var(--purple)', 'var(--magenta-ink)', 'var(--gold)', 'var(--fire-red)', 'var(--plum)'];
+const img = (f) => `/images/pictures/${f}-sm.jpg`;
+const imgLg = (f) => `/images/pictures/${f}.jpg`;
+---
+<Base title="Our impact" description="How MFM Edinburgh serves Leith and the wider city: prayer, children and young people, welcome for newcomers, care for families and music that lifts the community.">
+  <!-- Cover -->
+  <section class="im-cover on-dark" aria-labelledby="page-title">
+    <div class="container im-cover__inner">
+      <div class="im-cover__top">
+        <nav class="crumb" aria-label="Breadcrumb"><a href="/">Home</a> / <a href="/community/">Community support</a> / <span aria-current="page">Our impact</span></nav>
+        <CommunitySwitch current="impact" />
+      </div>
+      <div class="im-cover__grid">
+        <div class="stack" style="--gap:20px">
+          <span class="eyebrow eyebrow--gold">Our impact</span>
+          <h1 class="display" id="page-title">Faith that shows up in <em>Leith</em></h1>
+          <p class="lead">{impact.intro}</p>
+        </div>
+        <figure class="im-cover__photo">
+          <img src={imgLg('congregation-rejoicing')} alt="Members on their feet, singing and clapping in praise" width="1600" height="1066" />
+        </figure>
+      </div>
+      <ul role="list" class="im-stats">
+        {stats.map((s) => <li><span class="im-stats__value">{s.value}</span><span class="im-stats__label">{s.label}</span></li>)}
+      </ul>
+    </div>
+  </section>
+
+  <!-- Areas of impact -->
+  <section class="section" aria-labelledby="areas-title">
+    <div class="container">
+      <div class="section-head"><div><span class="eyebrow">Where we make a difference</span><h2 class="h2" id="areas-title">Five ways the church serves the community</h2></div></div>
+      <ol class="im-areas">
+        {impact.areas.map((a, i) => (
+          <li class:list={['im-area', { 'im-area--flip': i % 2 === 1 }]} style={`--accent:${accents[i % accents.length]}`}>
+            <figure class="im-area__media"><img src={img(a.image)} alt={a.alt} width="900" height="600" loading="lazy" decoding="async" /></figure>
+            <div class="im-area__copy">
+              <span class="im-area__no" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+              <span class="im-area__tag">{a.tag}</span>
+              <h3 class="im-area__title">{a.title}</h3>
+              <p>{a.text}</p>
+              <ul role="list" class="im-area__points">{a.points.map((p) => <li><Icon name="check" size={18} /> {p}</li>)}</ul>
+            </div>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <!-- Through the year -->
+  <section class="section section--lilac" aria-labelledby="year-title">
+    <div class="container">
+      <div class="section-head"><div><span class="eyebrow">Through the year</span><h2 class="h2" id="year-title">A rhythm of service</h2></div></div>
+      <ol class="im-year">
+        {impact.year.map((y) => <li><span class="im-year__when">{y.when}</span><p>{y.what}</p></li>)}
+      </ol>
+    </div>
+  </section>
+
+  <!-- Join in -->
+  <section class="section im-join" aria-labelledby="join-title">
+    <div class="container">
+      <div class="section-head"><div><span class="eyebrow">Be part of it</span><h2 class="h2" id="join-title">Every one of us can make a difference</h2></div></div>
+      <ul role="list" class="grid" style="--min:260px;--gap:20px">
+        <li class="im-join__card"><span class="im-join__icon" style="--c:var(--purple)"><Icon name="heart" /></span><h3>Volunteer</h3><p>Welcome, visit, pray, sing or help with the children.</p><a class="link-arrow" href={`mailto:${site.emails[0]}?subject=${encodeURIComponent('I would like to volunteer')}`}>Offer your time <Icon name="arrow" size={18} /></a></li>
+        <li class="im-join__card"><span class="im-join__icon" style="--c:var(--gold);--fg:var(--ink)"><Icon name="star" /></span><h3>Give</h3><p>Your giving keeps this work going in Leith and beyond.</p><a class="link-arrow" href="/give/">Give online <Icon name="arrow" size={18} /></a></li>
+        <li class="im-join__card"><span class="im-join__icon" style="--c:var(--magenta-ink)"><Icon name="chat" /></span><h3>Get support</h3><p>Going through a hard time? Talk to us, in confidence.</p><a class="link-arrow" href="/community/">Community support <Icon name="arrow" size={18} /></a></li>
+      </ul>
+      <p class="im-join__more">Share what God has done through the church: <a href="/testimonies/">read and share testimonies</a> · or call <a href={tel(site.phones[0])}>{site.phones[0]}</a>.</p>
+    </div>
+  </section>
+</Base>
+
+<style>
+  /* Cover */
+  .im-cover { background: radial-gradient(70% 90% at 85% 10%, #7a1fa8 0%, transparent 60%), linear-gradient(160deg, var(--plum) 0%, #3A0750 100%); color: var(--white); padding-block: clamp(28px, 1rem + 2vw, 56px) clamp(48px, 2rem + 3vw, 88px); overflow: hidden; }
+  .im-cover__inner { display: flex; flex-direction: column; gap: clamp(28px, 1rem + 2.5vw, 56px); }
+  .im-cover__top { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; }
+  .im-cover__grid { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: clamp(28px, 1rem + 3vw, 72px); align-items: center; }
+  .im-cover .display em { font-style: italic; color: var(--fire-yellow); }
+  .im-cover .lead { color: #E8D6F1; max-width: 34em; }
+  .im-cover__photo { margin: 0; position: relative; }
+  .im-cover__photo::before { content: ""; position: absolute; inset: 18px -18px -18px 18px; border-radius: var(--r-panel); background: var(--orange); }
+  .im-cover__photo img { position: relative; width: 100%; aspect-ratio: 4 / 3; object-fit: cover; border-radius: var(--r-panel); box-shadow: 0 30px 70px rgba(0,0,0,.4); }
+  .im-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(210px, 100%), 1fr)); border-top: 1px solid rgba(255,255,255,.2); }
+  .im-stats li { display: flex; flex-direction: column; gap: 8px; padding: 24px 24px 4px 0; }
+  .im-stats li + li { padding-left: 24px; border-left: 1px solid rgba(255,255,255,.14); }
+  .im-stats__value { font-family: var(--font-serif); font-weight: 700; font-size: clamp(3rem, 2rem + 3vw, 5rem); line-height: 1; color: transparent; -webkit-text-stroke: 2px var(--fire-yellow); }
+  .im-stats__label { color: #E8D6F1; max-width: 18em; }
+
+  /* Areas */
+  .im-areas { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: clamp(56px, 2rem + 4vw, 112px); }
+  .im-area { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(28px, 1rem + 4vw, 88px); align-items: center; }
+  .im-area--flip .im-area__media { order: 2; }
+  .im-area__media { margin: 0; position: relative; }
+  .im-area__media::before { content: ""; position: absolute; inset: -16px 16px 16px -16px; border-radius: var(--r-panel); background: var(--accent); opacity: .9; }
+  .im-area--flip .im-area__media::before { inset: -16px -16px 16px 16px; }
+  .im-area__media img { position: relative; width: 100%; aspect-ratio: 3 / 2; object-fit: cover; border-radius: var(--r-panel); box-shadow: var(--shadow-lift); }
+  .im-area__copy { display: flex; flex-direction: column; gap: 12px; position: relative; }
+  .im-area__no { font-family: var(--font-serif); font-weight: 700; font-size: clamp(3.5rem, 2rem + 4vw, 6rem); line-height: .8; color: transparent; -webkit-text-stroke: 2px var(--accent); }
+  .im-area__tag { align-self: flex-start; font-size: .8125rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--white); background: var(--plum); padding: 4px 12px; border-radius: var(--r-pill); }
+  .im-area__title { font-family: var(--font-serif); font-size: clamp(1.75rem, 1.3rem + 1.4vw, 2.5rem); line-height: 1.15; }
+  .im-area__copy > p { color: var(--slate); }
+  .im-area__points { display: flex; flex-direction: column; gap: 8px; margin-top: 4px; }
+  .im-area__points li { display: flex; gap: 10px; align-items: flex-start; font-weight: 600; }
+  .im-area__points :global(svg) { flex: none; margin-top: 4px; color: var(--purple); }
+
+  /* Year ribbon */
+  .im-year { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 16px; position: relative; }
+  .im-year::before { content: ""; position: absolute; left: 0; right: 0; top: 13px; height: 3px; background: linear-gradient(90deg, var(--purple), var(--magenta), var(--orange)); border-radius: 3px; }
+  .im-year li { position: relative; padding-top: 40px; display: flex; flex-direction: column; gap: 6px; }
+  .im-year li::before { content: ""; position: absolute; top: 4px; left: 0; width: 21px; height: 21px; border-radius: 50%; background: var(--white); border: 4px solid var(--purple); }
+  .im-year__when { font-family: var(--font-serif); font-weight: 700; font-size: 1.375rem; color: var(--plum); }
+  .im-year p { color: var(--slate); }
+
+  /* Join */
+  .im-join__card { height: 100%; background: var(--white); border: 1px solid var(--line); border-radius: var(--r-card); padding: clamp(22px, 0.9rem + 1vw, 32px); display: flex; flex-direction: column; gap: 10px; transition: transform .25s ease, box-shadow .25s ease; }
+  .im-join__card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lift); }
+  .im-join__card h3 { font-family: var(--font-serif); font-size: 1.625rem; }
+  .im-join__card p { color: var(--slate); }
+  .im-join__card .link-arrow { margin-top: auto; }
+  .im-join__icon { width: 54px; height: 54px; border-radius: 16px; display: inline-flex; align-items: center; justify-content: center; background: var(--c); color: var(--fg, var(--white)); }
+  .im-join__more { margin-top: 28px; color: var(--slate); }
+
+  @media (max-width: 960px) {
+    .im-cover__grid, .im-area { grid-template-columns: minmax(0, 1fr); }
+    .im-area--flip .im-area__media { order: 0; }
+    .im-year { grid-template-columns: minmax(0, 1fr); gap: 0; }
+    .im-year::before { left: 9px; right: auto; top: 8px; bottom: 8px; width: 3px; height: auto; background: linear-gradient(180deg, var(--purple), var(--magenta), var(--orange)); }
+    .im-year li { padding: 0 0 24px 44px; }
+    .im-year li::before { top: 2px; }
+  }
+  @media (max-width: 600px) {
+    .im-stats li + li { padding-left: 0; border-left: 0; }
+    .im-stats li { border-bottom: 1px solid rgba(255,255,255,.12); padding-bottom: 20px; }
+    .im-cover__photo::before { inset: 12px -10px -12px 10px; }
+    .im-area__media::before, .im-area--flip .im-area__media::before { inset: -10px 10px 10px -10px; }
+  }
+  @media (prefers-reduced-motion: reduce) { .im-join__card { transition: none; } }
+</style>

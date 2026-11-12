@@ -1,0 +1,62 @@
+{
+  "_help": "Our impact page. Stats with \"show\": false stay hidden until you fill in a real figure and set show to true. Photos come from public/images/pictures/.",
+  "intro": "The church is more than a Sunday service. Week after week, MFM Edinburgh is a place of prayer, care and welcome for Leith and the wider city, for members, neighbours, students, families and newcomers alike.",
+  "stats": [
+    { "value": "4", "label": "gatherings every week for worship, teaching and prayer", "source": "services", "show": true },
+    { "value": "6", "label": "ministers you can call for prayer and counsel", "source": "ministers", "show": true },
+    { "value": "£0", "label": "cost of our prayer, counsel, visits and signposting", "show": true },
+    { "value": "Every", "label": "child at our Christmas Love Feast goes home with a gift", "show": true },
+    { "value": "", "label": "families supported with food and essentials this year", "show": false },
+    { "value": "", "label": "hospital and home visits this year", "show": false },
+    { "value": "", "label": "volunteers serving each week", "show": false }
+  ],
+  "areas": [
+    {
+      "title": "A house of prayer for the city",
+      "tag": "Prayer",
+      "text": "Our doors open on Tuesday and Friday evenings as well as Sunday, so anyone carrying a burden has somewhere to bring it. Mountain Moving Prayers, the Spiritual Clinic and intercessory prayer cover our families, our neighbours and Edinburgh itself.",
+      "points": ["Tuesday Spiritual Clinic, prayer and Bible study", "Friday intercessory prayer", "Prayer and counsel by phone, any day"],
+      "image": "mountain-moving-prayers",
+      "alt": "The whole church standing during Mountain Moving Prayers"
+    },
+    {
+      "title": "Children and young people",
+      "tag": "Next generation",
+      "text": "Young people lead prayer, sing in the choir and speak from the lectern. Children have their own place in the life of the church, and every Christmas they are celebrated at the Love Feast.",
+      "points": ["Young members leading prayer and worship", "Youth voices in the choir", "Christmas Love Feast with a gift for every child"],
+      "image": "we-thank-you-lord",
+      "alt": "Young members of the choir singing with the band"
+    },
+    {
+      "title": "A welcome for neighbours and newcomers",
+      "tag": "Welcome",
+      "text": "Students, families and workers arriving in Scotland find a church family here. Friends from the wider Edinburgh community regularly join our services and programmes, and sit side by side with our members.",
+      "points": ["Help settling into Edinburgh", "Guests from local churches and the community", "A church family for people far from home"],
+      "image": "standing-together",
+      "alt": "Guests and members standing together in prayer"
+    },
+    {
+      "title": "Care for families",
+      "tag": "Care",
+      "text": "We celebrate with families in their joys and stand with them in hard times: visiting the sick and housebound, supporting the bereaved, and pointing people to trusted local help when money is tight.",
+      "points": ["Hospital and home visits", "Bereavement support", "Help reaching food banks and crisis grants"],
+      "image": "family-celebration",
+      "alt": "A family and friends gathered in matching blue for a celebration"
+    },
+    {
+      "title": "Music that lifts the city",
+      "tag": "Worship & arts",
+      "text": "Our choir and musicians serve every service and open their concerts to everyone, including the Unrelenting Hallelujah choir concert and our Joyful Noise celebrations.",
+      "points": ["Live worship every Sunday", "Choir concerts open to all", "Services shared on YouTube for those who can’t attend"],
+      "image": "joyful-noise-concert",
+      "alt": "The choir leading the church at the Joyful Noise concert"
+    }
+  ],
+  "year": [
+    { "when": "Every week", "what": "Sunday worship, Tuesday Spiritual Clinic and Friday prayer, open to everyone." },
+    { "when": "Every month", "what": "Power Must Change Hands and our monthly programmes of prayer." },
+    { "when": "October", "what": "Unrelenting Hallelujah, the choir concert, opened to friends and neighbours." },
+    { "when": "November", "what": "Thanksgiving Service, giving thanks for all God has done." },
+    { "when": "Christmas", "what": "The Christmas Love Feast, with Father Christmas and a gift for every child." }
+  ]
+}

@@ -7,6 +7,7 @@ import NextService from '../components/NextService.astro';
 import EventCard from '../components/EventCard.astro';
 import EventFilter from '../components/EventFilter.astro';
 import VideoCard from '../components/VideoCard.astro';
+import { prettyTitle } from '../lib/videos.js';
 import Icon from '../components/Icon.astro';
 import site from '../data/site.json';
 import services from '../data/services.json';
@@ -133,7 +134,7 @@ const ld = {
     <div class="container">
       <div class="section-head"><div><span class="eyebrow">Watch &amp; listen</span><h2 class="h2" id="watch-title">Can’t make it in person? Worship with us online.</h2></div></div>
       <ul role="list" class="grid" style="--min:300px;--gap:24px">
-        {vids.map((v) => <li><VideoCard id={v.id} title={v.title} meta="MFM Edinburgh" /></li>)}
+        {vids.map((v) => <li><VideoCard id={v.id} title={prettyTitle(v.title)} meta="MFM Edinburgh" /></li>)}
       </ul>
       <div class="cluster" style="margin-top:36px">
         <a class="btn btn--accent" href="/videos/">All videos</a>

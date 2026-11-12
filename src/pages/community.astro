@@ -3,6 +3,7 @@
 // a three-step path, a plum directory of trusted local services, orange volunteer band, plain-language FAQs).
 import Base from '../layouts/Base.astro';
 import Icon from '../components/Icon.astro';
+import CommunitySwitch from '../components/CommunitySwitch.astro';
 import site from '../data/site.json';
 import c from '../data/community.json';
 import { tel, safeUrl } from '../lib/format.js';
@@ -24,6 +25,7 @@ const mail = `mailto:${site.emails[0]}?subject=${encodeURIComponent('Community s
       <div class="container cs-hero__grid">
         <div class="stack cs-hero__copy" style="--gap:22px">
           <nav class="crumb" aria-label="Breadcrumb"><a href="/">Home</a> / <span aria-current="page">Community support</span></nav>
+          <CommunitySwitch current="support" />
           <span class="eyebrow">Community support</span>
           <h1 class="display" id="page-title">No one should face hard times <em>alone</em></h1>
           <p class="lead">{c.intro}</p>
@@ -104,6 +106,18 @@ const mail = `mailto:${site.emails[0]}?subject=${encodeURIComponent('Community s
             </div>
           ))}
         </div>
+      </div>
+    </section>
+
+    <!-- Impact teaser -->
+    <section class="cs-impact on-dark" aria-labelledby="impact-teaser-title">
+      <div class="container cs-impact__inner">
+        <div class="stack" style="--gap:10px">
+          <span class="eyebrow eyebrow--gold">Our impact</span>
+          <h2 class="h2" id="impact-teaser-title">See how the church serves Leith and the city</h2>
+          <p>Prayer, children and young people, a welcome for newcomers, care for families and music that lifts the community.</p>
+        </div>
+        <a class="btn btn--accent" href="/impact/">Read about our impact <Icon name="arrow" size={20} /></a>
       </div>
     </section>
 
@@ -197,6 +211,12 @@ const mail = `mailto:${site.emails[0]}?subject=${encodeURIComponent('Community s
   .cs-dir__links { display: flex; flex-wrap: wrap; gap: 8px 18px; margin-top: 4px; }
   .cs-dir__links a { display: inline-flex; align-items: center; gap: 6px; min-height: 32px; color: var(--white); font-weight: 700; text-underline-offset: 4px; }
   .cs-dir__links a:hover { color: var(--fire-yellow); }
+
+  /* Impact teaser */
+  .cs-impact { background: linear-gradient(135deg, var(--plum), #3A0750); color: var(--white); padding-block: clamp(40px, 1.5rem + 3vw, 80px); }
+  .cs-impact__inner { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 24px 48px; }
+  .cs-impact__inner .stack { max-width: 40em; }
+  .cs-impact__inner p { color: #E8D6F1; }
 
   /* Volunteer band */
   .cs-serve { background: var(--orange); color: var(--ink); padding-block: clamp(40px, 1.5rem + 3vw, 80px); }

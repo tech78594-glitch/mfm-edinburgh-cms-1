@@ -1,6 +1,7 @@
 ---
 // Click-to-play YouTube card. Nothing loads from YouTube until the visitor presses play,
-// and then it plays from youtube-nocookie.com.
+// and then it plays from youtube-nocookie.com. Large cards ask for the HD thumbnail and fall back
+// to the standard one when YouTube hasn't made an HD image yet (it sends a tiny grey placeholder).
 import Icon from './Icon.astro';
 const { id, title, meta, large = false } = Astro.props;
 const thumb = large ? `https://i.ytimg.com/vi/${id}/maxresdefault.jpg` : `https://i.ytimg.com/vi/${id}/hqdefault.jpg`;
@@ -8,7 +9,8 @@ const thumb = large ? `https://i.ytimg.com/vi/${id}/maxresdefault.jpg` : `https:
 <button class:list={['video-card', { 'video-card--large': large }]} type="button" data-yt={id} data-title={title}>
   <span class="video-card__frame">
     <img src={thumb} alt="" loading={large ? 'eager' : 'lazy'} width="480" height="270"
-         onerror={large ? `this.onerror=null;this.src='https://i.ytimg.com/vi/${id}/hqdefault.jpg'` : undefined} />
+         onerror={large ? `this.onerror=null;this.src='https://i.ytimg.com/vi/${id}/hqdefault.jpg'` : undefined}
+         onload={large ? `if(this.naturalWidth&&this.naturalWidth<=120&&!this.dataset.fb){this.dataset.fb=1;this.src='https://i.ytimg.com/vi/${id}/hqdefault.jpg'}` : undefined} />
     <span class="play"><Icon name="play" size={large ? 40 : 26} /></span>
   </span>
   {!large && <span class="video-card__title">{title}</span>}

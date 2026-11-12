@@ -6,7 +6,7 @@ const FILE = new URL('../src/data/videos.json', import.meta.url);
 const data = JSON.parse(fs.readFileSync(FILE, 'utf8'));
 const KEEP = 12;
 // Worldwide channel posts the same service in several languages; keep the English uploads.
-const FOREIGN = /YORUBA|IGBO|HAUSA|HEURE|SERVICE (SPECIAL )?DE|DIMANCHE|\bDU \d|FRENCH|PORTUG|ESPA/i;
+const FOREIGN = /YORUBA|IGBO|HAUSA|HEURE|SERVICE (SPECIAL )?DE|DIMANCHE|\bDU \d|FRENCH|PORTUG|ESPA|PROGRAMME DU|ORATEUR|MANNE|POUVOIR|PRI[EÈ]RE/i;
 
 const clean = (t) => t.replace(/\|/g, ' | ').replace(/\s+/g, ' ').replace(/ \| \| /g, ' | ').trim();
 
@@ -17,7 +17,11 @@ function collect(node, out) {
   if (v && String(v.contentType || '').endsWith('VIDEO')) {
     const md = v.metadata?.lockupMetadataViewModel || {};
     const meta = JSON.stringify(md.metadata || {});
-    out.push({ id: v.contentId, title: clean(md.title?.content || ''), scheduled: meta.includes('Scheduled') });
+    const badges = (JSON.stringify(v.contentImage || {}).match(/"text":"([^"]*)"/g) || []).map((t) => t.slice(8, -1));
+    const length = badges.find((t) => /^\d+(:\d\d)+$/.test(t)) || '';
+    // Skip upcoming premieres/livestreams: they can't be watched yet.
+    const scheduled = meta.includes('Scheduled') || badges.some((t) => /upcoming|premiere/i.test(t));
+    out.push({ id: v.contentId, title: clean(md.title?.content || ''), length, scheduled });
     return;
   }
   Object.values(node).forEach((n) => collect(n, out));
@@ -35,7 +39,7 @@ async function latest(channelId, filter) {
   const out = [];
   collect(JSON.parse(m[1]), out);
   return out.filter((v) => v.id && v.title && !v.scheduled && (!filter || !filter.test(v.title)))
-    .slice(0, KEEP).map(({ id, title }) => ({ id, title }));
+    .slice(0, KEEP).map(({ id, title, length }) => (length ? { id, title, length } : { id, title }));
 }
 
 try {

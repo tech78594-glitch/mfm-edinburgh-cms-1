@@ -1,29 +1,52 @@
 ---
 // Videos — look: cinema (black stage, featured player with purple glow, channel tabs, grids).
+// The video lists come from src/data/videos.json, refreshed from YouTube by `npm run videos`
+// (and automatically every day by the GitHub deploy workflow).
 import Base from '../layouts/Base.astro';
 import Icon from '../components/Icon.astro';
 import VideoCard from '../components/VideoCard.astro';
 import MediaSwitch from '../components/MediaSwitch.astro';
 import videos from '../data/videos.json';
+import { prettyTitle, latestMessage } from '../lib/videos.js';
 const ed = videos.channels.edinburgh, ww = videos.channels.worldwide;
 const featured = ed.items[0];
+const message = latestMessage(ww.items);
+const updated = new Date(`${videos.updated}T12:00:00Z`).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'Europe/London' });
+const len = (v) => (v.length ? ` · ${v.length}` : '');
 const SHOW = 6;
 ---
 <Base title="Videos" description="Watch Sunday services, programmes and teaching from MFM Edinburgh and MFM Ministries worldwide." dark>
   <div class="cinema on-dark">
     <section class="container stage" aria-labelledby="page-title">
-      <div class="stage__player">{featured && <VideoCard id={featured.id} title={featured.title} large />}</div>
-      <div class="stack stage__info" style="--gap:16px">
+      <div class="stage__top">
         <nav class="crumb" aria-label="Breadcrumb"><a href="/">Home</a> / <a href="/gallery/">Gallery</a> / <span aria-current="page">Videos</span></nav>
         <MediaSwitch current="videos" />
-        <h1 class="visually-hidden" id="page-title">Videos</h1>
-        <span class="tag">Latest from MFM Edinburgh</span>
-        {featured && <p class="h3s">{featured.title}</p>}
-        <p class="lead">Catch up on Sunday services, programmes and teaching. Videos play right here.</p>
-        <div class="stack" style="--gap:12px">
-          <a class="btn btn--accent" href={`${ed.url}?sub_confirmation=1`} rel="noopener"><Icon name="youtube" size={20} /> Subscribe · {ed.handle}</a>
-          <a class="btn btn--ghost" href={ww.url} rel="noopener">MFM Worldwide channel <Icon name="external" size={18} /></a>
-        </div>
+      </div>
+      <h1 class="visually-hidden" id="page-title">Videos</h1>
+      <div class="stage__grid">
+        <article class="stage__main" aria-labelledby="latest-title">
+          {featured && <VideoCard id={featured.id} title={prettyTitle(featured.title)} large />}
+          <div class="stage__caption">
+            <span class="tag">Latest service · MFM Edinburgh</span>
+            <h2 class="h3s" id="latest-title">{featured && prettyTitle(featured.title)}</h2>
+            <p class="stage__meta">{featured?.length && <><Icon name="clock" size={18} /> {featured.length}</>}<span>Updated {updated}</span></p>
+          </div>
+        </article>
+        <aside class="stage__side" aria-labelledby="message-title">
+          {message && (
+            <div class="msg">
+              <span class="eyebrow eyebrow--gold">Latest message</span>
+              <VideoCard id={message.id} title={message.message} />
+              <h2 class="msg__title" id="message-title">{message.message}</h2>
+              <p class="msg__meta">{message.speaker && <strong>{message.speaker}</strong>}<span>{message.programme}{len(message)}</span></p>
+              <a class="link-arrow" href={ww.url} rel="noopener">More from MFM Ministries <Icon name="external" size={16} /></a>
+            </div>
+          )}
+          <div class="stack" style="--gap:10px">
+            <a class="btn btn--accent" href={`${ed.url}?sub_confirmation=1`} rel="noopener"><Icon name="youtube" size={20} /> Subscribe · {ed.handle}</a>
+            <a class="btn btn--ghost" href={ed.url} rel="noopener">MFM Edinburgh on YouTube <Icon name="external" size={18} /></a>
+          </div>
+        </aside>
       </div>
     </section>
 
@@ -35,7 +58,7 @@ const SHOW = 6;
       {[[ed, 'ed', 'MFM Edinburgh', ed.items.slice(1)], [ww, 'ww', 'Dr D. K. Olukoya · MFM Ministries', ww.items]].map(([ch, key, meta, list], i) => (
         <div role="tabpanel" id={`panel-${key}`} aria-labelledby={`tab-${key}`} hidden={i !== 0} tabindex="0">
           <ul role="list" class="grid vgrid" style="--min:300px;--gap:32px 24px">
-            {list.map((v, j) => <li hidden={j >= SHOW} data-more={j >= SHOW ? '' : undefined}><VideoCard id={v.id} title={v.title} meta={meta} /></li>)}
+            {list.map((v, j) => <li hidden={j >= SHOW} data-more={j >= SHOW ? '' : undefined}><VideoCard id={v.id} title={prettyTitle(v.title)} meta={`${meta}${len(v)}`} /></li>)}
           </ul>
           <div class="cluster library__more">
             {list.length > SHOW && <button type="button" class="btn btn--ghost" data-load-more>Show more videos</button>}
@@ -49,11 +72,21 @@ const SHOW = 6;
 
 <style>
   .cinema { background: var(--ink); color: var(--white); }
-  .stage { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); gap: clamp(24px, 0.9rem + 2vw, 48px); align-items: center; padding-block: clamp(28px, 1rem + 3vw, 72px) var(--space-l); }
-  .stage::before { content: ""; position: absolute; }
-  .stage__info .tag { align-self: flex-start; }
-  .stage__info .lead { color: var(--line); }
-  .stage__info .btn { align-self: flex-start; }
+  .stage { padding-block: clamp(24px, 1rem + 2vw, 56px) var(--space-l); display: flex; flex-direction: column; gap: clamp(20px, 1rem + 1.5vw, 36px); }
+  .stage__top { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; }
+  .stage__grid { display: grid; grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr); gap: clamp(24px, 0.9rem + 2vw, 48px); align-items: start; }
+  .stage__main { display: flex; flex-direction: column; gap: 18px; }
+  .stage__caption { display: flex; flex-direction: column; gap: 10px; }
+  .stage__caption .tag { align-self: flex-start; }
+  .stage__meta { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 18px; color: var(--line); font-size: .9375rem; }
+  .stage__meta :global(svg) { vertical-align: -3px; margin-right: 4px; }
+  .stage__side { display: flex; flex-direction: column; gap: 22px; }
+  .msg { display: flex; flex-direction: column; gap: 12px; padding: clamp(16px, 1rem + .6vw, 24px); border-radius: var(--r-card); background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.12); }
+  .msg :global(.video-card__title), .msg :global(.video-card__meta) { display: none; }
+  .msg__title { font-family: var(--font-serif); font-size: clamp(1.375rem, 1.1rem + .8vw, 1.75rem); line-height: 1.2; }
+  .msg__meta { display: flex; flex-direction: column; gap: 2px; color: var(--line); font-size: .9375rem; }
+  .msg__meta strong { color: var(--white); }
+  .msg .link-arrow { color: var(--fire-yellow); }
   .library { padding-bottom: 96px; }
   .tabs { display: flex; gap: 8px; border-bottom: 1px solid var(--slate); margin-bottom: 32px; }
   .tabs button { min-height: 52px; padding: 10px 14px; background: none; border: 0; border-bottom: 4px solid transparent; color: var(--line); font-weight: 700; font-size: 1.25rem; cursor: pointer; margin-bottom: -1px; }
@@ -61,7 +94,7 @@ const SHOW = 6;
   .tabs button:hover { color: var(--white); }
   .vgrid li[hidden] { display: none; }
   .library__more { margin-top: 40px; }
-  @media (max-width: 960px) { .stage { grid-template-columns: minmax(0, 1fr); gap: 28px; padding-block: 28px 48px; } }
+  @media (max-width: 960px) { .stage__grid { grid-template-columns: minmax(0, 1fr); } }
 </style>
 
 <script>

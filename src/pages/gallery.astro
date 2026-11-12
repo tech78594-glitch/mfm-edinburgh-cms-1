@@ -6,6 +6,7 @@ import site from '../data/site.json';
 import gallery from '../data/gallery.json';
 import videos from '../data/videos.json';
 import VideoCard from '../components/VideoCard.astro';
+import { prettyTitle } from '../lib/videos.js';
 import MediaSwitch from '../components/MediaSwitch.astro';
 import pictures from '../data/pictures.json';
 const picTotal = pictures.chapters.reduce((n, r) => n + r.items.length, 0);
@@ -68,7 +69,7 @@ const photos = albums.flatMap((a) => a.items.map((p) => ({ ...p, album: a.slug, 
         <a class="btn btn--accent" href="/videos/">See all videos <Icon name="arrow" size={20} /></a>
       </div>
       <ul role="list" class="grid" style="--min:280px;--gap:28px 24px">
-        {latest.map((v) => <li><VideoCard id={v.id} title={v.title} meta="MFM Edinburgh" /></li>)}
+        {latest.map((v) => <li><VideoCard id={v.id} title={prettyTitle(v.title)} meta="MFM Edinburgh" /></li>)}
       </ul>
     </section>
 

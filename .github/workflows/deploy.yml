@@ -1,10 +1,14 @@
-# Builds the Astro site and publishes it to GitHub Pages on every push to main.
+# Builds the Astro site and publishes it to GitHub Pages on every push to main, and once a day
+# (so the Videos page picks up new YouTube uploads without anyone having to push).
 # One-time setup: repo Settings → Pages → Build and deployment → Source: "GitHub Actions".
 name: Deploy to GitHub Pages
 
 on:
   push:
     branches: [main]
+  # Rebuild every day so the Videos page shows the latest YouTube uploads
+  schedule:
+    - cron: '17 4 * * *'
   workflow_dispatch:
 
 permissions:
@@ -28,6 +32,9 @@ jobs:
       - id: pages
         uses: actions/configure-pages@v5
       - run: npm ci
+      - name: Fetch the latest YouTube videos
+        run: npm run videos
+        continue-on-error: true
       - name: Build
         run: npm run build
         env:

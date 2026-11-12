@@ -1,0 +1,20 @@
+---
+// Community support / Our impact switch (Our impact sits under Community support).
+const { current = 'support' } = Astro.props;
+---
+<nav class="community-switch" aria-label="Community sections">
+  <a href="/community/" aria-current={current === 'support' ? 'page' : undefined}>Community support</a>
+  <a href="/impact/" aria-current={current === 'impact' ? 'page' : undefined}>Our impact</a>
+</nav>
+
+<style>
+  .community-switch { display: inline-flex; flex-wrap: wrap; align-self: flex-start; gap: 4px; padding: 5px; border-radius: var(--r-pill); background: rgba(87, 11, 117, .08); border: 1px solid rgba(87, 11, 117, .16); }
+  .community-switch a { display: inline-flex; align-items: center; min-height: 44px; padding: 8px clamp(14px, .6rem + 1vw, 22px); border-radius: var(--r-pill); color: var(--plum); font-weight: 700; text-decoration: none; transition: background .2s, color .2s; }
+  .community-switch a:hover { background: rgba(87, 11, 117, .1); }
+  .community-switch a[aria-current="page"] { background: var(--plum); color: var(--white); }
+  .community-switch a:focus-visible { outline: 3px solid var(--purple); outline-offset: 2px; }
+  :global(.on-dark) .community-switch { background: rgba(255, 255, 255, .08); border-color: rgba(255, 255, 255, .2); }
+  :global(.on-dark) .community-switch a { color: var(--lilac); }
+  :global(.on-dark) .community-switch a:hover { background: rgba(255, 255, 255, .12); color: var(--white); }
+  :global(.on-dark) .community-switch a[aria-current="page"] { background: var(--white); color: var(--plum); }
+</style>

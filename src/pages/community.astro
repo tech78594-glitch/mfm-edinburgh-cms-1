@@ -1,0 +1,235 @@
+---
+// Community support — look: warm and open (cream canvas, "Need help now?" card, colour-chip help cards,
+// a three-step path, a plum directory of trusted local services, orange volunteer band, plain-language FAQs).
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+import site from '../data/site.json';
+import c from '../data/community.json';
+import { tel, safeUrl } from '../lib/format.js';
+const accent = {
+  purple: ['var(--purple)', 'var(--white)'],
+  magenta: ['var(--magenta-ink)', 'var(--white)'],
+  plum: ['var(--plum)', 'var(--white)'],
+  gold: ['var(--gold)', 'var(--ink)'],
+  orange: ['var(--orange)', 'var(--ink)'],
+  fire: ['var(--fire-red)', 'var(--white)'],
+};
+const urgent = c.services.find((g) => g.group === 'Urgent help')?.items ?? [];
+const mail = `mailto:${site.emails[0]}?subject=${encodeURIComponent('Community support')}`;
+---
+<Base title="Community support" description="Free, confidential support from MFM Edinburgh: prayer and counsel, hospital and home visits, bereavement support, help for newcomers, and links to trusted local services in Edinburgh.">
+  <div class="cs">
+    <!-- Hero -->
+    <section class="cs-hero" aria-labelledby="page-title">
+      <div class="container cs-hero__grid">
+        <div class="stack cs-hero__copy" style="--gap:22px">
+          <nav class="crumb" aria-label="Breadcrumb"><a href="/">Home</a> / <span aria-current="page">Community support</span></nav>
+          <span class="eyebrow">Community support</span>
+          <h1 class="display" id="page-title">No one should face hard times <em>alone</em></h1>
+          <p class="lead">{c.intro}</p>
+          <div class="cluster">
+            <a class="btn btn--primary" href={tel(site.phones[0])}><Icon name="phone" size={20} /> Call {site.phones[0]}</a>
+            <a class="btn btn--soft" href={mail}><Icon name="mail" size={20} /> Email us</a>
+          </div>
+        </div>
+        <aside class="cs-now on-dark" aria-labelledby="now-title">
+          <h2 id="now-title"><Icon name="heart" size={22} /> Need help now?</h2>
+          <p>If someone is in danger, call 999 straight away. For urgent advice or someone to talk to:</p>
+          <ul role="list">
+            {urgent.map((s) => (
+              <li><a href={tel(s.phone)}><span class="cs-now__num">{s.phone}</span><span class="cs-now__name">{s.name}<small>{s.detail}</small></span></a></li>
+            ))}
+          </ul>
+        </aside>
+      </div>
+    </section>
+
+    <!-- How we can help -->
+    <section class="section" aria-labelledby="help-title">
+      <div class="container">
+        <div class="section-head"><div><span class="eyebrow">How we can help</span><h2 class="h2" id="help-title">Care for the whole person</h2></div></div>
+        <ul role="list" class="cs-help">
+          {c.help.map((h) => {
+            const [bg, fg] = accent[h.accent] ?? accent.purple;
+            return (
+              <li class="cs-card" style={`--c:${bg};--fg:${fg}`}>
+                <span class="cs-card__icon"><Icon name={h.icon} size={26} /></span>
+                <h3>{h.title}</h3>
+                <p>{h.text}</p>
+                <p class="cs-card__when"><Icon name="clock" size={18} /> {h.when}</p>
+                {h.confirm && <span class="placeholder-note">Details to follow</span>}
+              </li>
+            );
+          })}
+        </ul>
+      </div>
+    </section>
+
+    <!-- How to ask -->
+    <section class="section section--lilac" aria-labelledby="steps-title">
+      <div class="container">
+        <div class="section-head"><div><span class="eyebrow">How to ask for help</span><h2 class="h2" id="steps-title">Three simple steps</h2></div></div>
+        <ol class="cs-steps">
+          {c.steps.map((s, i) => <li><span class="cs-steps__n" aria-hidden="true">{i + 1}</span><h3>{s.title}</h3><p>{s.text}</p></li>)}
+        </ol>
+        <div class="cs-reach">
+          <a class="cs-reach__item" href={tel(site.phones[0])}><Icon name="phone" /><span><strong>Call the church</strong>{site.phones[0]}</span></a>
+          <a class="cs-reach__item" href={mail}><Icon name="mail" /><span><strong>Email</strong>{site.emails[0]}</span></a>
+          <a class="cs-reach__item" href="/contact/#ministers"><Icon name="chat" /><span><strong>Speak to a minister</strong>All minister numbers</span></a>
+          <a class="cs-reach__item" href="/services/"><Icon name="pin" /><span><strong>Visit us</strong>{site.address.line1.split(',')[0]}, Leith</span></a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Trusted local services -->
+    <section class="section section--plum on-dark" aria-labelledby="dir-title">
+      <div class="container">
+        <div class="section-head"><div><span class="eyebrow eyebrow--gold">Trusted local services</span><h2 class="h2" id="dir-title">More help in Edinburgh</h2><p class="lead cs-dir__lead">Free services we often point people to. We are happy to help you contact them.</p></div></div>
+        <div class="cs-dir">
+          {c.services.map((g) => (
+            <div class="cs-dir__group">
+              <h3>{g.group}</h3>
+              <ul role="list">
+                {g.items.map((s) => (
+                  <li>
+                    <span class="cs-dir__name">{s.name}</span>
+                    <span class="cs-dir__detail">{s.detail}</span>
+                    <span class="cs-dir__links">
+                      {s.phone && <a href={tel(s.phone)}><Icon name="phone" size={16} /> {s.phone}</a>}
+                      {s.url && <a href={safeUrl(s.url)} rel="noopener" target="_blank">Website <Icon name="external" size={16} /><span class="visually-hidden"> (opens in a new tab)</span></a>}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- Volunteer -->
+    <section class="cs-serve" aria-labelledby="serve-title">
+      <div class="container cs-serve__inner">
+        <div class="stack" style="--gap:12px">
+          <span class="eyebrow cs-serve__eyebrow">Get involved</span>
+          <h2 class="h2" id="serve-title">{c.volunteer.title}</h2>
+          <p>{c.volunteer.text}</p>
+        </div>
+        <div class="cluster">
+          <a class="btn btn--dark" href={`mailto:${site.emails[0]}?subject=${encodeURIComponent('I would like to volunteer')}`}>I’d like to volunteer</a>
+          <a class="btn cs-serve__ghost" href="/give/">Give to the work</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQs -->
+    <section class="section" aria-labelledby="faq-title">
+      <div class="container cs-faq">
+        <div class="stack" style="--gap:12px">
+          <span class="eyebrow">Questions</span>
+          <h2 class="h2" id="faq-title">Good to know</h2>
+          <p class="muted">Anything else? Call <a href={tel(site.phones[0])}>{site.phones[0]}</a> and we will gladly answer.</p>
+        </div>
+        <div class="cs-faq__list">
+          {c.faqs.map((f, i) => (
+            <details open={i === 0}><summary>{f.q}<span class="cs-faq__pm" aria-hidden="true"></span></summary><p>{f.a}</p></details>
+          ))}
+        </div>
+      </div>
+    </section>
+  </div>
+</Base>
+
+<style>
+  .cs { --cream: #FFF7EC; }
+  /* Hero */
+  .cs-hero { background: radial-gradient(90% 120% at 100% 0%, #FDE7C8 0%, var(--cream) 55%); padding-block: clamp(48px, 1.5rem + 4vw, 104px); }
+  .cs-hero__grid { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: clamp(28px, 1rem + 3vw, 72px); align-items: center; }
+  .cs-hero .display { color: var(--plum); }
+  .cs-hero .display em { font-style: italic; color: var(--magenta-ink); }
+  .cs-hero .lead { color: var(--slate); max-width: 36em; }
+  .cs-now { background: var(--ink); color: var(--white); border-radius: var(--r-panel); padding: clamp(24px, 1rem + 1.5vw, 40px); display: flex; flex-direction: column; gap: 14px; box-shadow: 0 24px 60px rgba(87, 11, 117, .18); border-top: 6px solid var(--orange); }
+  .cs-now h2 { display: flex; align-items: center; gap: 10px; font-family: var(--font-serif); font-size: clamp(1.5rem, 1.1rem + 1vw, 2rem); }
+  .cs-now h2 :global(svg) { color: var(--orange); }
+  .cs-now > p { color: #D9D3DE; }
+  .cs-now ul { display: flex; flex-direction: column; gap: 10px; }
+  .cs-now a { display: grid; grid-template-columns: minmax(118px, auto) minmax(0, 1fr); gap: 14px; align-items: center; padding: 12px 16px; border-radius: 14px; background: rgba(255, 255, 255, .07); color: var(--white); text-decoration: none; }
+  .cs-now a:hover { background: rgba(255, 255, 255, .14); }
+  .cs-now__num { font-weight: 700; font-size: 1.25rem; color: var(--fire-yellow); font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .cs-now__name { font-weight: 700; display: flex; flex-direction: column; }
+  .cs-now__name small { font-weight: 400; font-size: .875rem; color: #CFC8D6; }
+
+  /* Help cards */
+  .cs-help { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(300px, 100%), 1fr)); gap: clamp(16px, 0.8rem + 1vw, 28px); }
+  .cs-card { position: relative; background: var(--white); border: 1px solid var(--line); border-radius: var(--r-card); padding: clamp(22px, 0.9rem + 1vw, 32px); display: flex; flex-direction: column; gap: 10px; transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease; }
+  .cs-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lift); border-color: transparent; }
+  .cs-card__icon { width: 56px; height: 56px; border-radius: 18px; display: inline-flex; align-items: center; justify-content: center; background: var(--c); color: var(--fg); margin-bottom: 6px; }
+  .cs-card h3 { font-family: var(--font-serif); font-size: clamp(1.375rem, 1.1rem + .6vw, 1.625rem); line-height: 1.2; }
+  .cs-card p { color: var(--slate); }
+  .cs-card .cs-card__when { margin-top: auto; padding-top: 10px; border-top: 1px solid var(--line); display: flex; align-items: center; gap: 8px; color: var(--ink); font-weight: 600; font-size: .9375rem; }
+  .cs-card .placeholder-note { align-self: flex-start; }
+
+  /* Steps */
+  .cs-steps { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(20px, 1rem + 2vw, 48px); counter-reset: s; position: relative; }
+  .cs-steps::before { content: ""; position: absolute; top: 32px; left: 32px; right: 32px; height: 2px; background: repeating-linear-gradient(90deg, var(--purple) 0 10px, transparent 10px 18px); opacity: .45; }
+  .cs-steps li { position: relative; display: flex; flex-direction: column; gap: 10px; }
+  .cs-steps__n { width: 64px; height: 64px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; background: var(--purple); color: var(--white); font-family: var(--font-serif); font-weight: 700; font-size: 1.75rem; box-shadow: 0 0 0 8px var(--lilac); }
+  .cs-steps li:nth-child(2) .cs-steps__n { background: var(--magenta-ink); }
+  .cs-steps li:nth-child(3) .cs-steps__n { background: var(--plum); }
+  .cs-steps h3 { font-family: var(--font-serif); font-size: 1.5rem; }
+  .cs-steps p { color: var(--slate); max-width: 22em; }
+  .cs-reach { margin-top: clamp(28px, 1rem + 2vw, 48px); display: grid; grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr)); gap: 14px; }
+  .cs-reach__item { display: flex; align-items: center; gap: 14px; padding: 18px 20px; border-radius: 18px; background: var(--white); color: var(--ink); text-decoration: none; border: 1px solid transparent; transition: border-color .2s, transform .2s; }
+  .cs-reach__item:hover { border-color: var(--purple); transform: translateY(-2px); }
+  .cs-reach__item > :global(svg) { flex: none; color: var(--purple); }
+  .cs-reach__item span { display: flex; flex-direction: column; min-width: 0; overflow-wrap: anywhere; color: var(--slate); font-size: .9375rem; }
+  .cs-reach__item strong { color: var(--ink); font-size: 1.0625rem; }
+
+  /* Directory */
+  .cs-dir__lead { color: #E8D6F1; margin-top: 8px; }
+  .cs-dir { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr)); gap: clamp(16px, 0.8rem + 1vw, 28px); align-items: start; }
+  .cs-dir__group { background: rgba(255, 255, 255, .06); border: 1px solid rgba(255, 255, 255, .14); border-radius: var(--r-card); padding: clamp(20px, 0.9rem + 1vw, 30px); }
+  .cs-dir__group h3 { font-size: .875rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--fire-yellow); margin-bottom: 6px; }
+  .cs-dir__group li { display: flex; flex-direction: column; gap: 4px; padding-block: 16px; border-bottom: 1px solid rgba(255, 255, 255, .14); }
+  .cs-dir__group li:last-child { border-bottom: 0; padding-bottom: 0; }
+  .cs-dir__name { font-weight: 700; font-size: 1.1875rem; }
+  .cs-dir__detail { color: #E8D6F1; font-size: .9375rem; }
+  .cs-dir__links { display: flex; flex-wrap: wrap; gap: 8px 18px; margin-top: 4px; }
+  .cs-dir__links a { display: inline-flex; align-items: center; gap: 6px; min-height: 32px; color: var(--white); font-weight: 700; text-underline-offset: 4px; }
+  .cs-dir__links a:hover { color: var(--fire-yellow); }
+
+  /* Volunteer band */
+  .cs-serve { background: var(--orange); color: var(--ink); padding-block: clamp(40px, 1.5rem + 3vw, 80px); }
+  .cs-serve__inner { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 24px 48px; }
+  .cs-serve__inner > .stack { max-width: 40em; }
+  .cs-serve__eyebrow { color: var(--ink); }
+  .cs-serve__ghost { background: transparent; color: var(--ink); border: 2px solid var(--ink); }
+  .cs-serve__ghost:hover { background: rgba(29, 27, 32, .08); }
+
+  /* FAQ */
+  .cs-faq { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.6fr); gap: clamp(24px, 1rem + 3vw, 72px); align-items: start; }
+  .cs-faq__list { display: flex; flex-direction: column; gap: 12px; }
+  .cs-faq details { background: var(--cream); border-radius: 18px; border: 1px solid #F3E2C8; }
+  .cs-faq summary { list-style: none; cursor: pointer; display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 18px 22px; font-weight: 700; font-size: 1.125rem; min-height: 44px; }
+  .cs-faq summary::-webkit-details-marker { display: none; }
+  .cs-faq summary:focus-visible { outline: 3px solid var(--purple); outline-offset: 2px; border-radius: 18px; }
+  .cs-faq__pm { flex: none; width: 28px; height: 28px; border-radius: 50%; background: var(--purple); position: relative; }
+  .cs-faq__pm::before, .cs-faq__pm::after { content: ""; position: absolute; left: 50%; top: 50%; width: 12px; height: 2px; background: var(--white); transform: translate(-50%, -50%); transition: transform .25s ease; }
+  .cs-faq__pm::after { transform: translate(-50%, -50%) rotate(90deg); }
+  .cs-faq details[open] .cs-faq__pm::after { transform: translate(-50%, -50%) rotate(0deg); }
+  .cs-faq details p { padding: 0 22px 20px; color: var(--slate); }
+
+  @media (max-width: 960px) {
+    .cs-hero__grid, .cs-faq { grid-template-columns: minmax(0, 1fr); }
+  }
+  @media (max-width: 760px) {
+    .cs-steps { grid-template-columns: minmax(0, 1fr); }
+    .cs-steps::before { top: 32px; bottom: 32px; left: 31px; right: auto; width: 2px; height: auto; background: repeating-linear-gradient(180deg, var(--purple) 0 10px, transparent 10px 18px); }
+    .cs-steps li { padding-left: 88px; min-height: 64px; }
+    .cs-steps__n { position: absolute; left: 0; top: 0; }
+  }
+  @media (max-width: 420px) {
+    .cs-now a { grid-template-columns: minmax(0, 1fr); gap: 2px; }
+  }
+  @media (prefers-reduced-motion: reduce) { .cs-card, .cs-reach__item, .cs-faq__pm::before, .cs-faq__pm::after { transition: none; } }
+</style>

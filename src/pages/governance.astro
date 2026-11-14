@@ -1,0 +1,297 @@
+---
+// Governance policies — look: a calm document library. Charity facts card, a red "report a concern" strip,
+// how the church is run, then policies grouped with a sticky contents list, live search and expandable cards.
+// Content lives in src/data/governance.json. Sits under About us.
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+import site from '../data/site.json';
+import g from '../data/governance.json';
+import { tel } from '../lib/format.js';
+
+const c = g.charity;
+const groups = [...new Set(g.policies.map((p) => p.group))].map((name) => ({ name, items: g.policies.filter((p) => p.group === name) }));
+const drafts = g.policies.filter((p) => p.status !== 'adopted').length;
+const mail = (subject) => `mailto:${g.contacts.email}?subject=${encodeURIComponent(subject)}`;
+const sg = g.contacts.safeguarding_name;
+---
+<Base title="Governance policies" description={`How MFM Edinburgh (Scottish charity ${c.number}) is run: our trustees, safeguarding, data protection, finance, complaints and other policies.`}>
+  <!-- Header -->
+  <section class="gv-head" aria-labelledby="page-title">
+    <div class="container gv-head__grid">
+      <div class="stack" style="--gap:18px">
+        <nav class="crumb" aria-label="Breadcrumb"><a href="/">Home</a> / <a href="/about/">About us</a> / <span aria-current="page">Governance policies</span></nav>
+        <span class="eyebrow">Governance</span>
+        <h1 class="h1" id="page-title">How our church is run, and the policies we live by</h1>
+        <p class="lead">MFM Edinburgh is a registered Scottish charity. Our trustees are accountable to God, to our members and to the law, and these policies show how we keep people safe, use information well and look after every gift.</p>
+      </div>
+      <aside class="gv-card" aria-labelledby="charity-title">
+        <h2 class="gv-card__title" id="charity-title"><Icon name="check" size={20} /> Registered charity</h2>
+        <dl>
+          <div><dt>Name</dt><dd>{c.name}</dd></div>
+          <div><dt>Scottish charity number</dt><dd class="gv-mono">{c.number}</dd></div>
+          {c.company_number && <div><dt>Company number</dt><dd class="gv-mono">{c.company_number}</dd></div>}
+          <div><dt>Legal form</dt><dd>{c.form}</dd></div>
+          <div><dt>Registered</dt><dd>{c.registered}</dd></div>
+          <div><dt>Financial year end</dt><dd>{c.year_end}</dd></div>
+        </dl>
+        <a class="link-arrow" href={c.oscr_url} rel="noopener" target="_blank">View us on the Scottish Charity Register <Icon name="external" size={16} /><span class="visually-hidden"> (opens in a new tab)</span></a>
+      </aside>
+    </div>
+  </section>
+
+  <!-- Report a concern -->
+  <section class="gv-alert" aria-labelledby="concern-title">
+    <div class="container gv-alert__inner">
+      <span class="gv-alert__icon" aria-hidden="true"><Icon name="heart" size={26} /></span>
+      <div class="gv-alert__copy">
+        <h2 id="concern-title">Worried about a child or adult?</h2>
+        <p>If someone is in immediate danger, call <a href="tel:999"><strong>999</strong></a>. Otherwise speak to {sg ? <strong>{sg}</strong> : 'our Safeguarding Coordinator'}{g.contacts.safeguarding_phone && <> on <a href={tel(g.contacts.safeguarding_phone)}>{g.contacts.safeguarding_phone}</a></>} or any minister, or contact Edinburgh Social Care Direct.</p>
+      </div>
+      <ul role="list" class="gv-alert__nums">
+        <li><a href="tel:01312002327"><span>Children &amp; families</span>0131 200 2327</a></li>
+        <li><a href="tel:01312002324"><span>Adult protection</span>0131 200 2324</a></li>
+        <li><a href="tel:101"><span>Police (non-emergency)</span>101</a></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- How we are run -->
+  <section class="section" aria-labelledby="run-title">
+    <div class="container">
+      <div class="section-head"><div><span class="eyebrow">Structure</span><h2 class="h2" id="run-title">How the church is governed</h2></div></div>
+      <ol class="gv-structure">
+        {g.structure.map((s, i) => <li><span class="gv-structure__no" aria-hidden="true">{i + 1}</span><h3>{s.title}</h3><p>{s.text}</p></li>)}
+      </ol>
+      <div class="gv-purposes">
+        <h3>Our charitable purposes</h3>
+        <ul role="list">{c.purposes.map((p) => <li><Icon name="check" size={18} /> {p}</li>)}</ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- Policies -->
+  <section class="section section--mist" aria-labelledby="policies-title" data-policies>
+    <div class="container gv-lib">
+      <aside class="gv-toc" aria-label="Policies">
+        <div class="gv-toc__inner">
+          <label class="gv-search">
+            <span class="visually-hidden">Search policies</span>
+            <input type="search" placeholder="Search policies" data-search autocomplete="off" />
+          </label>
+          {groups.map((gr) => (
+            <div class="gv-toc__group">
+              <p>{gr.name}</p>
+              <ul role="list">{gr.items.map((p) => <li><a href={`#${p.id}`} data-toc={p.id}>{p.title}</a></li>)}</ul>
+            </div>
+          ))}
+        </div>
+      </aside>
+
+      <div class="gv-list">
+        <div class="gv-list__head">
+          <span class="eyebrow">Policies</span>
+          <h2 class="h2" id="policies-title">Our policies</h2>
+          <p class="muted">Short summaries of each policy. Ask us for the full version at any time{drafts > 0 && <>; policies marked <span class="gv-badge gv-badge--draft">Draft</span> are awaiting approval by the trustees</>}.</p>
+          <div class="cluster gv-list__tools">
+            <button type="button" class="btn btn--sm btn--soft" data-expand>Expand all</button>
+            <p class="gv-count" role="status" data-count></p>
+          </div>
+        </div>
+        {groups.map((gr) => (
+          <div class="gv-group" data-group>
+            <h3 class="gv-group__title">{gr.name}</h3>
+            {gr.items.map((p) => (
+              <details class="gv-policy" id={p.id} data-policy data-text={`${p.title} ${p.summary} ${p.points.join(' ')}`.toLowerCase()}>
+                <summary>
+                  <span class="gv-policy__head">
+                    <span class="gv-policy__title">{p.title}</span>
+                    <span class="gv-policy__sum">{p.summary}</span>
+                  </span>
+                  <span class="gv-policy__meta">
+                    {p.status === 'adopted' ? <span class="gv-badge gv-badge--ok">Adopted</span> : <span class="gv-badge gv-badge--draft">Draft</span>}
+                    <span class="gv-policy__pm" aria-hidden="true"></span>
+                  </span>
+                </summary>
+                <div class="gv-policy__body">
+                  <h4>Key points</h4>
+                  <ul role="list">{p.points.map((pt) => <li>{pt}</li>)}</ul>
+                  <div class="gv-policy__foot">
+                    <span class="muted">{p.reviewed ? `Last reviewed ${p.reviewed}` : 'Awaiting trustee approval'}</span>
+                    <div class="cluster">
+                      {p.pdf && <a class="btn btn--sm btn--primary" href={p.pdf} download><Icon name="arrow" size={16} /> Download full policy (PDF)</a>}
+                      <a class="btn btn--sm btn--soft" href={mail(`Request: ${p.title} policy`)}><Icon name="mail" size={16} /> Request a copy</a>
+                    </div>
+                  </div>
+                </div>
+              </details>
+            ))}
+          </div>
+        ))}
+        <p class="gv-empty" hidden data-empty>No policies match your search. <button type="button" class="link-arrow" data-clear>Clear search</button></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Help -->
+  <section class="section" aria-labelledby="help-title">
+    <div class="container">
+      <div class="section-head"><div><span class="eyebrow">Questions or concerns</span><h2 class="h2" id="help-title">We’re here to listen</h2></div></div>
+      <ul role="list" class="grid" style="--min:260px;--gap:20px">
+        <li class="gv-help"><h3>Ask us</h3><p>Questions about any policy, or a copy of the full document.</p><a class="link-arrow" href={mail('Governance question')}>Email {g.contacts.email} <Icon name="arrow" size={18} /></a></li>
+        <li class="gv-help"><h3>Make a complaint</h3><p>Speak to a minister or email us. If you’re still unhappy, the trustees will review it.</p><a class="link-arrow" href="#complaints">Complaints procedure <Icon name="arrow" size={18} /></a></li>
+        <li class="gv-help"><h3>Contact the regulator</h3><p>Concerns about how a charity is run can be raised with OSCR.</p><a class="link-arrow" href="https://www.oscr.org.uk/raise-a-concern/" rel="noopener" target="_blank">Raise a concern with OSCR <Icon name="external" size={16} /><span class="visually-hidden"> (opens in a new tab)</span></a></li>
+      </ul>
+      <p class="gv-foot">Other helplines: thirtyone:eight Christian safeguarding helpline <a href="tel:03030031111">0303 003 1111</a> · Information Commissioner’s Office <a href="https://ico.org.uk/make-a-complaint/" rel="noopener" target="_blank">ico.org.uk</a> · Church line <a href={tel(site.phones[0])}>{site.phones[0]}</a></p>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .gv-head { background: linear-gradient(180deg, var(--lilac), var(--white)); padding-block: clamp(40px, 1.5rem + 3vw, 88px); }
+  .gv-head__grid { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: clamp(28px, 1rem + 3vw, 72px); align-items: start; }
+  .gv-head .h1 { color: var(--plum); }
+  .gv-head .lead { color: var(--slate); max-width: 36em; }
+  .gv-card { background: var(--white); border: 1px solid var(--line); border-top: 6px solid var(--plum); border-radius: var(--r-card); padding: clamp(20px, 1rem + 1vw, 32px); box-shadow: var(--shadow-card); display: flex; flex-direction: column; gap: 14px; }
+  .gv-card__title { display: flex; align-items: center; gap: 8px; font-size: .875rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--plum); }
+  .gv-card dl div { display: grid; grid-template-columns: minmax(0, 11em) minmax(0, 1fr); gap: 12px; padding-block: 9px; border-bottom: 1px solid var(--line); }
+  .gv-card dt { color: var(--slate); font-size: .9375rem; }
+  .gv-card dd { font-weight: 600; overflow-wrap: anywhere; }
+  .gv-mono { font-family: var(--font-serif); font-size: 1.25rem; letter-spacing: .04em; color: var(--plum); }
+
+  .gv-alert { background: #FDECEB; border-block: 1px solid #F5C6C2; }
+  .gv-alert__inner { display: flex; flex-wrap: wrap; align-items: center; gap: 16px 28px; padding-block: 22px; }
+  .gv-alert__icon { flex: none; width: 52px; height: 52px; border-radius: 50%; background: #B3261E; color: var(--white); display: inline-flex; align-items: center; justify-content: center; }
+  .gv-alert__copy { flex: 1 1 22em; display: flex; flex-direction: column; gap: 4px; }
+  .gv-alert__copy h2 { font-size: 1.25rem; font-weight: 700; color: #7A1912; }
+  .gv-alert__copy a { color: #7A1912; }
+  .gv-alert__nums { display: flex; flex-wrap: wrap; gap: 10px; }
+  .gv-alert__nums a { display: flex; flex-direction: column; min-height: 44px; padding: 8px 14px; border-radius: 12px; background: var(--white); border: 1px solid #F5C6C2; color: var(--ink); font-weight: 700; text-decoration: none; font-variant-numeric: tabular-nums; }
+  .gv-alert__nums a:hover { border-color: #B3261E; }
+  .gv-alert__nums span { font-size: .75rem; font-weight: 600; color: var(--slate); }
+
+  .gv-structure { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr)); gap: 20px; }
+  .gv-structure li { position: relative; padding: 24px; border-radius: var(--r-card); background: var(--white); border: 1px solid var(--line); display: flex; flex-direction: column; gap: 8px; }
+  .gv-structure__no { width: 40px; height: 40px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; background: var(--plum); color: var(--white); font-family: var(--font-serif); font-weight: 700; font-size: 1.25rem; }
+  .gv-structure h3 { font-family: var(--font-serif); font-size: 1.375rem; }
+  .gv-structure p { color: var(--slate); }
+  .gv-purposes { margin-top: 28px; padding: 24px; border-radius: var(--r-card); background: var(--lilac); }
+  .gv-purposes h3 { font-family: var(--font-serif); font-size: 1.375rem; margin-bottom: 10px; }
+  .gv-purposes ul { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr)); gap: 8px 24px; }
+  .gv-purposes li { display: flex; gap: 10px; align-items: flex-start; }
+  .gv-purposes :global(svg) { flex: none; margin-top: 4px; color: var(--purple); }
+
+  /* Library */
+  .gv-lib { display: grid; grid-template-columns: minmax(220px, 280px) minmax(0, 1fr); gap: clamp(24px, 1rem + 3vw, 64px); align-items: start; }
+  .gv-toc { position: sticky; top: calc(var(--header-h) + 20px); }
+  .gv-toc__inner { display: flex; flex-direction: column; gap: 20px; max-height: calc(100svh - var(--header-h) - 40px); overflow-y: auto; padding-right: 4px; }
+  .gv-search { display: flex; align-items: center; gap: 8px; padding: 0 14px; min-height: 48px; border-radius: var(--r-pill); background: var(--white); border: 1px solid var(--line); color: var(--slate); }
+  .gv-search:focus-within { border-color: var(--purple); box-shadow: 0 0 0 3px rgba(137, 28, 181, .2); }
+  .gv-search input { flex: 1; min-width: 0; border: 0; outline: 0; background: none; font: inherit; color: var(--ink); }
+  .gv-toc__group p { font-size: .75rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--slate); margin-bottom: 6px; }
+  .gv-toc__group a { display: block; padding: 6px 10px; border-left: 3px solid transparent; color: var(--ink); text-decoration: none; font-size: .9375rem; line-height: 1.3; }
+  .gv-toc__group a:hover { color: var(--purple); border-left-color: var(--line); }
+  .gv-toc__group a.is-current { color: var(--plum); font-weight: 700; border-left-color: var(--purple); }
+  .gv-toc__group a.is-hidden { opacity: .35; }
+
+  .gv-list { display: flex; flex-direction: column; gap: 28px; min-width: 0; }
+  .gv-list__head { display: flex; flex-direction: column; gap: 10px; }
+  .gv-list__tools { align-items: center; }
+  .gv-count { font-size: .9375rem; color: var(--slate); }
+  .gv-group { display: flex; flex-direction: column; gap: 12px; }
+  .gv-group[hidden] { display: none; }
+  .gv-group__title { font-size: .8125rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--plum); padding-bottom: 6px; border-bottom: 2px solid var(--line); }
+  .gv-policy { background: var(--white); border: 1px solid var(--line); border-radius: 16px; scroll-margin-top: calc(var(--header-h) + 16px); transition: box-shadow .2s, border-color .2s; }
+  .gv-policy[hidden] { display: none; }
+  .gv-policy[open] { border-color: rgba(137, 28, 181, .35); box-shadow: var(--shadow-card); }
+  .gv-policy summary { list-style: none; cursor: pointer; display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; padding: 20px 22px; }
+  .gv-policy summary::-webkit-details-marker { display: none; }
+  .gv-policy summary:focus-visible { outline: 3px solid var(--purple); outline-offset: 2px; border-radius: 16px; }
+  .gv-policy__head { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+  .gv-policy__title { font-family: var(--font-serif); font-weight: 700; font-size: clamp(1.25rem, 1.1rem + .5vw, 1.5rem); line-height: 1.2; }
+  .gv-policy__sum { color: var(--slate); }
+  .gv-policy__meta { flex: none; display: flex; align-items: center; gap: 12px; }
+  .gv-policy__pm { width: 30px; height: 30px; border-radius: 50%; background: var(--lilac); position: relative; }
+  .gv-policy__pm::before, .gv-policy__pm::after { content: ""; position: absolute; left: 50%; top: 50%; width: 12px; height: 2px; background: var(--plum); transform: translate(-50%, -50%); transition: transform .25s ease; }
+  .gv-policy__pm::after { transform: translate(-50%, -50%) rotate(90deg); }
+  .gv-policy[open] .gv-policy__pm::after { transform: translate(-50%, -50%) rotate(0deg); }
+  .gv-policy__body { padding: 0 22px 22px; display: flex; flex-direction: column; gap: 10px; }
+  .gv-policy__body h4 { font-size: .8125rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--slate); }
+  .gv-policy__body ul { display: flex; flex-direction: column; gap: 8px; }
+  .gv-policy__body li { position: relative; padding-left: 22px; }
+  .gv-policy__body li::before { content: ""; position: absolute; left: 4px; top: .65em; width: 7px; height: 7px; border-radius: 50%; background: var(--purple); }
+  .gv-policy__foot { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; margin-top: 8px; padding-top: 14px; border-top: 1px solid var(--line); font-size: .9375rem; }
+  .gv-badge { display: inline-flex; align-items: center; padding: 3px 10px; border-radius: var(--r-pill); font-size: .75rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; }
+  .gv-badge--draft { background: #FFF1D6; color: #7A4B00; }
+  .gv-badge--ok { background: #E3F4E8; color: #1E6B3A; }
+  .gv-empty { padding: 24px; border-radius: 16px; background: var(--white); text-align: center; }
+  .gv-empty button { background: none; border: 0; font: inherit; cursor: pointer; }
+
+  .gv-help { height: 100%; padding: 24px; border-radius: var(--r-card); border: 1px solid var(--line); display: flex; flex-direction: column; gap: 8px; }
+  .gv-help h3 { font-family: var(--font-serif); font-size: 1.5rem; }
+  .gv-help p { color: var(--slate); }
+  .gv-help .link-arrow { margin-top: auto; overflow-wrap: anywhere; }
+  .gv-foot { margin-top: 24px; color: var(--slate); font-size: .9375rem; }
+
+  @media (max-width: 960px) {
+    .gv-head__grid, .gv-lib { grid-template-columns: minmax(0, 1fr); }
+    .gv-toc { position: static; }
+    .gv-toc__inner { max-height: none; }
+    .gv-toc__group { display: none; }
+  }
+  @media (max-width: 600px) {
+    .gv-card dl div { grid-template-columns: minmax(0, 1fr); gap: 2px; }
+    .gv-policy summary { padding: 16px; }
+    .gv-policy__body { padding: 0 16px 18px; }
+    .gv-policy__meta .gv-badge { display: none; }
+  }
+  @media (prefers-reduced-motion: reduce) { .gv-policy__pm::before, .gv-policy__pm::after { transition: none; } }
+</style>
+
+<script>
+  const root = document.querySelector('[data-policies]');
+  if (root) {
+    const policies = [...root.querySelectorAll('[data-policy]')];
+    const groups = [...root.querySelectorAll('[data-group]')];
+    const tocLinks = [...root.querySelectorAll('[data-toc]')];
+    const search = root.querySelector('[data-search]');
+    const count = root.querySelector('[data-count]');
+    const empty = root.querySelector('[data-empty]');
+    const expand = root.querySelector('[data-expand]');
+
+    // Open a policy when its link is followed (contents, #complaints etc.)
+    const openFromHash = () => {
+      const el = location.hash && document.getElementById(location.hash.slice(1));
+      if (el && el.matches('[data-policy]')) { el.open = true; el.scrollIntoView({ block: 'start' }); el.querySelector('summary').focus({ preventScroll: true }); }
+    };
+    addEventListener('hashchange', openFromHash);
+    openFromHash();
+    document.querySelectorAll('a[href^="#"]').forEach((a) => a.addEventListener('click', () => setTimeout(openFromHash)));
+
+    const syncExpand = () => { expand.textContent = policies.every((p) => p.open || p.hidden) ? 'Collapse all' : 'Expand all'; };
+
+    // Live search
+    const filter = () => {
+      const q = search.value.trim().toLowerCase();
+      let shown = 0;
+      policies.forEach((p) => { const hit = !q || p.dataset.text.includes(q); p.hidden = !hit; if (hit) shown++; if (q && hit) p.open = true; });
+      groups.forEach((g) => { g.hidden = !g.querySelector('[data-policy]:not([hidden])'); });
+      tocLinks.forEach((a) => a.classList.toggle('is-hidden', document.getElementById(a.dataset.toc).hidden));
+      empty.hidden = shown > 0;
+      count.textContent = q ? `${shown} ${shown === 1 ? 'policy matches' : 'policies match'} “${search.value.trim()}”` : '';
+      syncExpand();
+    };
+    search.addEventListener('input', filter);
+    root.querySelector('[data-clear]').addEventListener('click', () => { search.value = ''; filter(); search.focus(); });
+
+    // Expand / collapse all
+    expand.addEventListener('click', () => { const open = expand.textContent === 'Expand all'; policies.forEach((p) => { if (!p.hidden) p.open = open; }); syncExpand(); });
+    policies.forEach((p) => p.addEventListener('toggle', syncExpand));
+
+    // Highlight the policy being read in the contents
+    const io = new IntersectionObserver((entries) => entries.forEach((e) => {
+      if (!e.isIntersecting) return;
+      tocLinks.forEach((a) => a.classList.toggle('is-current', a.dataset.toc === e.target.id));
+    }), { rootMargin: '-30% 0px -60% 0px' });
+    policies.forEach((p) => io.observe(p));
+  }
+</script>

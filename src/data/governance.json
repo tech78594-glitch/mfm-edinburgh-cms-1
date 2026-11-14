@@ -1,0 +1,153 @@
+{
+  "_help": "Governance policies page. Each policy shows a 'Draft – awaiting trustee approval' badge until you set \"status\": \"adopted\" and fill in \"reviewed\" (e.g. \"March 2027\"). Put a PDF of the full policy in public/documents/ and set \"pdf\": \"/documents/name.pdf\" to show a download button. Contact names left empty are hidden.",
+  "charity": {
+    "name": "MFM Edinburgh (Mountain of Fire and Miracle Edinburgh)",
+    "number": "SC047721",
+    "registered": "8 September 2017",
+    "form": "Charitable company, registered with Companies House",
+    "company_number": "",
+    "year_end": "31 March",
+    "oscr_url": "https://www.oscr.org.uk/about-charities/search-the-register/charity-details?number=SC047721",
+    "purposes": [
+      "The advancement of religion",
+      "The advancement of education",
+      "The advancement of health",
+      "The prevention or relief of poverty",
+      "The relief of those in need by reason of age, ill-health, disability, financial hardship or other disadvantage"
+    ]
+  },
+  "contacts": {
+    "safeguarding_name": "",
+    "safeguarding_phone": "",
+    "data_protection_name": "",
+    "email": "info@mfmedinburgh.org"
+  },
+  "structure": [
+    { "title": "Board of trustees", "text": "The trustees, who are also the directors of the charitable company, are legally responsible for the church. They meet regularly, approve the budget and annual accounts, adopt and review these policies, and make sure the church acts within its governing document and the law." },
+    { "title": "Pastoral leadership", "text": "The pastor and ministers lead worship, teaching and pastoral care, and report to the trustees on the life and work of the church. MFM Edinburgh is part of the worldwide Mountain of Fire and Miracles Ministries family." },
+    { "title": "Workers and volunteers", "text": "Ministry leaders, choir, ushers, children’s and youth workers serve under clear role descriptions, are recruited safely and receive training appropriate to their role." },
+    { "title": "Accountability", "text": "Annual accounts and a trustees’ report are filed with the Office of the Scottish Charity Regulator (OSCR) every year, and are shared with members on request." }
+  ],
+  "policies": [
+    {
+      "id": "safeguarding",
+      "title": "Safeguarding children and protected adults",
+      "group": "Keeping people safe",
+      "summary": "The safety and wellbeing of every child, young person and adult at risk is our first priority. We follow Scottish law and good practice, and we act on every concern.",
+      "points": [
+        "Everyone in a regulated role with children or protected adults is a member of the Disclosure Scotland PVG scheme before they start, and their membership is kept up to date.",
+        "Workers and volunteers are recruited safely (application, references, interview) and trained in safeguarding.",
+        "Children’s activities always have at least two approved adults present, and attendance is recorded.",
+        "Any concern is reported to the Safeguarding Coordinator straight away and passed to Police Scotland or social work where needed. We never investigate allegations ourselves.",
+        "Records are kept confidentially and securely, and the policy is reviewed every year by the trustees."
+      ],
+      "status": "draft", "reviewed": "", "pdf": ""
+    },
+    {
+      "id": "photography",
+      "title": "Photography, filming and live streaming",
+      "group": "Keeping people safe",
+      "summary": "Services are filmed and streamed on YouTube, and photos appear on our website. We take pictures responsibly and respect anyone who would rather not appear.",
+      "points": [
+        "Notices at the entrance tell visitors that services are filmed and photographed.",
+        "Parents or carers are asked for consent before children’s photos are published, and children’s full names are never published alongside their image.",
+        "Anyone can ask not to be filmed, and can ask for a photo of them to be removed from our website or channels.",
+        "Slides containing personal or financial details are not shown in published photos or videos.",
+        "Photos are stored securely and only used for church purposes."
+      ],
+      "status": "draft", "reviewed": "", "pdf": ""
+    },
+    {
+      "id": "data-protection",
+      "title": "Data protection and privacy",
+      "group": "Using information well",
+      "summary": "We collect only the personal information we need, keep it safe and use it fairly, in line with UK GDPR and the Data Protection Act 2018.",
+      "points": [
+        "We hold contact details, giving records (for Gift Aid) and pastoral notes only for clear church purposes.",
+        "Information is kept securely, shared only when necessary or required by law, and deleted when no longer needed.",
+        "You can ask to see the information we hold about you, have it corrected, or ask us to delete it.",
+        "Testimonies sent through the website are only published with your permission.",
+        "If you are unhappy with how we handle your data, you can complain to the Information Commissioner’s Office (ICO)."
+      ],
+      "status": "draft", "reviewed": "", "pdf": ""
+    },
+    {
+      "id": "finance",
+      "title": "Financial controls and giving",
+      "group": "Stewardship",
+      "summary": "Tithes and offerings are given to God and entrusted to us. We handle every gift carefully, transparently and for the charity’s purposes only.",
+      "points": [
+        "Offerings are counted by at least two unrelated people and recorded before banking.",
+        "Payments need approval, and bank payments need two authorised trustees.",
+        "Trustees approve an annual budget and review income and spending through the year.",
+        "Annual accounts are independently examined and filed with OSCR.",
+        "Gift Aid is claimed only for eligible gifts with a valid declaration."
+      ],
+      "status": "draft", "reviewed": "", "pdf": ""
+    },
+    {
+      "id": "conflicts",
+      "title": "Conflicts of interest and trustee conduct",
+      "group": "Stewardship",
+      "summary": "Trustees act only in the best interests of the charity, never for personal gain.",
+      "points": [
+        "Trustees declare any personal or business interest in a decision and leave the discussion.",
+        "A register of interests is kept and reviewed every year.",
+        "No trustee benefits from the charity unless the governing document and the law allow it.",
+        "Trustees follow a code of conduct based on OSCR’s guidance for charity trustees."
+      ],
+      "status": "draft", "reviewed": "", "pdf": ""
+    },
+    {
+      "id": "complaints",
+      "title": "Complaints procedure",
+      "group": "Being accountable",
+      "summary": "If something has gone wrong, we want to know so we can put it right.",
+      "points": [
+        "Speak to a minister or email us. Most concerns can be settled quickly and informally.",
+        "Formal complaints are acknowledged within 7 days and answered within 28 days.",
+        "If you are not satisfied, you can ask for your complaint to be reviewed by the trustees.",
+        "Concerns about how the charity is run can also be raised with the Office of the Scottish Charity Regulator (OSCR)."
+      ],
+      "status": "draft", "reviewed": "", "pdf": ""
+    },
+    {
+      "id": "whistleblowing",
+      "title": "Whistleblowing",
+      "group": "Being accountable",
+      "summary": "Anyone who serves in the church can raise a serious concern about wrongdoing without fear of being treated unfairly.",
+      "points": [
+        "Concerns can be raised with any trustee in confidence.",
+        "Concerns are taken seriously, looked into fairly and the person raising them is kept informed.",
+        "Anyone raising a genuine concern in good faith will be protected from retaliation.",
+        "Crimes are reported to Police Scotland, and serious charity matters to OSCR."
+      ],
+      "status": "draft", "reviewed": "", "pdf": ""
+    },
+    {
+      "id": "equality",
+      "title": "Equality, diversity and inclusion",
+      "group": "Welcome and wellbeing",
+      "summary": "Everyone is welcome at MFM Edinburgh. We treat every person with dignity and respect.",
+      "points": [
+        "We welcome people of every background, age, ability and nationality to our services and activities.",
+        "We do not tolerate bullying, harassment or unlawful discrimination, in line with the Equality Act 2010.",
+        "We make reasonable adjustments so people can take part, and welcome suggestions on how we can do better."
+      ],
+      "status": "draft", "reviewed": "", "pdf": ""
+    },
+    {
+      "id": "health-safety",
+      "title": "Health and safety",
+      "group": "Welcome and wellbeing",
+      "summary": "We want everyone who comes to church, and everyone who serves, to be safe.",
+      "points": [
+        "Risk assessments are carried out for services, events and children’s activities.",
+        "Trained first-aiders and a first-aid kit are available at services, and accidents are recorded.",
+        "Fire exits are kept clear and evacuation procedures are explained to ushers and workers.",
+        "Electrical equipment, heaters and sound equipment are checked and used safely."
+      ],
+      "status": "draft", "reviewed": "", "pdf": ""
+    }
+  ]
+}

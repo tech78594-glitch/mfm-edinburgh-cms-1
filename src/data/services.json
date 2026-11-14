@@ -50,9 +50,9 @@
       "show_on_home": false
     },
     {
-      "when": "Last Friday, monthly",
-      "name": "All-Night Vigil",
-      "time": "23:00 until early Saturday morning",
+      "when": "2nd Friday, monthly",
+      "name": "Monthly Vigil",
+      "time": "23:00 – 02:00 (Saturday morning)",
       "show_on_home": true
     }
   ]

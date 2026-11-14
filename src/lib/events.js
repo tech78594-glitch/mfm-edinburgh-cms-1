@@ -10,8 +10,38 @@ export function endKey(e) {
   return k.length === 10 ? k + 'T23:59' : k.slice(0, 16);
 }
 
-export function allEvents() {
-  return (events.items || []).filter((e) => e.title && parts(e.start)).sort((a, b) => (a.start > b.start ? 1 : -1));
+const DAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+const ymd = (d) => d.toISOString().slice(0, 10);
+const addDays = (d, n) => new Date(d.getTime() + n * 86400000);
+
+/** Dates (YYYY-MM-DD) of the next `count` occurrences of a recurring rule, from `fromKey` (UK date). */
+function occurrences(r, fromKey) {
+  const day = DAYS.indexOf(r.day);
+  const from = new Date(`${fromKey.slice(0, 10)}T00:00:00Z`);
+  const out = [];
+  if (r.rule === 'weekly') {
+    let d = addDays(from, (day - from.getUTCDay() + 7) % 7);
+    while (out.length < (r.count || 4)) { out.push(ymd(d)); d = addDays(d, 7); }
+  } else if (r.rule === 'monthly') {
+    for (let m = 0; out.length < (r.count || 3) && m < 24; m++) {
+      const first = new Date(Date.UTC(from.getUTCFullYear(), from.getUTCMonth() + m, 1));
+      let d;
+      if ((r.nth || 1) > 0) d = addDays(first, (day - first.getUTCDay() + 7) % 7 + 7 * ((r.nth || 1) - 1));
+      else { const last = new Date(Date.UTC(first.getUTCFullYear(), first.getUTCMonth() + 1, 0)); d = addDays(last, -((last.getUTCDay() - day + 7) % 7)); }
+      if (d.getUTCMonth() === first.getUTCMonth() && ymd(d) >= ymd(from)) out.push(ymd(d));
+    }
+  }
+  return out;
+}
+
+/** One-off events plus the next few occurrences of each recurring event (Sundays, monthly vigil…).
+ *  The site rebuilds daily, and the browser hides anything that has finished, so the list stays current. */
+export function allEvents(now = londonNow().key) {
+  const generated = (events.recurring || []).flatMap((r) => occurrences(r, addDays(new Date(`${now.slice(0, 10)}T00:00:00Z`), -1).toISOString()).map((date) => {
+    const endDate = r.end && r.end < r.start ? ymd(addDays(new Date(`${date}T00:00:00Z`), 1)) : date;
+    return { ...r, start: `${date}T${r.start}`, end: r.end ? `${endDate}T${r.end}` : '', recurring: true };
+  }));
+  return [...(events.items || []), ...generated].filter((e) => e.title && parts(e.start)).sort((a, b) => (a.start > b.start ? 1 : -1));
 }
 
 /** Split at build time. The browser re-checks with the live clock (see EventFilter). */

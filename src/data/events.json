@@ -1,5 +1,5 @@
 {
-  "_help": "Events move to 'Past events' on their own once they finish. Dates: YYYY-MM-DDTHH:mm (UK time).",
+  "_help": "Events move to 'Past events' on their own once they finish. Dates: YYYY-MM-DDTHH:mm (UK time). 'recurring' events are added automatically for the coming weeks: rule 'weekly' (every given day) or 'monthly' with 'nth' (1–4, or -1 for the last) day of the month. An end time earlier than the start runs past midnight.",
   "items": [
     {
       "title": "Power Must Change Hands",
@@ -11,15 +11,6 @@
       "link": ""
     },
     {
-      "title": "All-Night Vigil",
-      "start": "2026-11-27T23:00",
-      "end": "2026-11-28T05:00",
-      "location": "MFM Worship Centre, 13 Bangor Road",
-      "summary": "A night of praise, the Word and prayer, from 23:00 until early Saturday morning.",
-      "image": "",
-      "link": ""
-    },
-    {
       "title": "Power Must Change Hands",
       "start": "2026-12-05T09:00",
       "end": "2026-12-05T12:00",
@@ -27,6 +18,39 @@
       "summary": "Our monthly first-Saturday prayer programme.",
       "image": "",
       "link": ""
+    }
+  ],
+  "recurring": [
+    {
+      "title": "Sunday Service",
+      "rule": "weekly",
+      "day": "Sunday",
+      "start": "09:30",
+      "end": "13:30",
+      "count": 4,
+      "times": [
+        [
+          "09:30",
+          "Pentecostal Hour"
+        ],
+        [
+          "10:30",
+          "Sunday Worship Service"
+        ]
+      ],
+      "summary": "Pentecostal Hour from 9:30am, followed by our Sunday Worship Service from 10:30am. Everyone is welcome.",
+      "location": "MFM Worship Centre, 13 Bangor Road"
+    },
+    {
+      "title": "Monthly Vigil",
+      "rule": "monthly",
+      "nth": 2,
+      "day": "Friday",
+      "start": "23:00",
+      "end": "02:00",
+      "count": 3,
+      "summary": "A night of praise, the Word and prayer on the second Friday of every month, until 2:00am.",
+      "location": "MFM Worship Centre, 13 Bangor Road"
     }
   ]
 }

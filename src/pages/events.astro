@@ -17,7 +17,9 @@ for (const e of all) {
   if (!groups.length || groups[groups.length - 1].label !== g) groups.push({ label: g, items: [] });
   groups[groups.length - 1].items.push(e);
 }
-const countdownData = all.map((e) => ({ title: e.title, start: e.start, startISO: londonToDate(e.start)?.toISOString(), end: endKey(e), when: (() => { const d = describe(e); return `${d.dateLong}${d.time ? ' · ' + d.time : ''}`; })(), ics: icsHref(e) }));
+// "Sunday 15 November · Pentecostal Hour 09:30 · Service 10:30" for events with several start times
+const whenText = (e) => { const d = describe(e); const t = e.times ? e.times.map(([tm, l]) => `${l.replace('Sunday Worship Service', 'Service')} ${tm}`).join(' · ') : d.time; return `${d.dateLong}${t ? ' · ' + t : ''}`; };
+const countdownData = all.map((e) => ({ title: e.title, start: e.start, startISO: londonToDate(e.start)?.toISOString(), end: endKey(e), when: whenText(e), ics: icsHref(e) }));
 ---
 <Base title="Events" description="Upcoming services, prayer programmes and special events at MFM Edinburgh, 13 Bangor Road, Leith.">
   <section class="ev-hero on-dark" aria-labelledby="page-title">
@@ -30,7 +32,7 @@ const countdownData = all.map((e) => ({ title: e.title, start: e.start, startISO
           <>
             <p class="h1" data-next-title>{next.title}</p>
             <div class="cluster ev-hero__meta">
-              <span class="meta-line"><Icon name="clock" size={20} /><span data-next-when>{nd.dateLong}{nd.time && ` · ${nd.time}`}</span></span>
+              <span class="meta-line"><Icon name="clock" size={20} /><span data-next-when>{whenText(next)}</span></span>
               <span class="meta-line"><Icon name="pin" size={20} /><span>{next.location || '13 Bangor Road, Leith'}</span></span>
             </div>
             <div class="cluster"><a class="btn btn--accent" href={icsHref(next)} download="mfm-edinburgh-event.ics" data-next-ics><Icon name="calendar-plus" size={20} /> Add to calendar</a><a class="btn btn--ghost" href="/services/">Weekly service times</a></div>
@@ -48,6 +50,10 @@ const countdownData = all.map((e) => ({ title: e.title, start: e.start, startISO
   <section class="section" aria-labelledby="agenda-title">
     <div class="container">
       <div class="section-head"><div><span class="eyebrow">Coming up</span><h2 class="h1" id="agenda-title">Agenda</h2></div></div>
+      <ul role="list" class="regular" aria-label="Regular gatherings">
+        <li class="regular__item regular__item--sun"><span class="regular__when">Every Sunday</span><span class="regular__row"><strong>9:30am</strong> Pentecostal Hour</span><span class="regular__row"><strong>10:30am</strong> Sunday Worship Service</span></li>
+        <li class="regular__item regular__item--vigil"><span class="regular__when">2nd Friday of every month</span><span class="regular__row"><strong>11:00pm – 2:00am</strong> Monthly Vigil</span><span class="regular__row muted-light">Praise, the Word and prayer into Saturday morning</span></li>
+      </ul>
       <div data-upcoming>
         {groups.map((g) => (
           <div class="month" data-month>
@@ -58,7 +64,12 @@ const countdownData = all.map((e) => ({ title: e.title, start: e.start, startISO
                 return (
                   <li class="card agenda" data-end={endKey(e)}>
                     <div class="date-block agenda__date" aria-hidden="true"><strong>{d.day}</strong><span>{d.weekday}</span></div>
-                    <div class="agenda__body"><h4>{e.title}</h4>{e.summary && <p class="muted">{e.summary}</p>}</div>
+                    <div class="agenda__body">
+                      <h4>{e.title}{e.recurring && <span class="agenda__tag">{e.rule === 'weekly' ? `Every ${e.day}` : `${['', '1st', '2nd', '3rd', '4th'][e.nth] || 'Last'} ${e.day} monthly`}</span>}</h4>
+                      {e.times ? (
+                        <ul role="list" class="agenda__times">{e.times.map(([t, label]) => <li><strong>{t}</strong> {label}</li>)}</ul>
+                      ) : e.summary && <p class="muted">{e.summary}</p>}
+                    </div>
                     <div class="agenda__meta">
                       <span class="meta-line"><Icon name="clock" size={18} /><span><span class="visually-hidden">{d.dateFull}, </span>{d.time || 'All day'}{d.ends && ` (ends ${d.ends})`}</span></span>
                       <span class="meta-line"><Icon name="pin" size={18} /><span>{e.location || '13 Bangor Road, Leith'}</span></span>
@@ -92,6 +103,18 @@ const countdownData = all.map((e) => ({ title: e.title, start: e.start, startISO
 </Base>
 
 <style>
+  .regular { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr)); gap: 16px; margin-bottom: clamp(28px, 1rem + 2vw, 48px); }
+  .regular__item { display: flex; flex-direction: column; gap: 6px; padding: 20px 24px; border-radius: var(--r-card); color: var(--white); }
+  .regular__item--sun { background: linear-gradient(135deg, var(--purple), var(--plum)); }
+  .regular__item--vigil { background: linear-gradient(135deg, #2a1838, var(--ink)); border-left: 6px solid var(--fire-yellow); }
+  .regular__when { font-size: .8125rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--fire-yellow); }
+  .regular__row { font-size: 1.125rem; }
+  .regular__row strong { display: inline-block; min-width: 5.5em; font-family: var(--font-serif); font-size: 1.25rem; }
+  .muted-light { color: #D9CFE0; font-size: .9375rem !important; }
+  .agenda__tag { display: inline-block; margin-left: 10px; padding: 2px 10px; border-radius: var(--r-pill); background: var(--lilac); color: var(--plum); font-family: var(--font-sans); font-size: .75rem; font-weight: 700; letter-spacing: .06em; vertical-align: middle; }
+  .agenda__times { display: flex; flex-wrap: wrap; gap: 4px 18px; margin-top: 4px; color: var(--slate); }
+  .agenda__times strong { color: var(--ink); }
+
   .ev-hero { background: linear-gradient(120deg, var(--plum), #3A0750); color: var(--white); padding-block: clamp(3.5rem, 7vw, 5.5rem); }
   .ev-hero__grid { display: grid; grid-template-columns: minmax(0, 1.2fr) auto; gap: clamp(28px, 1rem + 2.2vw, 56px); align-items: center; }
   .ev-hero__meta { --gap: 12px 28px; }

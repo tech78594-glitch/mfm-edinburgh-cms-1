@@ -6,10 +6,10 @@
     "ref": "Malachi 3:10"
   },
   "bank": {
-    "account_name": "MFM Edinburgh [PLACEHOLDER]",
-    "bank": "[PLACEHOLDER BANK]",
-    "sort_code": "12-34-56",
-    "account_number": "12345678",
+    "account_name": "MFM Edinburgh CENTRAL",
+    "bank": "HSBC",
+    "sort_code": "40-20-54",
+    "account_number": "50023426",
     "iban": "GB00 BANK 1234 5612 3456 78",
     "bic": "BANKGB00"
   },
@@ -32,7 +32,7 @@
     }
   ],
   "other_ways": [
-    "In person during any service, using the offering envelopes at the welcome desk.",
-    "Speak to a minister if you would like to give in another way."
+    "In person during any service, drop the offering into the offering baskets.",
+    "Speak to an usher if you would like to give in another way."
   ]
 }

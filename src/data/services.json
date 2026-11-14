@@ -17,10 +17,11 @@
     },
     {
       "day": "Tuesday",
-      "name": "Spiritual Clinic, Prayer & Bible Study",
+      "name": "Spiritual Clinic, Prayer & Bible Study (online)",
       "start": "19:00",
-      "end": "21:00",
-      "show_on_home": true
+      "end": "20:00",
+      "show_on_home": true,
+      "online": true
     },
     {
       "day": "Wednesday",
@@ -59,7 +60,7 @@
     },
     {
       "when": "2nd Friday, monthly",
-      "name": "Monthly Vigil",
+      "name": "Deliverance Vigil",
       "time": "23:00 – 02:00 (Saturday morning)",
       "show_on_home": true
     }

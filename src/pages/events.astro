@@ -3,6 +3,10 @@
 import Base from '../layouts/Base.astro';
 import Icon from '../components/Icon.astro';
 import EventFilter from '../components/EventFilter.astro';
+import site from '../data/site.json';
+import eventsData from '../data/events.json';
+const tue = eventsData.recurring.find((r) => r.day === 'Tuesday');
+const wed = eventsData.recurring.find((r) => r.day === 'Wednesday');
 import { allEvents, splitEvents, describe, endKey, icsHref } from '../lib/events.js';
 import { londonToDate } from '../lib/time.js';
 
@@ -52,9 +56,9 @@ const countdownData = all.map((e) => ({ title: e.title, start: e.start, startISO
       <div class="section-head"><div><span class="eyebrow">Coming up</span><h2 class="h1" id="agenda-title">Agenda</h2></div></div>
       <ul role="list" class="regular" aria-label="Regular gatherings">
         <li class="regular__item regular__item--sun"><span class="regular__when">Every Sunday</span><span class="regular__row"><strong>9:30am</strong> Pentecostal Hour</span><span class="regular__row"><strong>10:30am</strong> Sunday Worship Service</span></li>
-        <li class="regular__item regular__item--tue"><span class="regular__when">Every Tuesday</span><span class="regular__row"><strong>7:00pm</strong> Spiritual Clinic, Prayer &amp; Bible Study</span><span class="regular__row muted-light">13 Bangor Road, until 9:00pm</span></li>
-        <li class="regular__item regular__item--wed"><span class="regular__when">Every Wednesday · Online</span><span class="regular__row"><strong>4:00pm</strong> Manna Water</span><a class="regular__link" href="https://www.youtube.com/@MFMMinistries/streams" rel="noopener" target="_blank"><Icon name="youtube" size={18} /> Watch on YouTube<span class="visually-hidden"> (opens in a new tab)</span></a></li>
-        <li class="regular__item regular__item--vigil"><span class="regular__when">2nd Friday of every month</span><span class="regular__row"><strong>11:00pm – 2:00am</strong> Monthly Vigil</span><span class="regular__row muted-light">Praise, the Word and prayer into Saturday morning</span></li>
+        <li class="regular__item regular__item--tue"><span class="regular__when">Every Tuesday · Online via Zoom</span><span class="regular__row"><strong>7:00pm – 8:00pm</strong> Spiritual Clinic, Prayer &amp; Bible Study</span>{tue?.link ? <a class="regular__link" href={tue.link} rel="noopener" target="_blank"><Icon name="external" size={18} /> Join on Zoom<span class="visually-hidden"> (opens in a new tab)</span></a> : <a class="regular__link" href={`mailto:${site.emails[0]}?subject=${encodeURIComponent('Zoom link for Tuesday Spiritual Clinic')}`}><Icon name="mail" size={18} /> Request the Zoom link</a>}</li>
+        <li class="regular__item regular__item--wed"><span class="regular__when">Every Wednesday · Online</span><span class="regular__row"><strong>4:00pm</strong> Manna Water</span><a class="regular__link" href={wed?.link || "https://www.youtube.com/@MFMMinistries/streams"} rel="noopener" target="_blank"><Icon name="youtube" size={18} /> Watch on YouTube<span class="visually-hidden"> (opens in a new tab)</span></a></li>
+        <li class="regular__item regular__item--vigil"><span class="regular__when">2nd Friday of every month</span><span class="regular__row"><strong>11:00pm – 2:00am</strong> Deliverance Vigil</span><span class="regular__row muted-light">Praise, the Word and deliverance prayer into Saturday morning</span></li>
       </ul>
       <div data-upcoming>
         {groups.map((g) => (
@@ -77,7 +81,8 @@ const countdownData = all.map((e) => ({ title: e.title, start: e.start, startISO
                       <span class="meta-line"><Icon name="pin" size={18} /><span>{e.location || '13 Bangor Road, Leith'}</span></span>
                     </div>
                     <div class="agenda__actions">
-                    {e.link && <a class="btn btn--primary btn--sm" href={e.link} rel="noopener" target="_blank"><Icon name="youtube" size={18} /> {e.link_text || 'More info'}<span class="visually-hidden"> (opens YouTube in a new tab)</span></a>}
+                    {e.link ? <a class="btn btn--primary btn--sm" href={e.link} rel="noopener" target="_blank"><Icon name={e.link_icon || 'external'} size={18} /> {e.link_text || 'More info'}<span class="visually-hidden"> (opens in a new tab)</span></a>
+                      : e.no_link_text && <a class="btn btn--primary btn--sm" href={`mailto:${site.emails[0]}?subject=${encodeURIComponent(e.no_link_email || e.title)}`}><Icon name="mail" size={18} /> {e.no_link_text}</a>}
                     <a class="btn btn--soft btn--sm" href={icsHref(e)} download={`${e.title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}.ics`}><Icon name="calendar-plus" size={18} /> Add to calendar<span class="visually-hidden">: {e.title}</span></a>
                     </div>
                   </li>

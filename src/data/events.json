@@ -1,5 +1,5 @@
 {
-  "_help": "Events move to 'Past events' on their own once they finish. Dates: YYYY-MM-DDTHH:mm (UK time). 'recurring' events are added automatically for the coming weeks: rule 'weekly' (every given day) or 'monthly' with 'nth' (1–4, or -1 for the last) day of the month. An end time earlier than the start runs past midnight.",
+  "_help": "Events move to 'Past events' on their own once they finish. Dates: YYYY-MM-DDTHH:mm (UK time). 'recurring' events are added automatically for the coming weeks: rule 'weekly' (every given day) or 'monthly' with 'nth' (1–4, or -1 for the last) day of the month. An end time earlier than the start runs past midnight. Online events: set 'link' to the Zoom or YouTube address. If an online event has no link yet, its button asks the church for it by email.",
   "items": [
     {
       "title": "Power Must Change Hands",
@@ -42,14 +42,19 @@
       "location": "MFM Worship Centre, 13 Bangor Road"
     },
     {
-      "title": "Spiritual Clinic, Prayer & Bible Study",
+      "title": "Spiritual Clinic, Prayer & Bible Study (online)",
       "rule": "weekly",
       "day": "Tuesday",
       "start": "19:00",
-      "end": "21:00",
+      "end": "20:00",
       "count": 3,
-      "summary": "Prayer, counsel and in-depth Bible study every Tuesday evening.",
-      "location": "MFM Worship Centre, 13 Bangor Road"
+      "summary": "Prayer, counsel and in-depth Bible study every Tuesday evening, online via Zoom.",
+      "location": "Online · Zoom",
+      "link": "",
+      "link_text": "Join on Zoom",
+      "link_icon": "external",
+      "no_link_text": "Request the Zoom link",
+      "no_link_email": "Zoom link for Tuesday Spiritual Clinic"
     },
     {
       "title": "Manna Water (online)",
@@ -61,17 +66,18 @@
       "summary": "Join the Manna Water service online every Wednesday from 4:00pm.",
       "location": "Online · MFM Ministries on YouTube",
       "link": "https://www.youtube.com/@MFMMinistries/streams",
-      "link_text": "Watch online"
+      "link_text": "Watch online",
+      "link_icon": "youtube"
     },
     {
-      "title": "Monthly Vigil",
+      "title": "Deliverance Vigil",
       "rule": "monthly",
       "nth": 2,
       "day": "Friday",
       "start": "23:00",
       "end": "02:00",
       "count": 3,
-      "summary": "A night of praise, the Word and prayer on the second Friday of every month, until 2:00am.",
+      "summary": "Our Deliverance Vigil on the second Friday of every month: praise, the Word and deliverance prayer from 11:00pm until 2:00am.",
       "location": "MFM Worship Centre, 13 Bangor Road"
     }
   ]

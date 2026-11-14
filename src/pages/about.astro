@@ -47,8 +47,8 @@ const vision = [
       <div class="stack who" style="--gap:16px">
         <span class="eyebrow">Who we are</span><h2 class="h2" id="who-title">Raising an army of prayer warriors</h2>
         <figure class="leader">
-          <span class="leader__frame"><img src="/images/regional-overseer.jpg" alt="The Regional Overseer of MFM Edinburgh in a navy pinstripe suit, standing in front of purple drapes" width="800" height="1000" loading="lazy" decoding="async" /></span>
-          <figcaption><strong>Our Regional Overseer</strong><span>Mountain of Fire and Miracles Ministries, Edinburgh</span></figcaption>
+          <span class="leader__frame"><img src="/images/regional-overseer-and-wife.jpg" alt="The Regional Overseer of MFM Edinburgh and his wife, smiling as they sit together in a service" width="1200" height="900" loading="lazy" decoding="async" /></span>
+          <figcaption><strong>Our Regional Overseer and his wife</strong><span>Mountain of Fire and Miracles Ministries, Edinburgh</span></figcaption>
         </figure>
       </div>
       <div class="stack prose" style="--gap:18px">
@@ -111,11 +111,11 @@ const vision = [
   .portrait { display: flex; flex-direction: column; align-items: center; gap: 14px; color: var(--lilac); font-weight: 600; font-size: 1rem; }
   .portrait__ring { display: block; width: min(420px, 100%); aspect-ratio: 1; border-radius: 50%; padding: 12px; background: conic-gradient(from 200deg, var(--magenta), var(--fire-orange), var(--fire-yellow), var(--magenta)); }
   .portrait__ring img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
-  .leader { margin: clamp(12px, 1rem + 1vw, 28px) 0 0; display: flex; flex-direction: column; gap: 14px; max-width: 380px; }
+  .leader { margin: clamp(12px, 1rem + 1vw, 28px) 0 0; display: flex; flex-direction: column; gap: 14px; max-width: 480px; }
   .leader__frame { position: relative; display: block; }
   .leader__frame::before { content: ""; position: absolute; inset: 16px -16px -16px 16px; border-radius: var(--r-panel); background: linear-gradient(135deg, var(--purple), var(--plum)); }
   .leader__frame::after { content: ""; position: absolute; left: -10px; top: -10px; width: 56px; height: 56px; border-top: 4px solid var(--gold); border-left: 4px solid var(--gold); border-top-left-radius: 14px; }
-  .leader img { position: relative; display: block; width: 100%; height: auto; aspect-ratio: 4 / 5; object-fit: cover; border-radius: var(--r-panel); box-shadow: var(--shadow-lift); }
+  .leader img { position: relative; display: block; width: 100%; height: auto; aspect-ratio: 4 / 3; object-fit: cover; border-radius: var(--r-panel); box-shadow: var(--shadow-lift); }
   .leader figcaption { display: flex; flex-direction: column; gap: 2px; padding-top: 14px; }
   .leader figcaption strong { font-family: var(--font-serif); font-size: 1.375rem; color: var(--plum); }
   .leader figcaption span { color: var(--slate); font-size: .9375rem; }
@@ -141,5 +141,5 @@ const vision = [
   .beliefs span { font-family: var(--font-serif); font-weight: 700; font-size: 1.5rem; color: var(--magenta-ink); line-height: 1.2; min-width: 34px; }
   .cta__inner { display: flex; flex-wrap: wrap; gap: 24px; align-items: center; justify-content: space-between; padding-block: var(--space-l); }
   .cta h2 { color: var(--ink); max-width: 22em; }
-  @media (max-width: 900px) { .about-hero__grid, .split { grid-template-columns: minmax(0, 1fr); gap: 36px; } .leader { max-width: 340px; } .portrait { order: -1; } .portrait__ring { width: min(300px, 80%); } }
+  @media (max-width: 900px) { .about-hero__grid, .split { grid-template-columns: minmax(0, 1fr); gap: 36px; } .leader { max-width: 520px; } .portrait { order: -1; } .portrait__ring { width: min(300px, 80%); } }
 </style>

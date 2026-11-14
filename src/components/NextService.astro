@@ -17,7 +17,7 @@ const sp = n ? splitMinutes(n.minutesUntil) : null;
   <div class="next-big" data-next-service data-variant="big" aria-live="polite">
     <p class="next-big__label"><span class:list={['dot', { live: n.live }]} aria-hidden="true"></span><span class="eyebrow eyebrow--fire" data-ns-label>{n.live ? 'Happening now' : 'Next service'}</span></p>
     <p class="next-big__name" data-ns-name>{n.item.name}</p>
-    <p class="next-big__time"><span data-ns-day>{n.item.day}</span> · <span data-ns-range>{n.item.start} – {n.item.end}</span></p>
+    <p class="next-big__time"><span data-ns-day>{n.item.day}</span> · <span data-ns-range>{n.item.end ? `${n.item.start} – ${n.item.end}` : `from ${n.item.start}`}</span></p>
     <div class="next-big__count" data-ns-count hidden={n.live}>
       <span><strong data-u="days">{sp.days}</strong>days</span>
       <span><strong data-u="hours">{sp.hours}</strong>hours</span>
@@ -59,7 +59,7 @@ const sp = n ? splitMinutes(n.minutesUntil) : null;
       } else {
         set('[data-ns-label]', n.live ? 'Happening now' : 'Next service');
         set('[data-ns-day]', n.item.day);
-        set('[data-ns-range]', `${n.item.start} – ${n.item.end}`);
+        set('[data-ns-range]', n.item.end ? `${n.item.start} – ${n.item.end}` : `from ${n.item.start}`);
         const c = el.querySelector('[data-ns-count]');
         if (c) {
           c.hidden = n.live;

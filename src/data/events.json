@@ -42,6 +42,28 @@
       "location": "MFM Worship Centre, 13 Bangor Road"
     },
     {
+      "title": "Spiritual Clinic, Prayer & Bible Study",
+      "rule": "weekly",
+      "day": "Tuesday",
+      "start": "19:00",
+      "end": "21:00",
+      "count": 3,
+      "summary": "Prayer, counsel and in-depth Bible study every Tuesday evening.",
+      "location": "MFM Worship Centre, 13 Bangor Road"
+    },
+    {
+      "title": "Manna Water (online)",
+      "rule": "weekly",
+      "day": "Wednesday",
+      "start": "16:00",
+      "end": "",
+      "count": 3,
+      "summary": "Join the Manna Water service online every Wednesday from 4:00pm.",
+      "location": "Online · MFM Ministries on YouTube",
+      "link": "https://www.youtube.com/@MFMMinistries/streams",
+      "link_text": "Watch online"
+    },
+    {
       "title": "Monthly Vigil",
       "rule": "monthly",
       "nth": 2,

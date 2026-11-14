@@ -23,6 +23,14 @@
       "show_on_home": true
     },
     {
+      "day": "Wednesday",
+      "name": "Manna Water (online)",
+      "start": "16:00",
+      "end": "",
+      "show_on_home": false,
+      "online": true
+    },
+    {
       "day": "Friday",
       "name": "Intercessory Prayer Session",
       "start": "18:00",

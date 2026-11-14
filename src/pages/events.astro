@@ -52,6 +52,8 @@ const countdownData = all.map((e) => ({ title: e.title, start: e.start, startISO
       <div class="section-head"><div><span class="eyebrow">Coming up</span><h2 class="h1" id="agenda-title">Agenda</h2></div></div>
       <ul role="list" class="regular" aria-label="Regular gatherings">
         <li class="regular__item regular__item--sun"><span class="regular__when">Every Sunday</span><span class="regular__row"><strong>9:30am</strong> Pentecostal Hour</span><span class="regular__row"><strong>10:30am</strong> Sunday Worship Service</span></li>
+        <li class="regular__item regular__item--tue"><span class="regular__when">Every Tuesday</span><span class="regular__row"><strong>7:00pm</strong> Spiritual Clinic, Prayer &amp; Bible Study</span><span class="regular__row muted-light">13 Bangor Road, until 9:00pm</span></li>
+        <li class="regular__item regular__item--wed"><span class="regular__when">Every Wednesday · Online</span><span class="regular__row"><strong>4:00pm</strong> Manna Water</span><a class="regular__link" href="https://www.youtube.com/@MFMMinistries/streams" rel="noopener" target="_blank"><Icon name="youtube" size={18} /> Watch on YouTube<span class="visually-hidden"> (opens in a new tab)</span></a></li>
         <li class="regular__item regular__item--vigil"><span class="regular__when">2nd Friday of every month</span><span class="regular__row"><strong>11:00pm – 2:00am</strong> Monthly Vigil</span><span class="regular__row muted-light">Praise, the Word and prayer into Saturday morning</span></li>
       </ul>
       <div data-upcoming>
@@ -74,7 +76,10 @@ const countdownData = all.map((e) => ({ title: e.title, start: e.start, startISO
                       <span class="meta-line"><Icon name="clock" size={18} /><span><span class="visually-hidden">{d.dateFull}, </span>{d.time || 'All day'}{d.ends && ` (ends ${d.ends})`}</span></span>
                       <span class="meta-line"><Icon name="pin" size={18} /><span>{e.location || '13 Bangor Road, Leith'}</span></span>
                     </div>
+                    <div class="agenda__actions">
+                    {e.link && <a class="btn btn--primary btn--sm" href={e.link} rel="noopener" target="_blank"><Icon name="youtube" size={18} /> {e.link_text || 'More info'}<span class="visually-hidden"> (opens YouTube in a new tab)</span></a>}
                     <a class="btn btn--soft btn--sm" href={icsHref(e)} download={`${e.title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}.ics`}><Icon name="calendar-plus" size={18} /> Add to calendar<span class="visually-hidden">: {e.title}</span></a>
+                    </div>
                   </li>
                 );
               })}
@@ -103,13 +108,17 @@ const countdownData = all.map((e) => ({ title: e.title, start: e.start, startISO
 </Base>
 
 <style>
-  .regular { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr)); gap: 16px; margin-bottom: clamp(28px, 1rem + 2vw, 48px); }
+  .regular { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(420px, 100%), 1fr)); gap: 16px; margin-bottom: clamp(28px, 1rem + 2vw, 48px); }
   .regular__item { display: flex; flex-direction: column; gap: 6px; padding: 20px 24px; border-radius: var(--r-card); color: var(--white); }
   .regular__item--sun { background: linear-gradient(135deg, var(--purple), var(--plum)); }
+  .regular__item--tue { background: linear-gradient(135deg, var(--magenta-ink), #8E0046); }
+  .regular__item--wed { background: linear-gradient(135deg, #B57A16, #8A5A0C); }
+  .regular__link { display: inline-flex; align-items: center; gap: 6px; align-self: flex-start; margin-top: 2px; color: var(--white); font-weight: 700; }
   .regular__item--vigil { background: linear-gradient(135deg, #2a1838, var(--ink)); border-left: 6px solid var(--fire-yellow); }
   .regular__when { font-size: .8125rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--fire-yellow); }
   .regular__row { font-size: 1.125rem; }
-  .regular__row strong { display: inline-block; min-width: 5.5em; font-family: var(--font-serif); font-size: 1.25rem; }
+  .regular__row { display: flex; gap: 12px; align-items: baseline; }
+  .regular__row strong { flex: none; display: inline-block; min-width: 5.5em; font-family: var(--font-serif); font-size: 1.25rem; }
   .muted-light { color: #D9CFE0; font-size: .9375rem !important; }
   .agenda__tag { display: inline-block; margin-left: 10px; padding: 2px 10px; border-radius: var(--r-pill); background: var(--lilac); color: var(--plum); font-family: var(--font-sans); font-size: .75rem; font-weight: 700; letter-spacing: .06em; vertical-align: middle; }
   .agenda__times { display: flex; flex-wrap: wrap; gap: 4px 18px; margin-top: 4px; color: var(--slate); }
@@ -130,6 +139,8 @@ const countdownData = all.map((e) => ({ title: e.title, start: e.start, startISO
   .month:has(li:not([hidden])) { display: block; }
   .agenda { display: grid; grid-template-columns: 84px minmax(0, 1fr) auto auto; gap: 28px; align-items: center; padding: 22px 24px; }
   .agenda__date { min-height: 84px; }
+  .agenda__actions { display: flex; flex-direction: column; align-items: stretch; gap: 8px; }
+  @media (max-width: 1060px) { .agenda__actions { flex-direction: row; flex-wrap: wrap; } }
   .agenda__body { display: flex; flex-direction: column; gap: 6px; }
   .agenda__body h4 { font-family: var(--font-serif); font-size: 1.625rem; line-height: 1.15; }
   .agenda__meta { display: flex; flex-direction: column; gap: 8px; }
@@ -143,7 +154,7 @@ const countdownData = all.map((e) => ({ title: e.title, start: e.start, startISO
   .past ul { margin-top: 16px; }
   .past li { display: flex; gap: 24px; padding-block: 14px; border-bottom: 1px solid var(--line); }
   .past li strong { color: var(--slate); min-width: 72px; }
-  @media (max-width: 1060px) { .ev-hero__grid { grid-template-columns: minmax(0, 1fr); } .agenda { grid-template-columns: 84px minmax(0, 1fr); } .agenda__meta, .agenda .btn { grid-column: 2; justify-self: start; } }
+  @media (max-width: 1060px) { .ev-hero__grid { grid-template-columns: minmax(0, 1fr); } .agenda { grid-template-columns: 84px minmax(0, 1fr); } .agenda__meta, .agenda__actions { grid-column: 2; justify-self: start; } }
   @media (max-width: 600px) { .countdown { gap: 8px; } .countdown div { min-width: 0; padding: 14px 4px; } .agenda { grid-template-columns: 64px minmax(0, 1fr); gap: 16px; padding: 16px; } .agenda__date { min-height: 70px; } }
 </style>
 

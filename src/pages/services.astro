@@ -35,7 +35,7 @@ const stub = (when) => {
           <li class:list={['week__day', { 'is-empty': !d.items.length }]}>
             <h3>{d.day.slice(0, 3)}<span class="visually-hidden">{d.day.slice(3)}</span></h3>
             {d.items.length ? (
-              <ul role="list">{d.items.map((s) => <li class={`slot slot--${tone[d.day] || 'purple'}`}><strong>{s.name}</strong><span>{s.start} – {s.end}</span></li>)}</ul>
+              <ul role="list">{d.items.map((s) => <li class={`slot slot--${tone[d.day] || 'purple'}`}><strong>{s.name}</strong><span>{s.end ? `${s.start} – ${s.end}` : `from ${s.start}`}</span></li>)}</ul>
             ) : <p aria-label="No service">—</p>}
           </li>
         ))}

@@ -3,15 +3,17 @@
 // and then it plays from youtube-nocookie.com. Large cards ask for the HD thumbnail and fall back
 // to the standard one when YouTube hasn't made an HD image yet (it sends a tiny grey placeholder).
 import Icon from './Icon.astro';
-const { id, title, meta, large = false } = Astro.props;
-const thumb = large ? `https://i.ytimg.com/vi/${id}/maxresdefault.jpg` : `https://i.ytimg.com/vi/${id}/hqdefault.jpg`;
+// live: shows a red LIVE badge. embed: play this URL instead of the video id (e.g. a channel's live stream).
+const { id, title, meta, large = false, live = false, embed = '', poster = '' } = Astro.props;
+const thumb = poster || (large ? `https://i.ytimg.com/vi/${id}/maxresdefault.jpg` : `https://i.ytimg.com/vi/${id}/hqdefault.jpg`);
 ---
-<button class:list={['video-card', { 'video-card--large': large }]} type="button" data-yt={id} data-title={title}>
+<button class:list={['video-card', { 'video-card--large': large }]} type="button" data-yt={id || 'live'} data-embed={embed || undefined} data-title={title}>
   <span class="video-card__frame">
     <img src={thumb} alt="" loading={large ? 'eager' : 'lazy'} width="480" height="270"
          onerror={large ? `this.onerror=null;this.src='https://i.ytimg.com/vi/${id}/hqdefault.jpg'` : undefined}
          onload={large ? `if(this.naturalWidth&&this.naturalWidth<=120&&!this.dataset.fb){this.dataset.fb=1;this.src='https://i.ytimg.com/vi/${id}/hqdefault.jpg'}` : undefined} />
     <span class="play"><Icon name="play" size={large ? 40 : 26} /></span>
+    {live && <span class="video-card__live"><span></span>LIVE</span>}
   </span>
   {!large && <span class="video-card__title">{title}</span>}
   {!large && meta && <span class="video-card__meta">{meta}</span>}
@@ -21,6 +23,10 @@ const thumb = large ? `https://i.ytimg.com/vi/${id}/maxresdefault.jpg` : `https:
 <style>
   .video-card--large .play { width: 96px; height: 96px; }
   .video-card--large .video-card__frame { border-radius: 20px; box-shadow: 0 0 80px rgba(137, 28, 181, .45); }
+  .video-card__live { position: absolute; left: 12px; top: 12px; display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 6px; background: #CC0000; color: #fff; font-size: .8125rem; font-weight: 700; letter-spacing: .08em; }
+  .video-card__live span { width: 8px; height: 8px; border-radius: 50%; background: #fff; animation: live-pulse 1.4s ease-in-out infinite; }
+  @keyframes live-pulse { 50% { opacity: .25; } }
+  @media (prefers-reduced-motion: reduce) { .video-card__live span { animation: none; } }
 </style>
 
 <script>
@@ -30,7 +36,8 @@ const thumb = large ? `https://i.ytimg.com/vi/${id}/maxresdefault.jpg` : `https:
     if (!btn) return;
     const id = btn.getAttribute('data-yt');
     const frame = document.createElement('iframe');
-    frame.src = `https://www.youtube-nocookie.com/embed/${encodeURIComponent(id)}?autoplay=1&rel=0`;
+    const embed = btn.getAttribute('data-embed');
+    frame.src = embed || `https://www.youtube-nocookie.com/embed/${encodeURIComponent(id)}?autoplay=1&rel=0`;
     frame.title = btn.getAttribute('data-title') || 'Video';
     frame.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
     frame.allowFullscreen = true;

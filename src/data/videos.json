@@ -8,6 +8,11 @@
       "channel_id": "UC1s9pVF23PCw5VrhTAuHJiQ",
       "items": [
         {
+          "id": "f7vnTwE7K1Y",
+          "title": "Sunday Service | 15th Nov, 2026",
+          "live": true
+        },
+        {
           "id": "lvgB-H0cSVI",
           "title": "8th Nov, 2026",
           "length": "3:00:01"
@@ -61,11 +66,6 @@
           "id": "l273oCaLDms",
           "title": "20th September Sunday 2026",
           "length": "20:35"
-        },
-        {
-          "id": "iCz7sHRY_jM",
-          "title": "Sunday Service | 20th Sep, 2026",
-          "length": "2:11:45"
         }
       ]
     },
@@ -75,6 +75,36 @@
       "url": "https://www.youtube.com/@MFMMinistries",
       "channel_id": "UCMd5fYoenMlMJQ6-Bt6gsRw",
       "items": [
+        {
+          "id": "OWgZuWIhYaM",
+          "title": "WHEN PRAYER BECOMES LIMITED - MFM SUNDAY WORSHIP SERVICE 15-11-2026 DR D.K. OLUKOYA",
+          "length": "4:19:54"
+        },
+        {
+          "id": "KKUZt4CqWMM",
+          "title": "MFM GREAT PHYSICIAN HOUR 14-11-2026 MINISTERING: DR D. K. OLUKOYA",
+          "length": "1:03:22"
+        },
+        {
+          "id": "lBvF8Tu8PC4",
+          "title": "MFM Deliverance & Miracle Service For New Converts (14-10-2026)",
+          "length": "2:11:44"
+        },
+        {
+          "id": "KgEeRer7laE",
+          "title": "LA NUIT POUR BRISER LES JOUGS. (13-11-26)",
+          "length": "8:41:39"
+        },
+        {
+          "id": "Q7ensdka5qA",
+          "title": "Yoke Breaking Night (13-11-2026)",
+          "length": "8:38:14"
+        },
+        {
+          "id": "dZB-IVQX7kE",
+          "title": "PRAYER RAIN SERVICE AT PRAYER CITY 13-11-2026",
+          "length": "4:07:44"
+        },
         {
           "id": "5Y_XIqV7tH8",
           "title": "THE MOST POWERFUL STRONGHOLD - MFM MANNA WATER 11-11-2026 DR D.K. OLUKOYA",
@@ -104,39 +134,10 @@
           "id": "Wq0eJX91XXA",
           "title": "POWER AGAINST THE RAGE OF DARKNESS - MFM PMCH November 2026 PMCH - Dr D. K Olukoya",
           "length": "5:25:39"
-        },
-        {
-          "id": "s45CE3W1EO0",
-          "title": "PRAYER RAIN SERVICE AT PRAYER CITY 13-11-2026",
-          "length": "4:50"
-        },
-        {
-          "id": "Z9upuwQjzvo",
-          "title": "POWER FOR THE NEXT LEVEL - MFM MANNA WATER 04-11-2026 DR D.K. OLUKOYA",
-          "length": "4:14:53"
-        },
-        {
-          "id": "-9TD_5Nvgbo",
-          "title": "MFM REVIVAL HOUR - 02-11-2026 MINISTERING: DR D.K. OLUKOYA",
-          "length": "56:14"
-        },
-        {
-          "id": "1YvwjdO1MoA",
-          "title": "TALK TO YOURSELF - MFM - THE EAGLE HOUR SUNDAY 01-11-2026",
-          "length": "46:38"
-        },
-        {
-          "id": "ygYGgqs_8eU",
-          "title": "PREPARE TO MEET YOUR GOD - MFM SUNDAY WORSHIP SERVICE 01-11-2026 DR D.K. OLUKOYA",
-          "length": "5:38:35"
-        },
-        {
-          "id": "MO-Z-zmClcM",
-          "title": "MFM GREAT PHYSICIAN HOUR 31-10-2026 MINISTERING: DR D. K. OLUKOYA",
-          "length": "1:02:35"
         }
       ]
     }
   },
-  "updated": "2026-11-12"
+  "updated": "2026-11-15",
+  "checked": "2026-11-15T11:51:26.173Z"
 }

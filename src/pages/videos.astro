@@ -1,16 +1,24 @@
 ---
 // Videos — look: cinema (black stage, featured player with purple glow, channel tabs, grids).
 // The video lists come from src/data/videos.json, refreshed from YouTube by `npm run videos`
-// (and automatically every day by the GitHub deploy workflow).
+// (automatically every day, and every 15 minutes on Sunday mornings, by the GitHub deploy workflow).
+// While a stream is live a "Live now" player sits at the top; during Sunday service hours it also appears
+// if the site hasn't rebuilt yet, playing whatever the channel is streaming.
 import Base from '../layouts/Base.astro';
 import Icon from '../components/Icon.astro';
 import VideoCard from '../components/VideoCard.astro';
 import MediaSwitch from '../components/MediaSwitch.astro';
 import videos from '../data/videos.json';
+import services from '../data/services.json';
 import { prettyTitle, latestMessage } from '../lib/videos.js';
 const ed = videos.channels.edinburgh, ww = videos.channels.worldwide;
-const featured = ed.items[0];
-const message = latestMessage(ww.items);
+// A stream that was live when YouTube was last checked, and the latest finished service
+const liveNow = ed.items.find((v) => v.live) || ww.items.find((v) => v.live);
+const liveFromEd = !!ed.items.find((v) => v.live);
+const featured = ed.items.find((v) => !v.live);
+const sundayWindows = services.weekly.filter((s) => s.day === 'Sunday' && !s.online).map((s) => [s.start, s.end || s.start]);
+const liveEmbed = `https://www.youtube.com/embed/live_stream?channel=${ed.channel_id}&autoplay=1`;
+const message = latestMessage(ww.items.filter((v) => !v.live));
 const updated = new Date(`${videos.updated}T12:00:00Z`).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'Europe/London' });
 const len = (v) => (v.length ? ` · ${v.length}` : '');
 const SHOW = 6;
@@ -23,6 +31,22 @@ const SHOW = 6;
         <MediaSwitch current="videos" />
       </div>
       <h1 class="visually-hidden" id="page-title">Videos</h1>
+
+      <!-- Live now: shown while a stream is on (from the last YouTube check, or during Sunday service hours) -->
+      <section class="live" data-live data-checked={videos.checked} data-windows={JSON.stringify(sundayWindows)} data-known={liveNow ? '1' : ''} data-channel-live={liveEmbed} hidden={!liveNow} aria-labelledby="live-title">
+        <div class="live__player">
+          {liveNow
+            ? <VideoCard id={liveNow.id} title={prettyTitle(liveNow.title)} large live />
+            : <VideoCard id="" embed={liveEmbed} poster={featured ? `https://i.ytimg.com/vi/${featured.id}/maxresdefault.jpg` : ''} title="MFM Edinburgh live service" large live />}
+        </div>
+        <div class="live__info">
+          <p class="live__badge"><span></span> Live now</p>
+          <h2 class="h3s" id="live-title">{liveNow ? prettyTitle(liveNow.title) : 'Sunday Service'}</h2>
+          <p>{liveNow && !liveFromEd ? 'Streaming now from MFM Ministries.' : 'Streaming now from MFM Edinburgh, 13 Bangor Road. Press play to join us.'}</p>
+          <a class="btn btn--accent" href={`${liveNow && !liveFromEd ? ww.url : ed.url}/live`} rel="noopener" target="_blank"><Icon name="youtube" size={20} /> Watch on YouTube<span class="visually-hidden"> (opens in a new tab)</span></a>
+        </div>
+      </section>
+
       <div class="stage__grid">
         <article class="stage__main" aria-labelledby="latest-title">
           {featured && <VideoCard id={featured.id} title={prettyTitle(featured.title)} large />}
@@ -55,7 +79,7 @@ const SHOW = 6;
         <button role="tab" id="tab-ed" aria-controls="panel-ed" aria-selected="true" type="button">MFM Edinburgh</button>
         <button role="tab" id="tab-ww" aria-controls="panel-ww" aria-selected="false" tabindex="-1" type="button">MFM Worldwide</button>
       </div>
-      {[[ed, 'ed', 'MFM Edinburgh', ed.items.slice(1)], [ww, 'ww', 'Dr D. K. Olukoya · MFM Ministries', ww.items.filter((v) => v.id !== message?.id)]].map(([ch, key, meta, list], i) => (
+      {[[ed, 'ed', 'MFM Edinburgh', ed.items.filter((v) => !v.live && v.id !== featured?.id)], [ww, 'ww', 'Dr D. K. Olukoya · MFM Ministries', ww.items.filter((v) => !v.live && v.id !== message?.id)]].map(([ch, key, meta, list], i) => (
         <div role="tabpanel" id={`panel-${key}`} aria-labelledby={`tab-${key}`} hidden={i !== 0} tabindex="0">
           <ul role="list" class="grid vgrid" style="--min:300px;--gap:32px 24px">
             {list.map((v, j) => <li hidden={j >= SHOW} data-more={j >= SHOW ? '' : undefined}><VideoCard id={v.id} title={prettyTitle(v.title)} meta={`${meta}${len(v)}`} /></li>)}
@@ -73,6 +97,15 @@ const SHOW = 6;
 <style>
   .cinema { background: var(--ink); color: var(--white); }
   .stage { padding-block: clamp(24px, 1rem + 2vw, 56px) var(--space-l); display: flex; flex-direction: column; gap: clamp(20px, 1rem + 1.5vw, 36px); }
+  .live { display: grid; grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr); gap: clamp(20px, 1rem + 2vw, 44px); align-items: center; padding: clamp(14px, .6rem + 1vw, 24px); border-radius: var(--r-panel); background: linear-gradient(135deg, rgba(204, 0, 0, .22), rgba(137, 28, 181, .18)); border: 1px solid rgba(255, 90, 90, .45); }
+  .live[hidden] { display: none; }
+  .live__info { display: flex; flex-direction: column; gap: 12px; align-items: flex-start; }
+  .live__info p { color: var(--line); }
+  .live__badge { display: inline-flex; align-items: center; gap: 8px; padding: 6px 14px; border-radius: var(--r-pill); background: #CC0000; color: #fff !important; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; font-size: .875rem; }
+  .live__badge span { width: 10px; height: 10px; border-radius: 50%; background: #fff; animation: live-dot 1.4s ease-in-out infinite; }
+  @keyframes live-dot { 50% { opacity: .25; } }
+  @media (max-width: 960px) { .live { grid-template-columns: minmax(0, 1fr); } }
+  @media (prefers-reduced-motion: reduce) { .live__badge span { animation: none; } }
   .stage__top { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; }
   .stage__grid { display: grid; grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr); gap: clamp(24px, 0.9rem + 2vw, 48px); align-items: start; }
   .stage__main { display: flex; flex-direction: column; gap: 18px; }
@@ -98,6 +131,29 @@ const SHOW = 6;
 </style>
 
 <script>
+  import { londonNow } from '../lib/time.js';
+  // Live panel: hide a stream that was live at the last check once it's probably over (4h+),
+  // and show the channel's live player during Sunday service hours even if the site hasn't rebuilt yet.
+  const live = document.querySelector('[data-live]');
+  if (live) {
+    const toMins = (t) => { const [h, m] = t.split(':').map(Number); return h * 60 + m; };
+    const windows = JSON.parse(live.dataset.windows || '[]');
+    const update = () => {
+      const now = londonNow();
+      const inService = now.day === 0 && windows.some(([a, b]) => now.mins >= toMins(a) - 10 && now.mins <= toMins(b) + 30);
+      const fresh = Date.now() - new Date(live.dataset.checked || 0).getTime() < 4 * 3600 * 1000;
+      const playing = !!live.querySelector('iframe');
+      live.hidden = !(playing || (live.dataset.known ? fresh || inService : inService));
+      // An old stream in a new service window: play whatever the channel is streaming now instead
+      if (live.dataset.known && !fresh && inService && !playing) {
+        live.querySelector('.video-card')?.setAttribute('data-embed', live.dataset.channelLive);
+        live.querySelector('#live-title').textContent = 'Sunday Service';
+      }
+    };
+    update();
+    setInterval(update, 60 * 1000);
+  }
+
   // Tabs (arrow keys move between channels)
   const tabs = [...document.querySelectorAll('[role="tab"]')];
   const select = (t) => {

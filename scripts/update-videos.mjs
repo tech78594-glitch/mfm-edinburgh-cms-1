@@ -19,9 +19,10 @@ function collect(node, out) {
     const meta = JSON.stringify(md.metadata || {});
     const badges = (JSON.stringify(v.contentImage || {}).match(/"text":"([^"]*)"/g) || []).map((t) => t.slice(8, -1));
     const length = badges.find((t) => /^\d+(:\d\d)+$/.test(t)) || '';
-    // Skip upcoming premieres/livestreams: they can't be watched yet.
+    // Skip upcoming premieres/livestreams: they can't be watched yet. Keep streams that are live right now.
     const scheduled = meta.includes('Scheduled') || badges.some((t) => /upcoming|premiere/i.test(t));
-    out.push({ id: v.contentId, title: clean(md.title?.content || ''), length, scheduled });
+    const live = !scheduled && (badges.includes('LIVE') || JSON.stringify(v).includes('LIVE_NOW'));
+    out.push({ id: v.contentId, title: clean(md.title?.content || ''), length, scheduled, live });
     return;
   }
   Object.values(node).forEach((n) => collect(n, out));
@@ -39,7 +40,7 @@ async function latest(channelId, filter) {
   const out = [];
   collect(JSON.parse(m[1]), out);
   return out.filter((v) => v.id && v.title && !v.scheduled && (!filter || !filter.test(v.title)))
-    .slice(0, KEEP).map(({ id, title, length }) => (length ? { id, title, length } : { id, title }));
+    .slice(0, KEEP).map(({ id, title, length, live }) => ({ id, title, ...(length && { length }), ...(live && { live: true }) }));
 }
 
 try {
@@ -49,8 +50,10 @@ try {
   if (a.length) ed.items = a;
   if (b.length) ww.items = b;
   data.updated = new Date().toISOString().slice(0, 10);
+  data.checked = new Date().toISOString(); // when YouTube was last checked (used to tell if a live stream may have ended)
   fs.writeFileSync(FILE, JSON.stringify(data, null, 2) + '\n');
-  console.log(`videos.json updated: ${a.length} MFM Edinburgh, ${b.length} MFM Ministries`);
+  const live = [...a, ...b].filter((v) => v.live).map((v) => v.title);
+  console.log(`videos.json updated: ${a.length} MFM Edinburgh, ${b.length} MFM Ministries${live.length ? ` · LIVE: ${live.join(', ')}` : ''}`);
 } catch (err) {
   console.warn(`videos.json not changed (${err.message})`);
 }
